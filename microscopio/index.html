@@ -1,0 +1,2202 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Microscopio ottico virtuale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: banco di laboratorio — lo strumento a sinistra, il campo visivo al centro, la console di comando a destra */
+:root{
+  --bench:#e8eef1; --panel:#ffffff; --panel-2:#f2f6f8; --ink:#14202b; --muted:#53616d; --line:#d0d9e0;
+  --accent:#2350a8; --accent-soft:#e1e9fa; --on-accent:#ffffff;          /* blu di metilene */
+  --eosin:#c22d64; --eosin-soft:#fbe4ed;                                  /* eosina: parte selezionata */
+  --ok:#22744a; --ok-soft:#ddf1e5; --warn:#94590a; --warn-soft:#fbeed6; --bad:#b0322a; --bad-soft:#fbe2df;
+  --en1:#ffffff; --en2:#e5e9ed; --en3:#bec7cf; --edge:#8995a0;          /* smalto dello strumento */
+  --gr1:#4b545d; --gr2:#252a30; --ch1:#7b848c; --ch2:#f1f4f6; --ch3:#a9b1b8;
+  --lbl:#2b3845; --leader:#8391a0;
+  --oc0:#050607; --oc1:#1b1e22; --oc2:#30363c;
+  --f-display:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:10px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bench:#0e1317; --panel:#161e25; --panel-2:#1d2730; --ink:#e2e9ee; --muted:#96a4af; --line:#29353f;
+    --accent:#8aaeff; --accent-soft:#1b2946; --on-accent:#0b1322;
+    --eosin:#ff7dab; --eosin-soft:#3a1a28;
+    --ok:#62cf8e; --ok-soft:#14301f; --warn:#f0b75a; --warn-soft:#36280f; --bad:#ff8273; --bad-soft:#3b1915;
+    --en1:#eef1f3; --en2:#cdd4da; --en3:#98a3ad; --edge:#55616b;
+    --gr1:#5a636d; --gr2:#2b3138; --ch1:#6d767e; --ch2:#e4e8ec; --ch3:#98a1a9;
+    --lbl:#cfd8df; --leader:#5e6d79;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bench:#0e1317; --panel:#161e25; --panel-2:#1d2730; --ink:#e2e9ee; --muted:#96a4af; --line:#29353f;
+  --accent:#8aaeff; --accent-soft:#1b2946; --on-accent:#0b1322;
+  --eosin:#ff7dab; --eosin-soft:#3a1a28;
+  --ok:#62cf8e; --ok-soft:#14301f; --warn:#f0b75a; --warn-soft:#36280f; --bad:#ff8273; --bad-soft:#3b1915;
+  --en1:#eef1f3; --en2:#cdd4da; --en3:#98a3ad; --edge:#55616b;
+  --gr1:#5a636d; --gr2:#2b3138; --ch1:#6d767e; --ch2:#e4e8ec; --ch3:#98a1a9;
+  --lbl:#cfd8df; --leader:#5e6d79;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bench);color:var(--ink);font:400 16px/1.5 var(--f-body)}
+[hidden]{display:none!important}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+p{margin:0}
+
+.app{max-width:1480px;margin:0 auto;padding-inline:clamp(16px,2.4vw,32px);padding-block:14px 40px}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px;padding-block:6px 16px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.brand{min-width:0;display:grid;gap:4px}
+.eyebrow{margin:0;font:600 .8rem/1.2 var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font:700 clamp(2.1rem,4.2vw,3.1rem)/1 var(--f-display);letter-spacing:.005em;text-wrap:balance}
+h2,h3,h4{text-wrap:balance}
+.sub{color:var(--muted);max-width:62ch}
+.modes{display:flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:999px}
+.modes button{border:0;background:none;color:var(--muted);padding:10px 18px;border-radius:999px;font:600 1.05rem/1 var(--f-display);letter-spacing:.03em}
+.modes button:hover{color:var(--ink)}
+.modes button[aria-selected="true"]{background:var(--accent);color:var(--on-accent)}
+
+.bench{display:grid;gap:18px;grid-template-columns:minmax(0,1.22fr) minmax(0,.94fr) minmax(0,.94fr);align-items:start}
+.col{min-width:0;display:flex;flex-direction:column;gap:14px}
+.pane{display:flex;flex-direction:column;gap:14px}
+@media (min-width:1181px) and (min-height:780px){
+  .col-scope,.col-view{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+}
+@media (max-width:1180px){.bench{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.col-panel{grid-column:1/-1}.pane{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}.pane>.wide{grid-column:1/-1}}
+@media (min-width:761px) and (max-width:1180px){#grpMag{order:1;grid-column:1/-1}#grpSlide{order:2}}
+@media (max-width:760px){.bench{grid-template-columns:minmax(0,1fr)}.pane{grid-template-columns:minmax(0,1fr)}body.mode-usa .col-view{order:-1}}
+@media (max-width:560px){
+  .modes{width:100%;border-radius:14px}
+  .modes button{flex:1 1 auto;padding:10px 6px;font-size:.98rem;white-space:nowrap}
+  .knob{width:60px;height:60px}.knob.sm{width:46px;height:46px;margin-inline:7px}
+  .card{padding:14px}
+}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
+.small{font-size:.86rem;color:var(--muted)}
+
+/* ---------- disegno del microscopio ---------- */
+.scope-card{position:relative;padding:8px 8px 12px}
+#scope{display:block;width:100%;height:auto;max-height:78vh;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.scope-foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;padding:4px 8px 0}
+.check{display:inline-flex;align-items:center;gap:8px;font-size:.92rem;font-weight:700;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--accent)}
+#scope .edge{stroke:var(--edge);stroke-width:1}
+#scope .thin{stroke-width:.6}
+#scope .crease{stroke:var(--en1);stroke-width:1.4;fill:none;opacity:.9}
+#scope .shadow{fill:rgba(0,0,0,.13)}
+#scope .lens{fill:#9fc4d9;stroke:#4f6b7c;stroke-width:.6}
+#scope .lens.lit{fill:#fff4c8}
+#scope .glass{fill:rgba(168,214,236,.6);stroke:#6b9db6;stroke-width:.6}
+#scope .frost{fill:rgba(255,255,255,.9)}
+#scope .oil{fill:rgba(236,212,110,.9);stroke:#b0963a;stroke-width:.4}
+#scope .crackline{stroke:#16222b;stroke-width:.9;fill:none}
+#scope .rubber{fill:#1c2024}
+#scope .engr{font:700 9.5px var(--f-display);fill:#262c33;text-anchor:middle}
+#scope .objtxt{font:700 7.6px var(--f-display);fill:#1f252b;text-anchor:middle}
+#scope .flens{fill:#173045}
+#scope .ring{stroke:rgba(0,0,0,.35);stroke-width:.5}
+#scope .knurl line{stroke:rgba(255,255,255,.3);stroke-width:1.3}
+#scope .knurl .mark{fill:#f2f4f6}
+#scope .lever{stroke:var(--gr2);stroke-width:2.8;stroke-linecap:round}
+#scope .rocker{fill:#3b4249}
+#scope .on .rocker{fill:#6a737c}
+#scope .pilot{fill:#2e353b}
+#scope .pilot.on{fill:#3ee07c}
+#scope .hit{fill:transparent}
+#scope .part{cursor:pointer;outline:none}
+body.mode-usa #scope .knobpart{touch-action:none;cursor:ns-resize}
+#scope .objective{transition:transform .3s ease,opacity .3s ease;transform-box:view-box;transform-origin:300px 200px}
+#scope:not(.quiz) .part:hover,#scope .part:focus-visible{filter:url(#fHov)}
+#scope .part.sel,#scope .part.sel:hover{filter:url(#fSel)}
+#scope .part.q-ok,#scope .part.q-ok:hover{filter:url(#fOk)}
+#scope .part.q-bad,#scope .part.q-bad:hover{filter:url(#fBad)}
+#scope .lbl{display:none;cursor:pointer}
+#scope.show-labels .lbl,#scope .lbl.sel{display:inline}
+#scope.quiz .lbl{display:none!important}
+#scope .lbl text{font:600 14.5px var(--f-display);fill:var(--lbl);letter-spacing:.01em}
+#scope .lbl line{stroke:var(--leader);stroke-width:1}
+#scope .lbl circle{fill:var(--leader)}
+#scope .lbl:hover text{fill:var(--accent)}
+#scope .lbl.sel text{fill:var(--eosin);font-weight:700}
+#scope .lbl.sel line{stroke:var(--eosin);stroke-width:1.5}
+#scope .lbl.sel circle{fill:var(--eosin)}
+#beam{transition:opacity .25s}
+#scope .lbl .t-num{font:700 22px var(--f-display);fill:var(--lbl)}
+#scope.numbers .lbl .t-name,#scope:not(.numbers) .lbl .t-num{display:none}
+#scope .lbl.sel .t-num{fill:var(--eosin)}
+.legend{list-style:none;margin:8px 0 0;padding:0 4px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 10px}
+.legend button{display:flex;gap:8px;align-items:baseline;width:100%;border:0;background:none;padding:5px 4px;border-radius:6px;text-align:left;font-size:.88rem;line-height:1.25}
+.legend button b{flex:none;min-width:1.4em;font:700 1rem/1 var(--f-display);color:var(--accent);text-align:right}
+.legend button.sel{background:var(--eosin-soft);color:var(--eosin)}
+.legend button.sel b{color:var(--eosin)}
+.tip{position:absolute;z-index:3;pointer-events:none;background:var(--ink);color:var(--panel);font:600 .95rem/1.2 var(--f-display);letter-spacing:.02em;padding:5px 9px;border-radius:6px;transform:translate(-50%,calc(-100% - 12px));white-space:nowrap}
+
+/* ---------- oculare ---------- */
+.view-card{display:flex;flex-direction:column;gap:14px}
+.view-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ocular{position:relative;width:min(100% - 24px,430px);aspect-ratio:1/1;margin:8px auto 6px;border-radius:50%;background:var(--oc0);box-shadow:0 0 0 9px var(--oc1),0 0 0 11px var(--oc2),0 16px 34px rgba(0,0,0,.28);overflow:hidden;touch-action:none}
+.field{position:absolute;inset:0;clip-path:circle(var(--fr,46%) at 50% 50%)}
+.stack{position:absolute;inset:0;isolation:isolate;transition:filter .12s linear}
+.lampbg{position:absolute;inset:0;background:var(--lamp,#f6f3ea)}
+.layer{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:multiply}
+.vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,0) calc(var(--fr,46%) * .5),rgba(0,0,0,var(--vig,.3)) var(--fr,46%))}
+.cracks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.scalebar{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.scalebar span{display:block;height:5px;background:#fff;box-shadow:0 0 0 1.5px #111}
+.scalebar b{font:500 .74rem/1 var(--f-mono);color:#fff;text-shadow:0 0 3px #000,0 0 2px #000}
+.readout{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.mag b{display:block;font:700 2.7rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.mag span{display:block;font:500 .8rem/1.3 var(--f-mono);color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0;padding-top:12px;border-top:1px solid var(--line)}
+.facts dt{font:600 .72rem/1.2 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.facts dd{margin:3px 0 0;font:500 .92rem/1.25 var(--f-mono)}
+.pill{display:inline-block;padding:1px 9px;border-radius:999px;font:700 .82rem/1.55 var(--f-body);background:var(--panel-2);color:var(--muted)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.view-opts{display:flex;flex-wrap:wrap;gap:8px 18px}
+.status{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;background:var(--panel-2);min-height:3.4em;font-size:.95rem}
+.status i{flex:none;width:9px;height:9px;border-radius:50%;margin-top:.45em;background:var(--accent)}
+.status.ok{background:var(--ok-soft)} .status.ok i{background:var(--ok)}
+.status.warn{background:var(--warn-soft)} .status.warn i{background:var(--warn)}
+.status.bad{background:var(--bad-soft)} .status.bad i{background:var(--bad)}
+
+/* ---------- console ---------- */
+.ctl-h{margin:0 0 12px;font:700 1.3rem/1.1 var(--f-display);letter-spacing:.02em}
+.lab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700;font-size:.92rem}
+output{font:500 .82rem var(--f-mono);color:var(--muted);font-weight:500}
+.slider{display:block;margin-top:10px}
+input[type=range]{display:block;width:100%;height:30px;margin:2px 0 0;accent-color:var(--accent)}
+.ends{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted);margin-top:-4px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.switch{display:inline-flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);font-weight:700}
+.switch .sw{position:relative;width:44px;height:26px;border-radius:999px;background:var(--line);transition:background .2s}
+.switch .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.switch[aria-checked="true"] .sw{background:var(--ok)}
+.switch[aria-checked="true"] .sw::after{transform:translateX(18px)}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px}
+.seg:last-child{margin-bottom:0}
+.seg button{flex:1 1 0;min-width:58px;padding:10px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);font:700 1.15rem/1 var(--f-display);display:inline-flex;align-items:center;justify-content:center;gap:7px;font-variant-numeric:tabular-nums}
+.seg button:hover{border-color:var(--accent)}
+.seg button[aria-checked="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.seg i{width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
+.btn{padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);font-weight:700;font-size:.93rem;line-height:1.25}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.linkbtn{border:0;background:none;padding:0;color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+select{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);margin-top:4px;font-weight:700}
+.focus{display:grid;gap:14px}
+.fk{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center}
+.fk-txt b{display:block;font:700 1.1rem/1.1 var(--f-display);letter-spacing:.02em}
+.fk-txt span{font-size:.84rem;color:var(--muted)}
+.knob{width:74px;height:74px;border-radius:50%;touch-action:none;cursor:ns-resize}
+.knob.sm{width:56px;height:56px;margin-inline:9px}
+.knob svg{display:block;width:100%;height:100%}
+.knob .k-out{fill:url(#kGr)}
+.knob .k-rot line{stroke:rgba(255,255,255,.32);stroke-width:2.6}
+.knob .k-cap{fill:url(#kCh)}
+.knob .k-dot{fill:var(--eosin)}
+.fk-btns{display:flex;flex-direction:column;gap:6px}
+.hold{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);font-weight:700;font-size:.88rem;user-select:none;-webkit-user-select:none;touch-action:manipulation;white-space:nowrap}
+.hold:hover{border-color:var(--accent)}
+.hold:active{background:var(--accent-soft)}
+.trasl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:14px}
+.mini-wrap{position:relative;min-width:0}
+#mini{display:block;width:100%;height:140px;border-radius:8px;touch-action:none;cursor:grab;background:#2a2f35}
+#mini:active{cursor:grabbing}
+.mini-cap{position:absolute;left:8px;top:6px;font:600 .72rem/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:#cfd6dc;pointer-events:none}
+.pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:4px}
+.pad button{border:1px solid var(--line);border-radius:8px;background:var(--panel-2);font-size:1rem;line-height:1;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.pad button:hover{border-color:var(--accent)}
+.pad button:active{background:var(--accent-soft)}
+.pad [data-mv="up"]{grid-area:1/2}
+.pad [data-mv="left"]{grid-area:2/1}
+.pad [data-mv="right"]{grid-area:2/3}
+.pad [data-mv="down"]{grid-area:3/2}
+.pad .padc{grid-area:2/2;display:grid;place-items:center;font:600 .62rem/1.1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center}
+.flash{animation:flash 1.6s ease}
+@keyframes flash{0%,60%{box-shadow:0 0 0 3px var(--eosin)}100%{box-shadow:0 0 0 0 transparent}}
+
+/* ---------- procedura ---------- */
+.proc h2,.info h2,.quiz h2{margin:2px 0 8px;font:700 1.7rem/1.05 var(--f-display);letter-spacing:.01em}
+.proc-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.progress{height:7px;border-radius:99px;background:var(--panel-2);overflow:hidden;margin-top:8px;box-shadow:inset 0 0 0 1px var(--line)}
+.progress i{display:block;height:100%;width:0;background:var(--ok);transition:width .35s ease}
+.proc-now{font-size:1.08rem;font-weight:700;margin-top:12px}
+.proc details{margin-top:12px}
+.proc summary{cursor:pointer;font-weight:700;font-size:.92rem;color:var(--accent)}
+.proc ol{margin:8px 0 0;padding-left:1.6em;display:grid;gap:4px;font-size:.92rem}
+.proc li{color:var(--muted)}
+.proc li.done{color:var(--ok)}
+.proc li.done::marker{content:"✓  "}
+.proc li.cur{color:var(--ink);font-weight:700}
+.proc-err{margin-top:10px;font-size:.9rem}
+.proc-err ul{margin:4px 0 0;padding-left:1.2em;color:var(--bad)}
+.done-box{margin-top:10px;padding:12px;border-radius:8px;background:var(--ok-soft);color:var(--ok);font-weight:700}
+
+/* ---------- schede ---------- */
+.info .cat{display:inline-block;padding:2px 10px;border-radius:999px;font:600 .74rem/1.6 var(--f-display);letter-spacing:.12em;text-transform:uppercase;background:var(--panel-2);color:var(--muted)}
+.info .cat.ottica{background:var(--accent-soft);color:var(--accent)}
+.info .cat.illuminazione{background:var(--warn-soft);color:var(--warn)}
+.info h4{margin:16px 0 4px;font:700 .8rem/1.2 var(--f-display);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.info p+p{margin-top:8px}
+.info .btn{margin-top:14px}
+.formula{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--panel-2);font:500 .92rem/1.4 var(--f-mono)}
+.groups{display:grid;gap:14px}
+.groups h4{margin:0 0 6px;font:700 .8rem/1.2 var(--f-display);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);font-size:.9rem;font-weight:700}
+.chips button:hover{border-color:var(--accent)}
+.chips button.sel{border-color:var(--eosin);color:var(--eosin);background:var(--eosin-soft)}
+
+/* ---------- quiz ---------- */
+.quiz-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.quiz-prompt{margin-top:10px;font:700 1.55rem/1.15 var(--f-display);letter-spacing:.01em}
+.quiz-fb{margin-top:12px;min-height:1.5em;font-weight:700}
+.quiz-fb.ok{color:var(--ok)} .quiz-fb.bad{color:var(--bad)}
+.score{font:500 .9rem var(--f-mono);color:var(--muted)}
+.score b{color:var(--ink)}
+.big-score{font:700 3.4rem/1 var(--f-display);margin:6px 0}
+.review{margin:10px 0 0;padding-left:1.2em;font-size:.9rem;display:grid;gap:3px}
+.review .ok{color:var(--ok)} .review .bad{color:var(--bad)}
+
+footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 24px;font-size:.84rem;color:var(--muted)}
+kbd{font:500 .78rem var(--f-mono);padding:1px 5px;border-radius:4px;border:1px solid var(--line);background:var(--panel)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <p class="eyebrow">Scienze integrate · laboratorio virtuale</p>
+      <h1>Il microscopio ottico</h1>
+      <p class="sub">Scopri il nome e la funzione di ogni parte, poi impara a usarlo con un vetrino: luce, diaframma, obiettivi, oculari e messa a fuoco.</p>
+    </div>
+    <nav class="modes" role="tablist" aria-label="Modalità">
+      <button role="tab" id="tab-esplora" data-mode="esplora" aria-selected="true" aria-controls="pane-esplora">Conosci le parti</button>
+      <button role="tab" id="tab-usa" data-mode="usa" aria-selected="false" aria-controls="pane-usa">Usa il microscopio</button>
+      <button role="tab" id="tab-quiz" data-mode="quiz" aria-selected="false" aria-controls="pane-quiz">Quiz</button>
+    </nav>
+  </header>
+
+  <main class="bench">
+    <!-- ===== Strumento ===== -->
+    <section class="col col-scope" aria-label="Disegno del microscopio">
+      <div class="card scope-card" id="scopeCard">
+        <svg id="scope" class="show-labels" viewBox="0 0 640 660" aria-labelledby="scopeTitle">
+          <title id="scopeTitle">Microscopio ottico composto visto di lato. Tocca una parte.</title>
+          <defs>
+            <linearGradient id="gEn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--en1)"/><stop offset=".6" style="stop-color:var(--en2)"/><stop offset="1" style="stop-color:var(--en3)"/></linearGradient>
+            <linearGradient id="gEnV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--en1)"/><stop offset=".55" style="stop-color:var(--en2)"/><stop offset="1" style="stop-color:var(--en3)"/></linearGradient>
+            <linearGradient id="gGr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--gr1)"/><stop offset="1" style="stop-color:var(--gr2)"/></linearGradient>
+            <linearGradient id="gCh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--ch1)"/><stop offset=".3" style="stop-color:var(--ch2)"/><stop offset=".62" style="stop-color:var(--ch3)"/><stop offset=".86" style="stop-color:var(--ch2)"/><stop offset="1" style="stop-color:var(--ch1)"/></linearGradient>
+            <radialGradient id="gGlow"><stop offset="0" stop-color="#fff4c6" stop-opacity="1"/><stop offset="1" stop-color="#ffd25e" stop-opacity="0"/></radialGradient>
+            <linearGradient id="gBeam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffdc7a" stop-opacity=".7"/><stop offset="1" stop-color="#ffe7a6" stop-opacity=".4"/></linearGradient>
+            <filter id="fSel" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="2.4" result="d"/><feFlood style="flood-color:var(--eosin)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="fHov" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="1.8" result="d"/><feFlood style="flood-color:var(--accent)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="fOk" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d"/><feFlood style="flood-color:var(--ok)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="fBad" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d"/><feFlood style="flood-color:var(--bad)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+
+          <!-- percorso della luce -->
+          <g id="beam" opacity="0" pointer-events="none">
+            <polygon id="beamA" fill="url(#gBeam)"/>
+            <polygon id="beamB" fill="url(#gBeam)"/>
+            <polygon id="beamC" fill="url(#gBeam)"/>
+          </g>
+
+          <ellipse cx="320" cy="640" rx="170" ry="6" class="shadow"/>
+
+          <!-- braccio -->
+          <g class="part" data-part="braccio">
+            <path d="M395 582 L395 345 C395 285 386 243 362 203 L352 188 L402 160 C434 207 454 266 454 345 L454 582 Z" fill="url(#gEn)" class="edge"/>
+            <path d="M404 580 L404 350 C404 296 396 256 375 218" class="crease"/>
+          </g>
+
+          <!-- base -->
+          <g class="part" data-part="base">
+            <path d="M184 580 H460 Q472 580 474 592 L478 620 Q480 634 466 634 H174 Q160 634 162 620 L166 592 Q168 580 184 580 Z" fill="url(#gEnV)" class="edge"/>
+            <path d="M170 589 H474" class="crease"/>
+          </g>
+
+          <!-- sorgente luminosa -->
+          <g class="part" data-part="lampada">
+            <rect x="277" y="557" width="46" height="24" rx="4" fill="url(#gGr)"/>
+            <ellipse id="lampGlow" cx="300" cy="556" rx="40" ry="15" fill="url(#gGlow)" opacity="0"/>
+            <ellipse id="lampLens" cx="300" cy="557" rx="19" ry="4.5" class="lens"/>
+          </g>
+
+          <!-- interruttore -->
+          <g class="part" data-part="interruttore" id="pSwitch">
+            <rect x="184" y="594" width="54" height="30" class="hit"/>
+            <rect x="189" y="599" width="27" height="18" rx="3.5" fill="url(#gGr)"/>
+            <rect x="193" y="602" width="19" height="12" rx="2" class="rocker"/>
+            <text id="rockTxt" x="202.5" y="611.5" class="engr" style="fill:#e8ecef;font-size:8.5px">O</text>
+            <circle id="pilot" cx="228" cy="608" r="3.2" class="pilot"/>
+          </g>
+
+          <!-- regolatore intensità -->
+          <g class="part knobpart" data-part="intensita">
+            <circle cx="441" cy="607" r="15" fill="url(#gGr)"/>
+            <g id="dialRot" class="knurl" data-knurl="441,607,15,22,4"><circle class="mark" cx="441" cy="595.5" r="2"/></g>
+            <circle cx="441" cy="607" r="7.5" fill="url(#gCh)" class="edge thin"/>
+          </g>
+
+          <!-- tavolino e parti che si muovono con la messa a fuoco -->
+          <g id="stageAsm">
+            <rect x="391" y="300" width="14" height="58" rx="2" fill="url(#gGr)"/>
+            <rect x="318" y="350" width="86" height="8" rx="2" fill="url(#gGr)"/>
+            <g id="condAsm">
+              <g class="part" data-part="condensatore">
+                <rect x="282" y="318" width="36" height="34" rx="3" fill="url(#gGr)"/>
+                <rect x="284" y="323" width="32" height="5" fill="url(#gCh)" opacity=".75"/>
+                <ellipse cx="300" cy="318" rx="16" ry="3" class="lens"/>
+              </g>
+              <g class="part knobpart" data-part="diaframma">
+                <rect x="244" y="332" width="40" height="20" class="hit"/>
+                <rect x="278" y="338" width="44" height="8" rx="2" fill="url(#gCh)" class="edge thin"/>
+                <line id="leverLine" x1="280" y1="342" x2="258" y2="342" class="lever"/>
+                <circle id="leverKnob" cx="256" cy="342" r="4.2" fill="url(#gGr)"/>
+              </g>
+            </g>
+            <g class="part knobpart" data-part="viteCond">
+              <circle cx="336" cy="366" r="12" class="hit"/>
+              <circle cx="336" cy="366" r="8.5" fill="url(#gGr)"/>
+              <g id="condRot" class="knurl" data-knurl="336,366,8.5,14,2.5"><circle class="mark" cx="336" cy="359.5" r="1.3"/></g>
+              <circle cx="336" cy="366" r="3.6" fill="url(#gCh)"/>
+            </g>
+            <g class="part" data-part="tavolino">
+              <rect x="204" y="299" width="89" height="12" rx="2" fill="url(#gGr)"/>
+              <rect x="307" y="299" width="98" height="12" rx="2" fill="url(#gGr)"/>
+              <rect x="206" y="299.6" width="85" height="1.4" fill="#ffffff" opacity=".22"/>
+              <rect x="309" y="299.6" width="94" height="1.4" fill="#ffffff" opacity=".22"/>
+            </g>
+            <g class="part" data-part="traslatore">
+              <rect x="371" y="311" width="6" height="32" fill="url(#gGr)"/>
+              <rect x="362" y="320" width="24" height="10" rx="3" fill="url(#gGr)" class="edge thin"/>
+              <rect x="359" y="333" width="30" height="12" rx="3" fill="url(#gGr)" class="edge thin"/>
+              <path d="M366 321v8M370 321v8M374 321v8M378 321v8M382 321v8M363 334v10M367 334v10M371 334v10M375 334v10M379 334v10M383 334v10" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
+            </g>
+            <g class="part" data-part="vetrino" id="slideG">
+              <rect x="228" y="286" width="144" height="14" class="hit"/>
+              <rect x="232" y="295.5" width="136" height="3.5" rx=".8" class="glass"/>
+              <rect x="232.4" y="295.9" width="24" height="2.8" class="frost"/>
+              <rect id="specMark" x="289" y="294.7" width="22" height="1" fill="#333"/>
+              <rect x="284" y="294.1" width="32" height="1.3" class="glass"/>
+              <path id="oilDrop" d="M290 294.2 Q300 287.6 310 294.2 Z" class="oil"/>
+              <path id="slideCrack" d="M262 295.6 L268 298.9 M300 294.2 l-6 4.7 m6 -4.7 l5 4.8 M336 295.6 l4 3.3" class="crackline"/>
+            </g>
+            <g class="part" data-part="pinzette">
+              <g id="clipL">
+                <rect x="207" y="290" width="14" height="9" rx="2" fill="url(#gGr)"/>
+                <path id="clipLArm" d="M214 292.2 L252 294.4 L252 295.5 L214 294.6 Z" fill="url(#gCh)" class="edge thin"/>
+              </g>
+              <g id="clipR">
+                <rect x="379" y="290" width="14" height="9" rx="2" fill="url(#gGr)"/>
+                <path id="clipRArm" d="M386 292.2 L348 294.4 L348 295.5 L386 294.6 Z" fill="url(#gCh)" class="edge thin"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- viti di messa a fuoco -->
+          <g class="part" data-part="macro" id="pMacro">
+            <circle cx="424" cy="382" r="31" fill="url(#gGr)"/>
+            <g id="macroRot" class="knurl" data-knurl="424,382,31,44,6"><circle class="mark" cx="424" cy="356" r="2.6"/></g>
+            <circle cx="424" cy="382" r="17" fill="url(#gCh)" class="edge thin"/>
+            <circle cx="424" cy="382" r="4" fill="url(#gGr)"/>
+          </g>
+          <g class="part" data-part="micro" id="pMicro">
+            <circle cx="424" cy="458" r="17" fill="url(#gGr)"/>
+            <g id="microRot" class="knurl" data-knurl="424,458,17,26,4"><circle class="mark" cx="424" cy="444" r="1.8"/></g>
+            <circle cx="424" cy="458" r="9" fill="url(#gCh)" class="edge thin"/>
+          </g>
+
+          <!-- obiettivi (generati) -->
+          <g id="objectives"></g>
+
+          <!-- revolver -->
+          <g class="part" data-part="revolver">
+            <path d="M250 176 H350 L343 197 Q341 203 334 203 H266 Q259 203 257 197 Z" fill="url(#gCh)" class="edge"/>
+            <path d="M262 186v8M267 186v8M272 186v8M277 186v8M282 186v8M287 186v8M292 186v8M297 186v8M302 186v8M307 186v8M312 186v8M317 186v8M322 186v8M327 186v8M332 186v8M337 186v8" stroke="rgba(0,0,0,.22)" stroke-width="1.2"/>
+          </g>
+
+          <!-- tubo ottico e testata -->
+          <g class="part" data-part="tubo">
+            <g transform="translate(276 128) rotate(-42)">
+              <rect x="-17" y="-98" width="34" height="104" fill="url(#gEn)" class="edge"/>
+              <rect x="-19" y="-100" width="38" height="9" rx="2" fill="url(#gGr)"/>
+            </g>
+            <path d="M248 120 H372 Q394 120 394 142 V158 Q394 178 374 178 H250 Q236 178 236 164 V134 Q236 120 248 120 Z" fill="url(#gEnV)" class="edge"/>
+            <path d="M246 128 H380" class="crease"/>
+          </g>
+
+          <!-- oculare -->
+          <g class="part" data-part="oculare">
+            <g transform="translate(276 128) rotate(-42)">
+              <rect x="-20" y="-150" width="40" height="56" class="hit"/>
+              <rect x="-14" y="-132" width="28" height="34" fill="url(#gCh)" class="edge thin"/>
+              <rect x="-17" y="-147" width="34" height="17" rx="4" class="rubber"/>
+              <text id="eyeTxt" x="0" y="-111" class="engr">10×</text>
+            </g>
+          </g>
+
+          <g id="labels"></g>
+        </svg>
+        <div class="tip" id="tip" hidden></div>
+        <ol class="legend" id="legend" hidden aria-label="Legenda delle parti"></ol>
+        <div class="scope-foot">
+          <label class="check" for="optLabels"><input type="checkbox" id="optLabels" checked> Mostra i nomi delle parti</label>
+          <span class="small" id="scopeHint">Tocca una parte per saperne di più</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Campo visivo ===== -->
+    <section class="col col-view" aria-label="Cosa vedi nell’oculare">
+      <div class="card view-card">
+        <div class="view-head">
+          <p class="eyebrow">Nell’oculare</p>
+          <p class="small" id="slideName"></p>
+        </div>
+        <div class="ocular" id="ocular" role="img" aria-label="Immagine vista attraverso l’oculare">
+          <div class="field" id="field">
+            <div class="stack" id="stack">
+              <div class="lampbg" id="lampbg"></div>
+              <canvas class="layer" id="L0"></canvas>
+              <canvas class="layer" id="L1"></canvas>
+              <canvas class="layer" id="L2"></canvas>
+            </div>
+            <div class="vig"></div>
+            <svg class="cracks" id="cracks" viewBox="0 0 100 100" preserveAspectRatio="none" hidden>
+              <path d="M6 31 L27 38 L41 34 L55 47 L71 43 L95 58 M41 34 L45 18 L52 4 M55 47 L52 66 L60 82 L57 97 M27 38 L22 55 L9 63" fill="none" stroke="rgba(15,15,15,.6)" stroke-width=".7"/>
+              <path d="M6 31.6 L27 38.6 L41 34.6 L55 47.6 L71 43.6 L95 58.6 M55 47.6 L52.6 66 L60.6 82" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".35"/>
+            </svg>
+            <div class="scalebar" id="scalebar" hidden><span id="scaleLine"></span><b id="scaleTxt"></b></div>
+          </div>
+        </div>
+        <div class="readout">
+          <div class="mag"><p class="eyebrow">Ingrandimento totale</p><b id="rTotal">40×</b><span id="rFormula">10× oculare × 4× obiettivo</span></div>
+          <dl class="facts">
+            <div><dt>Campo visivo</dt><dd id="rField">Ø 4,5 mm</dd></div>
+            <div><dt>Obiettivo</dt><dd id="rObj">4× / 0,10</dd></div>
+            <div><dt>Luce</dt><dd id="rLight"><span class="pill ok">buona</span></dd></div>
+          </dl>
+          <div class="view-opts">
+            <label class="check" for="optScale"><input type="checkbox" id="optScale"> Barra di scala</label>
+          </div>
+        </div>
+        <div class="status" id="status" role="status" aria-live="polite"><i></i><p id="statusTxt">Tocca una parte del microscopio per scoprirne nome e funzione.</p></div>
+      </div>
+    </section>
+
+    <!-- ===== Pannelli ===== -->
+    <section class="col col-panel" aria-label="Pannello">
+      <!-- Conosci le parti -->
+      <div class="pane" id="pane-esplora" role="tabpanel" aria-labelledby="tab-esplora">
+        <article class="card info" id="info" aria-live="polite">
+          <span class="cat" id="infoCat">Introduzione</span>
+          <h2 id="infoName">Il microscopio ottico composto</h2>
+          <div id="infoBody">
+            <p>Usa la luce e due sistemi di lenti, l’<b>obiettivo</b> e l’<b>oculare</b>, per ingrandire oggetti troppo piccoli per l’occhio nudo, come le cellule.</p>
+            <p>La luce parte dalla lampada nella base, viene concentrata dal condensatore, attraversa il preparato sottile e arriva all’obiettivo e poi all’oculare.</p>
+            <div class="formula">ingrandimento totale = oculare × obiettivo<br>10× × 40× = 400×</div>
+            <p class="small" style="margin-top:12px">Tocca una parte del disegno o scegli dall’elenco qui sotto.</p>
+          </div>
+          <button class="btn" id="infoTry" hidden>Provala nel simulatore</button>
+        </article>
+        <section class="card">
+          <h3 class="ctl-h">Tutte le parti</h3>
+          <div class="groups" id="partGroups"></div>
+        </section>
+      </div>
+
+      <!-- Usa il microscopio -->
+      <div class="pane" id="pane-usa" role="tabpanel" aria-labelledby="tab-usa" hidden>
+        <section class="card proc wide" id="proc" aria-labelledby="procTitle">
+          <div id="procIntro">
+            <p class="eyebrow">Procedura guidata</p>
+            <h2 id="procTitle">Impara la sequenza corretta</h2>
+            <p>Si parte dal microscopio spento e si completano i passaggi uno alla volta, come in laboratorio. Ogni passaggio si spunta da solo quando lo esegui.</p>
+            <div class="btnrow"><button class="btn primary" id="procStart">Inizia la procedura</button></div>
+          </div>
+          <div id="procRun" hidden>
+            <div class="proc-head"><p class="eyebrow">Passo <span id="procN">1</span> di <span id="procTot">13</span></p><button class="linkbtn" id="procStop">Esci dalla procedura</button></div>
+            <div class="progress"><i id="procBar"></i></div>
+            <p class="proc-now" id="procNow"></p>
+            <div id="procDone" class="done-box" hidden></div>
+            <details><summary>Tutti i passaggi</summary><ol id="procList"></ol></details>
+            <div class="proc-err" id="procErr"></div>
+          </div>
+        </section>
+
+        <section class="card ctl" id="grpLuce" aria-labelledby="hLuce">
+          <h3 class="ctl-h" id="hLuce">Illuminazione</h3>
+          <div class="row">
+            <span class="lab">Interruttore</span>
+            <button class="switch" id="cLight" role="switch" aria-checked="true"><span class="sw"></span><span id="cLightTxt">Accesa</span></button>
+          </div>
+          <label class="slider" for="cInt"><span class="lab">Intensità della luce <output id="oInt" for="cInt">55%</output></span><input type="range" id="cInt" min="0" max="100" value="55"></label>
+          <label class="slider" for="cIris"><span class="lab">Diaframma a iride <output id="oIris" for="cIris">55% aperto</output></span><input type="range" id="cIris" min="5" max="100" value="55"><span class="ends"><span>chiuso</span><span>aperto</span></span></label>
+          <label class="slider" for="cCond"><span class="lab">Altezza del condensatore <output id="oCond" for="cCond">in alto</output></span><input type="range" id="cCond" min="0" max="100" value="100"><span class="ends"><span>basso</span><span>alto</span></span></label>
+        </section>
+
+        <section class="card ctl" id="grpMag" aria-labelledby="hMag">
+          <h3 class="ctl-h" id="hMag">Ingrandimento</h3>
+          <span class="lab">Oculare</span>
+          <div class="seg" id="cEye" role="radiogroup" aria-label="Oculare">
+            <button role="radio" data-eye="5" aria-checked="false">5×</button>
+            <button role="radio" data-eye="10" aria-checked="true">10×</button>
+            <button role="radio" data-eye="15" aria-checked="false">15×</button>
+          </div>
+          <span class="lab">Obiettivo (ruota il revolver)</span>
+          <div class="seg" id="cObj" role="radiogroup" aria-label="Obiettivo"></div>
+        </section>
+
+        <section class="card ctl" id="grpFuoco" aria-labelledby="hFuoco">
+          <h3 class="ctl-h" id="hFuoco">Messa a fuoco</h3>
+          <div class="focus">
+            <div class="fk" id="fkMacro">
+              <div class="knob" id="kMacro" role="slider" tabindex="0" aria-label="Vite macrometrica" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2"></div>
+              <div class="fk-txt"><b>Vite macrometrica</b><span>grandi spostamenti del tavolino</span></div>
+              <div class="fk-btns"><button class="hold" data-f="macro" data-d="1">▲ Alza</button><button class="hold" data-f="macro" data-d="-1">▼ Abbassa</button></div>
+            </div>
+            <div class="fk" id="fkMicro">
+              <div class="knob sm" id="kMicro" role="slider" tabindex="0" aria-label="Vite micrometrica" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2"></div>
+              <div class="fk-txt"><b>Vite micrometrica</b><span>pochi micrometri alla volta</span></div>
+              <div class="fk-btns"><button class="hold" data-f="micro" data-d="1">▲ Alza</button><button class="hold" data-f="micro" data-d="-1">▼ Abbassa</button></div>
+            </div>
+          </div>
+          <p class="small" style="margin-top:12px">Trascina una manopola in su o in giù, usa la rotellina del mouse oppure tieni premuto un pulsante.</p>
+        </section>
+
+        <section class="card ctl wide" id="grpSlide" aria-labelledby="hSlide">
+          <h3 class="ctl-h" id="hSlide">Vetrino e tavolino</h3>
+          <label class="lab" for="cSlideSel">Preparato</label>
+          <select id="cSlideSel"></select>
+          <p class="small" id="slideDesc" style="margin-top:6px"></p>
+          <div class="btnrow">
+            <button class="btn" id="cSlide">Togli il vetrino</button>
+            <button class="btn" id="cClips">Apri le pinzette</button>
+            <button class="btn" id="cOil">Metti l’olio a immersione</button>
+          </div>
+          <div class="trasl">
+            <div class="mini-wrap"><canvas id="mini" aria-label="Vista dall’alto del vetrino sul tavolino: trascina per spostarlo"></canvas><span class="mini-cap">Vista dall’alto</span></div>
+            <div class="pad" id="cPad" aria-label="Traslatore">
+              <button data-mv="up" aria-label="Sposta il vetrino lontano da te">▲</button>
+              <button data-mv="left" aria-label="Sposta il vetrino a sinistra">◀</button>
+              <span class="padc" aria-hidden="true">tras&shy;latore</span>
+              <button data-mv="right" aria-label="Sposta il vetrino a destra">▶</button>
+              <button data-mv="down" aria-label="Sposta il vetrino verso di te">▼</button>
+            </div>
+          </div>
+          <p class="small" style="margin-top:10px">Le frecce spostano il <b>vetrino</b>. Nell’oculare l’immagine si muove nel verso opposto, perché il microscopio la capovolge.</p>
+        </section>
+      </div>
+
+      <!-- Quiz -->
+      <div class="pane" id="pane-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+        <section class="card quiz" id="quizCard">
+          <div class="quiz-head"><p class="eyebrow">Domanda <span id="qN">1</span> di <span id="qTot">10</span></p><span class="score">Punti <b id="qScore">0</b></span></div>
+          <div class="progress"><i id="qBar"></i></div>
+          <p class="small" id="qKind" style="margin-top:12px"></p>
+          <p class="quiz-prompt" id="qPrompt"></p>
+          <p class="quiz-fb" id="qFb"></p>
+          <div class="btnrow"><button class="btn primary" id="qNext" hidden>Avanti</button><button class="btn" id="qSkip">Non lo so, mostrami</button></div>
+        </section>
+        <section class="card quiz" id="quizEnd" hidden>
+          <p class="eyebrow">Quiz completato</p>
+          <p class="big-score" id="qFinal"></p>
+          <p id="qMsg"></p>
+          <ol class="review" id="qReview"></ol>
+          <div class="btnrow"><button class="btn primary" id="qAgain">Nuovo quiz</button></div>
+        </section>
+        <p class="small">Nel quiz i nomi sul disegno sono nascosti. Rispondi toccando la parte giusta.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>Scorciatoie in «Usa il microscopio»: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> traslatore · <kbd>PagSu</kbd>/<kbd>PagGiù</kbd> macrometrica · <kbd>+</kbd>/<kbd>−</kbd> micrometrica · <kbd>L</kbd> luce · <kbd>R</kbd> revolver</span>
+    <span>Simulazione didattica: proporzioni e valori sono semplificati.</span>
+  </footer>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="kGr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--gr1)"/><stop offset="1" style="stop-color:var(--gr2)"/></linearGradient>
+    <linearGradient id="kCh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--ch2)"/><stop offset=".55" style="stop-color:var(--ch3)"/><stop offset="1" style="stop-color:var(--ch1)"/></linearGradient>
+  </defs>
+</svg>
+
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   Utilità
+   ===================================================================== */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const num = (n, d = 1) => n.toLocaleString('it-IT', { maximumFractionDigits: d });
+const RM = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)').matches : false;
+const TAU = Math.PI * 2;
+
+function hash3(a, b, c) {
+  let h = Math.imul((a | 0) ^ 0x3c6ef372, 0x27d4eb2d);
+  h = Math.imul(h ^ ((b | 0) + 0x5bd1e995), 0x165667b1);
+  h = Math.imul(h ^ ((c | 0) + 0x68e31da4), 0x9e3779b1);
+  h = Math.imul(h ^ (h >>> 15), 0x85ebca6b);
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+  return (h ^ (h >>> 16)) >>> 0;
+}
+const h01 = (a, b, c) => hash3(a, b, c) / 4294967296;
+function rng(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t = (t + 0x6D2B79F5) >>> 0;
+    let r = Math.imul(t ^ (t >>> 15), 1 | t);
+    r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function vnoise(x, y, seed) {
+  const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
+  const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+  return lerp(lerp(h01(xi, yi, seed), h01(xi + 1, yi, seed), u), lerp(h01(xi, yi + 1, seed), h01(xi + 1, yi + 1, seed), u), v);
+}
+function polyPath(pts) {
+  const p = new Path2D();
+  pts.forEach(([x, y], i) => (i ? p.lineTo(x, y) : p.moveTo(x, y)));
+  p.closePath();
+  return p;
+}
+function inPoly(pts, x, y) {
+  let c = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const [xi, yi] = pts[i], [xj, yj] = pts[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c;
+  }
+  return c;
+}
+function blobPts(seed, rx, ry, n, rough) {
+  const R = rng(seed), ph = R() * TAU, ph2 = R() * TAU, pts = [];
+  for (let i = 0; i < n; i++) {
+    const t = i / n * TAU;
+    const k = 1 + 0.08 * Math.sin(3 * t + ph) + 0.05 * Math.sin(5 * t + ph2) + (R() - 0.5) * rough;
+    pts.push([Math.cos(t) * rx * k, Math.sin(t) * ry * k]);
+  }
+  return pts;
+}
+function cutRectPts(seed, hw, hh, rot, step, amp) {
+  const R = rng(seed), pts = [];
+  const cs = [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]];
+  for (let c = 0; c < 4; c++) {
+    const [x0, y0] = cs[c], [x1, y1] = cs[(c + 1) % 4];
+    const n = Math.max(4, Math.round(Math.hypot(x1 - x0, y1 - y0) / step));
+    for (let i = 0; i < n; i++) {
+      const t = i / n;
+      pts.push([x0 + (x1 - x0) * t + (R() - 0.5) * amp, y0 + (y1 - y0) * t + (R() - 0.5) * amp]);
+    }
+  }
+  const cr = Math.cos(rot), sr = Math.sin(rot);
+  return pts.map(([x, y]) => [x * cr - y * sr, x * sr + y * cr]);
+}
+function eachTile(v, T, margin, fn) {
+  const i0 = Math.floor((v.x0 - margin) / T), i1 = Math.floor((v.x1 + margin) / T);
+  const j0 = Math.floor((v.y0 - margin) / T), j1 = Math.floor((v.y1 + margin) / T);
+  for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) fn(i, j);
+}
+const outside = (v, x, y, r) => x + r < v.x0 || x - r > v.x1 || y + r < v.y0 || y - r > v.y1;
+function circle(ctx, x, y, r) { ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill(); }
+function bubble(ctx, v, x, y, r) {
+  if (outside(v, x, y, r)) return;
+  const g = ctx.createRadialGradient(x, y, r * 0.5, x, y, r);
+  g.addColorStop(0, 'rgba(0,0,0,0)');
+  g.addColorStop(0.6, 'rgba(40,40,40,0.06)');
+  g.addColorStop(0.84, 'rgba(22,22,22,0.78)');
+  g.addColorStop(0.94, 'rgba(50,50,50,0.5)');
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g;
+  circle(ctx, x, y, r);
+}
+
+/* =====================================================================
+   Dati ottici (valori didattici)
+   ===================================================================== */
+const OBJ = [
+  { mag: 4,   na: '0,10', color: '#d6392f', ring: 'rosso',   wd: 3000, off: 0,  dof: 120, light: 1.0,  noseW: 17, lens: 7 },
+  { mag: 10,  na: '0,25', color: '#e9c22b', ring: 'giallo',  wd: 1800, off: 12, dof: 40,  light: 0.88, noseW: 12, lens: 5 },
+  { mag: 40,  na: '0,65', color: '#49a7dd', ring: 'azzurro', wd: 600,  off: -6, dof: 6,   light: 0.7,  noseW: 9,  lens: 3.6 },
+  { mag: 100, na: '1,25', color: '#f3f3f3', ring: 'bianco',  wd: 200,  off: 3,  dof: 3,   light: 0.56, noseW: 7,  lens: 2.8, oil: true },
+];
+const EYE = { 5: { fn: 20, light: 1.12 }, 10: { fn: 18, light: 1 }, 15: { fn: 12, light: 0.86 } };
+const H_FOCUS = 2600;          // altezza del tavolino (µm) con il preparato a fuoco
+const H_MAX = 4000, H_LOW = 1200;
+const PX_UM = 1 / 60;          // scala del disegno: 1 px = 60 µm di corsa del tavolino
+const PIVOT_Y = 200, FOCUS_DIST = 95;
+OBJ.forEach(o => { o.len = FOCUS_DIST - o.wd * PX_UM; });
+const MACRO = 100, MICRO = 2.5;
+
+/* =====================================================================
+   Preparati: coordinate in µm, origine al centro del vetrino, y verso «te»
+   ===================================================================== */
+function fibers(ctx, v, seed, rgb, a0, a1) {
+  const T = 400;
+  ctx.lineCap = 'round';
+  eachTile(v, T, 1600, (i, j) => {
+    const R = rng(hash3(i, j, seed));
+    for (let n = 0; n < 4; n++) {
+      const x = (i + R()) * T, y = (j + R()) * T, th = R() * Math.PI, L = 300 + R() * 1200;
+      const w = 10 + R() * 20, bend = (R() - 0.5) * 0.5, a = a0 + R() * (a1 - a0);
+      const dx = Math.cos(th) * L / 2, dy = Math.sin(th) * L / 2;
+      const mx = x - dy * bend, my = y + dx * bend;
+      if (outside(v, x, y, L / 2 + Math.abs(bend) * L + w)) continue;
+      ctx.strokeStyle = rgb + a.toFixed(3) + ')';
+      ctx.lineWidth = Math.max(w, v.px);
+      ctx.beginPath(); ctx.moveTo(x - dx, y - dy); ctx.quadraticCurveTo(mx, my, x + dx, y + dy); ctx.stroke();
+      if (w * v.k > 9) {
+        const nx = -Math.sin(th) * w / 2, ny = Math.cos(th) * w / 2;
+        ctx.lineWidth = Math.max(1.3, v.px);
+        ctx.strokeStyle = rgb + '0.30)';
+        for (const sg of [1, -1]) {
+          ctx.beginPath();
+          ctx.moveTo(x - dx + nx * sg, y - dy + ny * sg);
+          ctx.quadraticCurveTo(mx + nx * sg, my + ny * sg, x + dx + nx * sg, y + dy + ny * sg);
+          ctx.stroke();
+        }
+      }
+    }
+  });
+}
+
+const LETTERA = (() => {
+  const C = [-80, 60];
+  const paperPts = cutRectPts(21, 2650, 2500, 0.08, 110, 55);
+  const paper = polyPath(paperPts);
+  const RO = [720, 790], RI = [470, 545], A0 = 0.62, A1 = TAU + 0.03;
+  const letter = new Path2D();
+  letter.ellipse(C[0], C[1], RO[0], RO[1], 0, A0, A1, false);
+  letter.ellipse(C[0], C[1], RI[0], RI[1], 0, A1, A0, true);
+  letter.closePath();
+  letter.rect(C[0] - RI[0] - 10, C[1] - 100, RI[0] + 10 + 700, 125);
+  const blobs = [], R = rng(5);
+  // bordo irregolare: l'inchiostro si allarga lungo le fibre della carta
+  const blob = (x, y, big) => blobs.push([x, y, (big ? 3 : 1) + R() * (big ? 6 : 2.5), 0.35 + R() * 0.65, R() * Math.PI, big ? 0.6 + R() * 0.4 : 0.3 + R() * 0.45]);
+  const edge = (rx, ry, sgn) => {
+    const n = Math.round((A1 - A0) * (rx + ry) / 2 / 11);
+    for (let i = 0; i <= n; i++) {
+      const t = A0 + (A1 - A0) * i / n, ex = Math.cos(t), ey = Math.sin(t);
+      const nx = ex * ry, ny = ey * rx, nl = Math.hypot(nx, ny);
+      const o1 = (R() - 0.45) * 10 * sgn, o2 = (3 + R() * 12) * sgn;
+      blob(C[0] + ex * rx + nx / nl * o1, C[1] + ey * ry + ny / nl * o1, true);
+      if (R() < 0.45) blob(C[0] + ex * rx + nx / nl * o2, C[1] + ey * ry + ny / nl * o2, false);
+    }
+  };
+  edge(RO[0], RO[1], 1); edge(RI[0], RI[1], -1);
+  for (let x = C[0] - RI[0]; x < C[0] + RI[0]; x += 11) {
+    blob(x + R() * 6, C[1] - 100 + (R() - 0.55) * 14, true);
+    if (R() < 0.45) blob(x + R() * 6, C[1] - 100 - 3 - R() * 11, false);
+    blob(x + R() * 6, C[1] + 25 + (R() - 0.45) * 14, true);
+    if (R() < 0.45) blob(x + R() * 6, C[1] + 25 + 3 + R() * 11, false);
+  }
+  for (let i = 0; i < 120; i++) {
+    const t = R() * TAU, rr = 1.02 + R() * 0.3;
+    blob(C[0] + Math.cos(t) * RO[0] * rr, C[1] + Math.sin(t) * RO[1] * rr, false);
+  }
+  const BUB = [[1900, -1700, 360], [-2350, 1850, 180], [700, 2450, 95], [-1500, -2250, 60]];
+  const ink = 'rgba(26,22,30,0.84)';
+  return {
+    id: 'lettera', name: 'Lettera «e» di giornale', short: 'lettera e', color: '#2b2b2b',
+    desc: 'Un pezzetto di giornale con la lettera «e» in una goccia d’acqua. È il primo preparato classico: guarda come l’immagine appare capovolta e si sposta al contrario.',
+    start: [1500, -1150], demo: [-40, 30],
+    target: (x, y, f) => Math.hypot(x - C[0], y - C[1]) < Math.max(170, f * 0.16),
+    targetText: 'la lettera «e»',
+    layers: [
+      { z: 0, draw(ctx, v) {
+        ctx.save(); ctx.clip(paper);
+        ctx.fillStyle = 'rgba(212,196,160,0.42)'; ctx.fill(paper);
+        eachTile(v, 300, 400, (i, j) => {
+          const R = rng(hash3(i, j, 31));
+          for (let n = 0; n < 2; n++) {
+            const x = (i + R()) * 300, y = (j + R()) * 300, r = 120 + R() * 260, e = 0.5 + R() * 0.5, rot = R() * 3, a = 0.04 + R() * 0.07;
+            if (outside(v, x, y, r)) continue;
+            ctx.fillStyle = `rgba(140,118,80,${a.toFixed(3)})`;
+            ctx.beginPath(); ctx.ellipse(x, y, r, r * e, rot, 0, TAU); ctx.fill();
+          }
+        });
+        fibers(ctx, v, 41, 'rgba(150,126,86,', 0.1, 0.2);
+        ctx.fillStyle = ink; ctx.fill(letter);
+        for (const [x, y, r, e, rot, a] of blobs) {
+          if (outside(v, x, y, r)) continue;
+          ctx.globalAlpha = a;
+          ctx.beginPath(); ctx.ellipse(x, y, Math.max(r, v.px), Math.max(r * e, v.px), rot, 0, TAU); ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        if (v.s > 0.25) {
+          ctx.save(); ctx.clip(letter);
+          eachTile(v, 30, 30, (i, j) => {
+            const R = rng(hash3(i, j, 32));
+            for (let n = 0; n < 3; n++) {
+              const x = (i + R()) * 30, y = (j + R()) * 30, r = 3 + R() * 7;
+              ctx.fillStyle = 'rgba(8,6,12,0.1)'; circle(ctx, x, y, r * 1.6);
+            }
+          });
+          ctx.restore();
+        }
+        ctx.restore();
+      } },
+      { z: 8, draw(ctx, v) {
+        ctx.save(); ctx.clip(paper); fibers(ctx, v, 43, 'rgba(118,98,68,', 0.08, 0.16); ctx.restore();
+        eachTile(v, 500, 40, (i, j) => {
+          const R = rng(hash3(i, j, 77));
+          if (R() < 0.45) {
+            const x = (i + R()) * 500, y = (j + R()) * 500, r = 3 + R() * 12, e = 0.6 + R() * 0.4, rot = R() * 3, a = 0.35 + R() * 0.3;
+            if (outside(v, x, y, r)) return;
+            ctx.fillStyle = `rgba(70,60,50,${a.toFixed(2)})`;
+            ctx.beginPath(); ctx.ellipse(x, y, r, r * e, rot, 0, TAU); ctx.fill();
+          }
+        });
+        for (const b of BUB) bubble(ctx, v, ...b);
+      } },
+    ],
+    overview(ctx) {
+      ctx.fillStyle = 'rgba(226,214,186,0.95)'; ctx.fill(paper);
+      ctx.fillStyle = '#1d1a20'; ctx.fill(letter);
+    },
+  };
+})();
+
+const CIPOLLA = (() => {
+  const pts = blobPts(8, 3700, 2600, 90, 0.05);
+  const tissue = polyPath(pts);
+  const RH = 62, CW = 230;
+  const rowY = j => j * RH + (h01(j, 1, 9) - 0.5) * 16;
+  const rowOff = j => (j & 1) * 115 + h01(j, 2, 9) * 50;
+  const bx = (j, k) => k * CW + rowOff(j) + (h01(j, k, 3) - 0.5) * 110;
+  const tl = (j, k) => (h01(j, k, 4) - 0.5) * 34;
+  const BUB = [[-2400, -1000, 420], [2000, 1650, 230], [300, -2950, 140]];
+  return {
+    id: 'cipolla', name: 'Epidermide di cipolla', short: 'cipolla', color: '#5a7fd0',
+    desc: 'Una sottile pellicola presa dall’interno di uno strato di cipolla, colorata con blu di metilene. Si vedono le pareti delle cellule e i nuclei.',
+    start: [3400, 2300], demo: [200, -150],
+    target: (x, y) => Math.abs(x) < 2600 && Math.abs(y) < 1700 && inPoly(pts, x, y),
+    targetText: 'una zona dove le cellule sono ben distese',
+    layers: [{ z: 0, draw(ctx, v) {
+      ctx.save(); ctx.clip(tissue);
+      ctx.fillStyle = 'rgba(150,180,230,0.10)'; ctx.fill(tissue);
+      const j0 = Math.floor(v.y0 / RH) - 1, j1 = Math.ceil(v.y1 / RH) + 1;
+      const walls = new Path2D(), nuclei = [];
+      const hi = v.s > 0.45;
+      for (let j = j0; j <= j1; j++) {
+        const ya = rowY(j), yb = rowY(j + 1), off = rowOff(j);
+        const k0 = Math.floor((v.x0 - off) / CW) - 1, k1 = Math.ceil((v.x1 - off) / CW) + 1;
+        for (let k = k0; k <= k1; k++) {
+          const xa = bx(j, k), xb = bx(j, k + 1), ta = tl(j, k), tb = tl(j, k + 1);
+          const p = [[xa + ta, ya], [xb + tb, ya], [xb - tb, yb], [xa - ta, yb]];
+          const R = rng(hash3(j, k, 12));
+          ctx.fillStyle = `rgba(110,150,215,${(0.05 + R() * 0.12).toFixed(3)})`;
+          ctx.beginPath(); ctx.moveTo(p[0][0], p[0][1]); ctx.lineTo(p[1][0], p[1][1]); ctx.lineTo(p[2][0], p[2][1]); ctx.lineTo(p[3][0], p[3][1]); ctx.closePath(); ctx.fill();
+          const wl = (h01(j, k, 15) - 0.5) * 9, wt = (h01(j, k, 16) - 0.5) * 7;
+          walls.moveTo(p[3][0], p[3][1]);
+          walls.quadraticCurveTo((p[3][0] + p[0][0]) / 2 + wl, (ya + yb) / 2, p[0][0], p[0][1]);
+          walls.quadraticCurveTo((p[0][0] + p[1][0]) / 2, ya + wt, p[1][0], p[1][1]);
+          const u = 0.15 + R() * 0.7, w2 = 0.28 + R() * 0.44;
+          const nx = lerp(lerp(p[0][0], p[1][0], u), lerp(p[3][0], p[2][0], u), w2), ny = lerp(ya, yb, w2);
+          nuclei.push([nx, ny, 11 + R() * 4, 8 + R() * 2.5, (R() - 0.5) * 0.6, hash3(j, k, 14)]);
+          if (hi) {
+            const G = rng(hash3(j, k, 13));
+            ctx.fillStyle = 'rgba(40,70,160,0.26)';
+            for (let g = 0; g < 16; g++) {
+              const gu = G(), gw = G(), gr = 0.5 + G() * 0.8;
+              const gx = lerp(lerp(p[0][0], p[1][0], gu), lerp(p[3][0], p[2][0], gu), gw), gy = lerp(ya, yb, gw);
+              if (!outside(v, gx, gy, 2)) circle(ctx, gx, gy, gr);
+            }
+          }
+        }
+      }
+      ctx.lineJoin = 'round';
+      if (5 * v.k > 4) { ctx.strokeStyle = 'rgba(40,75,165,0.18)'; ctx.lineWidth = 6; ctx.stroke(walls); }
+      ctx.strokeStyle = 'rgba(30,60,150,0.62)'; ctx.lineWidth = Math.max(2.6, v.px * 1.1); ctx.stroke(walls);
+      for (const [x, y, rx, ry, rot, sd] of nuclei) {
+        if (outside(v, x, y, rx)) continue;
+        ctx.fillStyle = 'rgba(32,42,140,0.52)';
+        ctx.beginPath(); ctx.ellipse(x, y, Math.max(rx, v.px), Math.max(ry, v.px), rot, 0, TAU); ctx.fill();
+        if (v.s > 0.3) {
+          ctx.strokeStyle = 'rgba(20,28,110,0.55)'; ctx.lineWidth = Math.max(0.9, v.px); ctx.stroke();
+          const N = rng(sd), n = 1 + (N() < 0.5 ? 1 : 0);
+          ctx.fillStyle = 'rgba(16,20,92,0.7)';
+          for (let q = 0; q < n; q++) circle(ctx, x + (N() - 0.5) * rx * 0.8, y + (N() - 0.5) * ry * 0.7, 1.8 + N() * 1);
+        }
+      }
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = 'rgba(40,70,160,0.10)'; ctx.lineWidth = 280;
+      ctx.beginPath(); ctx.moveTo(-4000, 900); ctx.quadraticCurveTo(0, 1500, 4000, 1300); ctx.stroke();
+      ctx.strokeStyle = 'rgba(30,60,150,0.22)'; ctx.lineWidth = Math.max(6, v.px);
+      for (const d of [-140, 140]) { ctx.beginPath(); ctx.moveTo(-4000, 900 + d); ctx.quadraticCurveTo(0, 1500 + d, 4000, 1300 + d); ctx.stroke(); }
+      ctx.restore();
+      ctx.strokeStyle = 'rgba(30,60,150,0.4)'; ctx.lineWidth = Math.max(5, v.px); ctx.stroke(tissue);
+      for (const b of BUB) bubble(ctx, v, ...b);
+    } }],
+    overview(ctx) { ctx.fillStyle = 'rgba(120,150,215,0.65)'; ctx.fill(tissue); },
+  };
+})();
+
+const SANGUE = (() => {
+  const xEnd = y => 11500 + 700 * Math.sin(y / 1500) - 0.00003 * y * y;
+  const YH = 8000, XL = -14000;
+  const dens = (x, y) => {
+    const xe = xEnd(y);
+    if (x < XL || x > xe || Math.abs(y) > YH) return 0;
+    const t = (x - XL) / (xe - XL);
+    let d = 1.9 - 1.45 * t;
+    d *= 1 - Math.pow(Math.abs(y) / YH, 6);
+    d *= 0.85 + 0.3 * vnoise(x / 900, y / 900, 7);
+    if (xe - x < 600) d *= (xe - x) / 600;
+    return d;
+  };
+  const cache = new Map();
+  function sprite(rPx) {
+    const key = Math.max(1.5, Math.round(rPx * 2) / 2);
+    if (cache.has(key)) return cache.get(key);
+    const size = Math.ceil(key * 2 + 4), c = document.createElement('canvas');
+    c.width = c.height = size;
+    const g = c.getContext('2d'), m = size / 2, gr = g.createRadialGradient(m, m, 0, m, m, key);
+    gr.addColorStop(0, 'rgba(224,146,150,0.22)');
+    gr.addColorStop(0.42, 'rgba(214,120,128,0.30)');
+    gr.addColorStop(0.78, 'rgba(198,86,100,0.56)');
+    gr.addColorStop(0.93, 'rgba(182,68,84,0.64)');
+    gr.addColorStop(1, 'rgba(182,68,84,0)');
+    g.fillStyle = gr; g.beginPath(); g.arc(m, m, key, 0, TAU); g.fill();
+    const out = { c, size };
+    cache.set(key, out);
+    return out;
+  }
+  function wbc(ctx, v, x, y, type, R) {
+    if (type === 'neu') {
+      ctx.fillStyle = 'rgba(206,176,206,0.42)'; circle(ctx, x, y, 6.2);
+      const n = 3 + (R() < 0.4 ? 1 : 0), a0 = R() * TAU;
+      ctx.fillStyle = 'rgba(88,38,128,0.86)'; ctx.strokeStyle = 'rgba(88,38,128,0.8)'; ctx.lineWidth = Math.max(0.6, v.px);
+      let prev = null;
+      for (let i = 0; i < n; i++) {
+        const a = a0 + i * 1.25, px = x + Math.cos(a) * 2.7, py = y + Math.sin(a) * 2.7;
+        ctx.beginPath(); ctx.ellipse(px, py, 1.8, 1.35, a, 0, TAU); ctx.fill();
+        if (prev) { ctx.beginPath(); ctx.moveTo(prev[0], prev[1]); ctx.lineTo(px, py); ctx.stroke(); }
+        prev = [px, py];
+      }
+    } else if (type === 'lin') {
+      ctx.fillStyle = 'rgba(120,150,215,0.46)'; circle(ctx, x, y, 4.7);
+      ctx.fillStyle = 'rgba(68,30,120,0.9)'; circle(ctx, x + 0.5, y - 0.3, 3.8);
+    } else if (type === 'mon') {
+      ctx.fillStyle = 'rgba(160,160,206,0.42)'; circle(ctx, x, y, 8.2);
+      const a = R() * TAU;
+      ctx.fillStyle = 'rgba(104,60,150,0.72)';
+      ctx.beginPath(); ctx.ellipse(x - Math.cos(a) * 1.6, y - Math.sin(a) * 1.6, 3.4, 3.8, a, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x + Math.cos(a + 0.9) * 2.2, y + Math.sin(a + 0.9) * 2.2, 2.6, 3.2, a + 0.6, 0, TAU); ctx.fill();
+    } else {
+      ctx.fillStyle = 'rgba(236,172,120,0.36)'; circle(ctx, x, y, 6.6);
+      ctx.fillStyle = 'rgba(226,96,56,0.55)';
+      for (let i = 0; i < 46; i++) { const a = R() * TAU, r = Math.sqrt(R()) * 5.8; circle(ctx, x + Math.cos(a) * r, y + Math.sin(a) * r, 0.5); }
+      ctx.fillStyle = 'rgba(96,44,126,0.82)';
+      ctx.beginPath(); ctx.ellipse(x - 2, y, 2.1, 1.6, 0.4, 0, TAU); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(x + 2, y + 0.4, 2.1, 1.6, -0.4, 0, TAU); ctx.fill();
+    }
+  }
+  const T = 50;
+  return {
+    id: 'sangue', name: 'Striscio di sangue umano', short: 'sangue', color: '#c95a68',
+    desc: 'Una goccia di sangue strisciata sul vetrino e colorata. Tanti globuli rossi senza nucleo, pochi globuli bianchi con il nucleo viola e piastrine minuscole.',
+    start: [-9500, 2000], demo: [5200, -800],
+    target: (x, y) => { const d = dens(x, y); return d > 0.5 && d < 1.12; },
+    targetText: 'una zona dove i globuli rossi sono separati, verso la parte più sottile dello striscio',
+    layers: [{ z: 0, draw(ctx, v) {
+      const mode = v.s >= 0.45 ? 'cells' : v.s >= 0.12 ? 'dots' : 'sparse';
+      const sp = sprite(3.8 * v.k);
+      ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.fillStyle = mode === 'sparse' ? 'rgba(190,70,88,0.55)' : 'rgba(196,80,96,0.5)';
+      eachTile(v, T, 10, (i, j) => {
+        const d = dens((i + 0.5) * T, (j + 0.5) * T);
+        if (d <= 0) return;
+        const R = rng(hash3(i, j, 55));
+        const n = Math.round(d * 22 + (R() - 0.5) * 5);
+        for (let q = 0; q < n; q++) {
+          const x = (i + R()) * T, y = (j + R()) * T, sc = 0.92 + R() * 0.16;
+          if (mode === 'sparse' && q % 6) continue;
+          if (outside(v, x, y, 5)) continue;
+          const X = v.ex - x * v.k, Y = v.ey - y * v.k;
+          if (mode === 'sparse' || sp.size < 5) {
+            const z = Math.max(1, 7.6 * v.k * sc);
+            ctx.fillRect(X - z / 2, Y - z / 2, z, z);
+          } else {
+            const z = sp.size * sc;
+            ctx.drawImage(sp.c, X - z / 2, Y - z / 2, z, z);
+          }
+        }
+      });
+      ctx.restore();
+      if (v.s < 0.05) return;
+      eachTile(v, T, 20, (i, j) => {
+        const d = dens((i + 0.5) * T, (j + 0.5) * T);
+        if (d <= 0) return;
+        const R = rng(hash3(i, j, 56));
+        const np = Math.floor(R() * 3.2);
+        for (let q = 0; q < np; q++) {
+          const x = (i + R()) * T, y = (j + R()) * T, r = 0.8 + R() * 0.7;
+          if (v.s < 0.25 || outside(v, x, y, 2)) continue;
+          ctx.fillStyle = 'rgba(122,62,152,0.62)'; ctx.beginPath(); ctx.ellipse(x, y, r, r * 0.75, r, 0, TAU); ctx.fill();
+        }
+        if (R() < 0.022 * d) {
+          const x = (i + 0.2 + R() * 0.6) * T, y = (j + 0.2 + R() * 0.6) * T, tp = R();
+          if (outside(v, x, y, 10)) return;
+          const type = tp < 0.6 ? 'neu' : tp < 0.88 ? 'lin' : tp < 0.95 ? 'mon' : 'eos';
+          wbc(ctx, v, x, y, type, rng(hash3(i, j, 57)));
+        }
+      });
+    } }],
+    overview(ctx) {
+      const p = new Path2D();
+      p.moveTo(XL, -YH);
+      for (let y = -YH; y <= YH; y += 400) p.lineTo(xEnd(y), y);
+      p.lineTo(XL, YH); p.closePath();
+      const g = ctx.createLinearGradient(XL, 0, 12000, 0);
+      g.addColorStop(0, 'rgba(176,52,72,0.85)'); g.addColorStop(1, 'rgba(222,150,160,0.35)');
+      ctx.fillStyle = g; ctx.fill(p);
+    },
+  };
+})();
+
+const FILI = (() => {
+  const TH = [
+    { ang: 0.12, off: 0, rgb: '205,38,52', z: 25, w: 300, seed: 1, name: 'rosso' },
+    { ang: 1.18, off: 60, rgb: '36,72,190', z: 0, w: 280, seed: 2, name: 'blu' },
+    { ang: 2.15, off: -40, rgb: '30,140,70', z: -25, w: 260, seed: 3, name: 'verde' },
+  ];
+  TH.forEach(t => {
+    const R = rng(t.seed * 977);
+    t.fib = Array.from({ length: 26 }, () => ({ R: t.w / 2 * (0.3 + 0.7 * R()), b: (R() - 0.5) * t.w * 0.25, P: 1400 + R() * 900, ph: R() * TAU, w: 9 + R() * 9, a: 0.2 + R() * 0.22 }));
+    t.stray = Array.from({ length: 12 }, () => ({ s0: (R() - 0.5) * 18000, side: R() < 0.5 ? -1 : 1, L: 300 + R() * 700, out: 80 + R() * 320, w: 8 + R() * 6 }));
+  });
+  function drawThread(ctx, v, t) {
+    const ca = Math.cos(t.ang), sa = Math.sin(t.ang), nx = -sa, ny = ca, ox = nx * t.off, oy = ny * t.off;
+    const dist = (v.cx - ox) * nx + (v.cy - oy) * ny;
+    if (Math.abs(dist) > v.R + t.w + 1200) return;
+    const cp = (v.cx - ox) * ca + (v.cy - oy) * sa;
+    const ds = clamp(4 / v.k, 5, 160);
+    const tA = Math.floor(Math.max(-16000, cp - v.R - 200) / ds) * ds, tB = Math.min(16000, cp + v.R + 200);
+    if (tA >= tB) return;
+    const P = (s, lat) => [ox + ca * s + nx * lat, oy + sa * s + ny * lat];
+    ctx.fillStyle = `rgba(${t.rgb},0.10)`;
+    ctx.beginPath();
+    let q = P(tA, -t.w * 0.42); ctx.moveTo(q[0], q[1]);
+    q = P(tB, -t.w * 0.42); ctx.lineTo(q[0], q[1]);
+    q = P(tB, t.w * 0.42); ctx.lineTo(q[0], q[1]);
+    q = P(tA, t.w * 0.42); ctx.lineTo(q[0], q[1]);
+    ctx.closePath(); ctx.fill();
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (const f of t.fib) {
+      ctx.strokeStyle = `rgba(${t.rgb},${f.a.toFixed(3)})`;
+      ctx.lineWidth = Math.max(f.w, v.px);
+      ctx.beginPath();
+      for (let s = tA; s <= tB + ds; s += ds) {
+        const p = P(s, f.b + f.R * Math.sin(TAU * s / f.P + f.ph));
+        if (s === tA) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
+      }
+      ctx.stroke();
+    }
+    for (const st of t.stray) {
+      if (st.s0 + st.L < tA || st.s0 > tB) continue;
+      ctx.strokeStyle = `rgba(${t.rgb},0.32)`; ctx.lineWidth = Math.max(st.w, v.px);
+      ctx.beginPath();
+      for (let u = 0; u <= 1.0001; u += 0.05) {
+        const p = P(st.s0 + u * st.L, st.side * (t.w * 0.35 + u * u * st.out));
+        if (u === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
+      }
+      ctx.stroke();
+    }
+  }
+  return {
+    id: 'fili', name: 'Fili colorati incrociati', short: 'tre fili', color: '#7a4ab0',
+    desc: 'Tre fili di cotone (rosso, blu e verde) sovrapposti. Sono a profondità diverse: con la vite micrometrica puoi mettere a fuoco un filo alla volta.',
+    start: [2200, 1500], demo: [80, -60],
+    target: (x, y, f) => Math.hypot(x, y) < Math.max(130, f * 0.15),
+    targetText: 'il punto in cui i tre fili si incrociano',
+    layers: TH.map(t => ({ z: t.z, draw: (ctx, v) => drawThread(ctx, v, t) })),
+    overview(ctx, m) {
+      ctx.lineCap = 'round';
+      for (const t of TH) {
+        const ca = Math.cos(t.ang), sa = Math.sin(t.ang), ox = -sa * t.off, oy = ca * t.off;
+        ctx.strokeStyle = `rgb(${t.rgb})`; ctx.lineWidth = Math.max(t.w, 1.6 / m);
+        ctx.beginPath(); ctx.moveTo(ox - ca * 16000, oy - sa * 16000); ctx.lineTo(ox + ca * 16000, oy + sa * 16000); ctx.stroke();
+      }
+    },
+  };
+})();
+
+const SLIDES = { lettera: LETTERA, cipolla: CIPOLLA, sangue: SANGUE, fili: FILI };
+
+/* =====================================================================
+   Parti del microscopio
+   ===================================================================== */
+const CAT = { ottica: 'Parte ottica', meccanica: 'Parte meccanica', illuminazione: 'Sistema di illuminazione', accessorio: 'Accessorio' };
+const PARTS = [
+  { id: 'oculare', name: 'Oculare', cat: 'ottica', ctl: 'grpMag',
+    what: 'È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.',
+    how: 'Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente e, se ci riesci, tieni aperto anche l’altro occhio.',
+    note: 'La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.',
+    q: 'È la lente in cui guardi: ingrandisce l’immagine formata dall’obiettivo.' },
+  { id: 'tubo', name: 'Tubo ottico', cat: 'meccanica',
+    what: 'Collega l’oculare al revolver e tiene le lenti alla distanza giusta. Nei microscopi moderni è inclinato, così puoi osservare stando seduto comodo.',
+    how: 'Non va smontato. Nella testata c’è un prisma che devia la luce verso l’oculare inclinato.',
+    q: 'Collega l’oculare al revolver e tiene le lenti alla giusta distanza.' },
+  { id: 'revolver', name: 'Revolver portaobiettivi', short: 'Revolver', cat: 'meccanica', ctl: 'grpMag',
+    what: 'È il disco girevole su cui sono avvitati gli obiettivi. Ruotandolo porti in posizione l’obiettivo che vuoi usare: uno scatto ti dice che è allineato.',
+    how: 'Fallo girare afferrando la ghiera zigrinata, mai gli obiettivi. Prima di ruotarlo controlla che il tavolino non sia troppo alto, altrimenti un obiettivo lungo può urtare il vetrino.',
+    q: 'Disco girevole che permette di cambiare obiettivo.' },
+  { id: 'obiettivi', name: 'Obiettivi', cat: 'ottica', ctl: 'grpMag',
+    what: 'Gruppi di lenti vicini al preparato: formano la prima immagine ingrandita, che è capovolta. Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco.',
+    how: 'Più l’ingrandimento è alto, più l’obiettivo è lungo e più la sua lente arriva vicino al vetrino quando l’immagine è a fuoco. Il 100× è «a immersione»: funziona con una goccia di olio tra lente e vetrino.',
+    note: 'Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Gli obiettivi sono parfocali: cambiando obiettivo l’immagine resta quasi a fuoco.',
+    q: 'Le lenti più vicine al preparato, ognuna con un anello colorato.' },
+  { id: 'tavolino', name: 'Tavolino portaoggetti', short: 'Tavolino', cat: 'meccanica', ctl: 'grpFuoco',
+    what: 'È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce che arriva dal basso.',
+    how: 'Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.',
+    q: 'Piano con un foro al centro su cui si appoggia il vetrino.' },
+  { id: 'pinzette', name: 'Pinzette fermavetrino', cat: 'meccanica', ctl: 'grpSlide',
+    what: 'Sono due mollette che tengono fermo il vetrino sul tavolino.',
+    how: 'Sollevale, infila il vetrino sotto e riabbassale con delicatezza. Il vetrino va fissato prima di spostarlo con il traslatore.',
+    q: 'Tengono fermo il vetrino sul tavolino.' },
+  { id: 'traslatore', name: 'Traslatore', cat: 'meccanica', ctl: 'grpSlide',
+    what: 'È il carrello con due manopole che sposta il vetrino con precisione: una lo muove avanti e indietro, l’altra a destra e a sinistra.',
+    how: 'Usalo per esplorare il preparato e portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.',
+    q: 'Sposta il vetrino con precisione avanti, indietro, a destra e a sinistra.' },
+  { id: 'condensatore', name: 'Condensatore', cat: 'illuminazione', ctl: 'grpLuce',
+    what: 'È un sistema di lenti sotto il tavolino che raccoglie la luce della lampada e la concentra sul preparato.',
+    how: 'Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.',
+    q: 'Lenti sotto il tavolino che concentrano la luce sul preparato.' },
+  { id: 'diaframma', name: 'Diaframma a iride', cat: 'illuminazione', ctl: 'grpLuce',
+    what: 'È un’apertura regolabile dentro il condensatore, comandata da una levetta. Decide quanta luce arriva al preparato e con quale angolo.',
+    how: 'Chiudendolo aumentano il contrasto e la profondità di campo, ma l’immagine si scurisce e perde dettaglio. Aprendolo l’immagine diventa luminosa ma «slavata». Cerca il giusto mezzo per ogni preparato.',
+    q: 'Apertura regolabile che controlla quantità di luce e contrasto.' },
+  { id: 'viteCond', name: 'Vite del condensatore', cat: 'illuminazione', ctl: 'grpLuce',
+    what: 'È la manopola che alza e abbassa il condensatore.',
+    how: 'Porta il condensatore in alto per avere più luce e un’immagine più nitida. Abbassalo solo se ti serve meno luce.',
+    q: 'Manopola che alza o abbassa il condensatore.' },
+  { id: 'lampada', name: 'Sorgente luminosa', cat: 'illuminazione', ctl: 'grpLuce',
+    what: 'È la lampada, oggi quasi sempre a LED, montata nella base. Manda la luce dal basso verso l’alto attraverso il preparato.',
+    how: 'Nei microscopi più semplici al suo posto c’è uno specchio che riflette la luce di una finestra. Il preparato deve essere sottile e trasparente, perché la luce lo deve attraversare.',
+    q: 'Produce la luce che attraversa il preparato dal basso.' },
+  { id: 'intensita', name: 'Regolatore dell’intensità luminosa', short: 'Regolatore della luce', cat: 'illuminazione', ctl: 'grpLuce',
+    what: 'È la manopola che rende la luce della lampada più forte o più debole.',
+    how: 'Accendi sempre con l’intensità bassa e poi aumentala piano. Con gli obiettivi più forti serve più luce.',
+    q: 'Manopola che rende la lampada più forte o più debole.' },
+  { id: 'interruttore', name: 'Interruttore', cat: 'illuminazione', ctl: 'grpLuce',
+    what: 'Accende e spegne la lampada.',
+    how: 'A fine lavoro abbassa l’intensità, spegni, scollega il cavo e copri il microscopio con la sua custodia.',
+    q: 'Accende e spegne la lampada.' },
+  { id: 'macro', name: 'Vite macrometrica', cat: 'meccanica', ctl: 'fkMacro',
+    what: 'È la manopola grande: alza e abbassa il tavolino a grandi passi.',
+    how: 'Serve per la prima messa a fuoco con gli obiettivi 4× e 10×. Quando avvicini il vetrino all’obiettivo guarda il microscopio di lato. Con 40× e 100× non va usata: rischi di rompere il vetrino e di rovinare l’obiettivo.',
+    q: 'Manopola grande per la messa a fuoco rapida, a grandi passi.' },
+  { id: 'micro', name: 'Vite micrometrica', cat: 'meccanica', ctl: 'fkMicro',
+    what: 'È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.',
+    how: 'Serve per rendere l’immagine nitida e per osservare piani diversi del preparato. È l’unica da usare con 40× e 100×.',
+    note: 'In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola montata sullo stesso asse della macrometrica.',
+    q: 'Manopola piccola per la messa a fuoco fine.' },
+  { id: 'braccio', name: 'Braccio (stativo)', short: 'Braccio', cat: 'meccanica',
+    what: 'È la struttura che regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco.',
+    how: 'Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.',
+    q: 'Da qui si afferra il microscopio per trasportarlo.' },
+  { id: 'base', name: 'Base (piede)', short: 'Base', cat: 'meccanica',
+    what: 'È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.',
+    how: 'Tieni il microscopio su un piano stabile, lontano dal bordo del banco.',
+    q: 'Parte pesante che dà stabilità e contiene la lampada.' },
+  { id: 'vetrino', name: 'Vetrino', cat: 'accessorio', ctl: 'grpSlide',
+    what: 'Il vetrino portaoggetti (76 × 26 mm) è la lastrina su cui si mette il preparato. Il vetrino coprioggetto, sottilissimo, lo copre e lo protegge.',
+    how: 'Tienilo per i bordi. Il preparato va centrato sopra il foro del tavolino.',
+    q: 'Lastrina di vetro su cui si mette il preparato.' },
+];
+const PART = Object.fromEntries(PARTS.map(p => [p.id, p]));
+
+/* posizione delle etichette sul disegno */
+const st = { dy: 0, c: 0, lever: 256 };
+const LBL = {
+  oculare:      ['L', 42,  () => [204, 46]],
+  tubo:         ['L', 100, () => [246, 94]],
+  revolver:     ['L', 158, () => [257, 187]],
+  obiettivi:    ['L', 224, () => [288, PIVOT_Y + OBJ[S.obj].len * 0.55]],
+  pinzette:     ['L', 268, () => [214, 293 + st.dy]],
+  tavolino:     ['L', 312, () => [206, 306 + st.dy]],
+  condensatore: ['L', 356, () => [283, 330 + st.dy + st.c]],
+  diaframma:    ['L', 398, () => [st.lever - 3, 342 + st.dy + st.c]],
+  viteCond:     ['L', 442, () => [327, 368 + st.dy]],
+  lampada:      ['L', 534, () => [279, 566]],
+  interruttore: ['L', 604, () => [189, 608]],
+  braccio:      ['R', 226, () => [441, 262]],
+  vetrino:      ['R', 278, () => [366, 297 + st.dy]],
+  traslatore:   ['R', 326, () => [388, 339 + st.dy]],
+  macro:        ['R', 386, () => [455, 382]],
+  micro:        ['R', 470, () => [441, 458]],
+  intensita:    ['R', 592, () => [456, 607]],
+  base:         ['R', 648, () => [466, 628]],
+};
+
+/* =====================================================================
+   Stato
+   ===================================================================== */
+const S = {
+  mode: 'esplora', light: true, intensity: 0.55, iris: 0.55, cond: 1,
+  eye: 10, obj: 0, h: H_FOCUS + 4,
+  slide: 'lettera', slideOn: true, clips: true, cx: LETTERA.demo[0], cy: LETTERA.demo[1],
+  oil: false, oilAt: [0, 0], dirty40: false, broken: false, moved: false,
+  sel: null, busy: false, scale: false,
+};
+const SL = () => SLIDES[S.slide];
+
+/* =====================================================================
+   Modello ottico
+   ===================================================================== */
+const ocular = $('#ocular');
+let D = 380;
+const DPR = () => Math.min(2, window.devicePixelRatio || 1);
+function geom() {
+  const o = OBJ[S.obj], E = EYE[S.eye], total = S.eye * o.mag;
+  const Dc = D * 0.93;
+  const circle = Dc * Math.min(1, E.fn * S.eye / 180);
+  const s = Dc * total / 180000;
+  return { total, circle, s, fieldUm: circle / s };
+}
+function exposure() {
+  if (!S.light) return { E: 0, k: 'off', t: 'spenta', c: '' };
+  const o = OBJ[S.obj];
+  let E = S.intensity * (0.22 + 0.78 * S.iris) * o.light * EYE[S.eye].light * (0.4 + 0.6 * S.cond) * 2.6;
+  if (o.oil && !S.oil) E *= 0.7;
+  if (E < 0.3) return { E, k: 'dark2', t: 'troppo scura', c: 'bad' };
+  if (E < 0.65) return { E, k: 'dark', t: 'scura', c: 'warn' };
+  if (E <= 1.45) return { E, k: 'ok', t: 'buona', c: 'ok' };
+  if (E <= 1.9) return { E, k: 'bright', t: 'molto forte', c: 'warn' };
+  return { E, k: 'glare', t: 'abbagliante', c: 'bad' };
+}
+function extraBlur(g) {
+  const o = OBJ[S.obj];
+  let b = 0;
+  if (S.iris < 0.2) b += (0.2 - S.iris) * 10;
+  b += (1 - S.cond) * 1.5;
+  if (o.oil && !S.oil) b += 4.5;
+  if (S.obj === 2 && S.dirty40) b += 3;
+  if (g.total > 1250) b += 0.9;
+  return b;
+}
+function layerBlur(z, g) {
+  const o = OBJ[S.obj];
+  const dof = o.dof * (0.6 + 1.1 * (1 - S.iris));
+  const e = S.h - (H_FOCUS + o.off - z);
+  return Math.min(26, Math.abs(e) / dof * 1.1) + extraBlur(g);
+}
+function sharp() {
+  if (!S.slideOn) return Infinity;
+  const g = geom();
+  return Math.min(...SL().layers.map(L => layerBlur(L.z, g)));
+}
+const onTarget = () => S.slideOn && SL().target(S.cx, S.cy, geom().fieldUm);
+const contactH = (i = S.obj) => H_FOCUS + OBJ[i].off + OBJ[i].wd + (S.slideOn ? 0 : 1000);
+
+/* =====================================================================
+   Messaggi
+   ===================================================================== */
+const statusEl = $('#status'), statusTxt = $('#statusTxt');
+function say(kind, msg) {
+  statusEl.className = 'status' + (kind && kind !== 'info' ? ' ' + kind : '');
+  statusTxt.textContent = msg;
+}
+const lastWarn = {};
+function sayOnce(key, ms, kind, msg) {
+  const t = performance.now();
+  if (lastWarn[key] && t - lastWarn[key] < ms) return false;
+  lastWarn[key] = t;
+  say(kind, msg);
+  return true;
+}
+
+/* =====================================================================
+   Azioni sul microscopio
+   ===================================================================== */
+function collide() {
+  if (S.slideOn && !S.broken) {
+    S.broken = true;
+    say('bad', 'Crac! L’obiettivo ha urtato il vetrino e lo ha rotto. Abbassa il tavolino con la macrometrica e togli il vetrino rotto.');
+    procErr('crash');
+  } else if (S.slideOn) {
+    sayOnce('broken', 2500, 'bad', 'Il vetrino è rotto: abbassa il tavolino e toglilo.');
+  } else {
+    sayOnce('stage', 2500, 'warn', 'L’obiettivo ha toccato il tavolino. Abbassalo con la vite macrometrica.');
+  }
+}
+function setH(nh) {
+  nh = clamp(nh, 0, H_MAX);
+  const lim = contactH();
+  if (nh > lim) {
+    nh = lim;
+    collide();
+  }
+  S.h = nh;
+}
+function focusBy(d, kind) {
+  if (!d) return;
+  if (kind === 'macro' && S.obj >= 2) {
+    if (sayOnce('macro', 3000, 'warn', `Con l’obiettivo ${OBJ[S.obj].mag}× usa solo la vite micrometrica: la macrometrica sposta troppo il tavolino e puoi rompere il vetrino.`)) procErr('macro');
+  }
+  setH(S.h + d);
+  invalidate();
+}
+function setLight(on) {
+  if (on === S.light) return;
+  S.light = on;
+  if (on) {
+    if (S.intensity > 0.75) say('warn', 'Lampada accesa. Conviene accendere con l’intensità bassa e poi aumentarla piano.');
+    else say('info', 'Lampada accesa: la luce attraversa condensatore, preparato, obiettivo e oculare.');
+  } else say('info', 'Lampada spenta.');
+  invalidate();
+}
+function setEye(e) {
+  if (e === S.eye) return;
+  S.eye = e;
+  const g = geom();
+  let m = `Oculare ${e}×: ingrandimento totale ${e} × ${OBJ[S.obj].mag} = ${g.total}×.`;
+  if (e === 5) m += ' Con il 5× il campo visivo appare più piccolo.';
+  if (g.total > 1250) m += ' Oltre circa 1000× l’immagine è più grande ma non mostra nuovi dettagli: è un ingrandimento «vuoto».';
+  say('info', m);
+  invalidate();
+}
+function setObj(i) {
+  const prev = S.obj;
+  S.obj = i;
+  const o = OBJ[i];
+  if (S.h > contactH(i)) {
+    S.h = contactH(i);
+    collide();
+    return false;
+  }
+  if (i === 2 && S.oil && S.slideOn && S.h > H_FOCUS - 900 && !S.dirty40) {
+    S.dirty40 = true;
+    say('bad', 'Attenzione: l’obiettivo 40× è finito nell’olio e ora è sporco. Gli obiettivi a secco non vanno mai immersi: pulisci con la cartina per lenti.');
+    procErr('oil40');
+  } else if (o.oil && !S.oil && S.slideOn) {
+    say('warn', 'Obiettivo 100× in posizione. Senza olio a immersione l’immagine è scura e sfocata: metti una goccia d’olio sul vetrino.');
+  } else if (prev !== i) {
+    const g = geom();
+    let m = `Obiettivo ${o.mag}× (anello ${o.ring}): ingrandimento totale ${g.total}×.`;
+    if (i >= 2) m += ' Ora usa solo la vite micrometrica.';
+    else if (i === 1 && prev === 0) m += ' Gli obiettivi sono parfocali: correggi il fuoco con la micrometrica.';
+    say('info', m);
+  }
+  return true;
+}
+function rotateTo(target) {
+  if (S.busy || target === S.obj) return;
+  const fw = (target - S.obj + 4) % 4, dir = fw <= 2 ? 1 : -1;
+  let n = dir === 1 ? fw : 4 - fw;
+  const step = () => {
+    const ok = setObj((S.obj + dir + 4) % 4);
+    n--;
+    invalidate();
+    if (ok && n > 0) setTimeout(step, RM ? 0 : 240);
+    else S.busy = false;
+  };
+  S.busy = true;
+  step();
+}
+function placeSlide() {
+  if (S.slideOn) return;
+  const limWith = H_FOCUS + OBJ[S.obj].off + OBJ[S.obj].wd;
+  if (S.h > limWith - 300) {
+    say('warn', 'Non c’è spazio tra obiettivo e tavolino: prima abbassa il tavolino con la vite macrometrica.');
+    return;
+  }
+  S.slideOn = true; S.clips = false; S.broken = false; S.oil = false; S.moved = false;
+  [S.cx, S.cy] = SL().start;
+  let m = `Hai appoggiato il vetrino (${SL().name.toLowerCase()}). Ora fissalo con le pinzette.`;
+  if (S.obj >= 2) m += ' Ricorda: si comincia sempre dall’obiettivo 4×.';
+  say(S.obj >= 2 ? 'warn' : 'info', m);
+  invalidate();
+}
+function removeSlide(quiet) {
+  if (!S.slideOn) return true;
+  if (S.obj >= 2 && S.h > H_LOW) {
+    say('warn', 'Prima di togliere il vetrino riporta il revolver sull’obiettivo 4× oppure abbassa il tavolino: rischi di urtare l’obiettivo.');
+    return false;
+  }
+  S.slideOn = false; S.clips = true; S.broken = false; S.oil = false;
+  if (!quiet) say('info', 'Vetrino tolto dal tavolino.');
+  invalidate();
+  return true;
+}
+function toggleClips() {
+  S.clips = !S.clips;
+  if (S.slideOn) say('info', S.clips ? 'Pinzette abbassate: il vetrino è fissato.' : 'Pinzette sollevate: il vetrino è libero.');
+  invalidate();
+}
+function toggleOil() {
+  if (S.oil || S.dirty40) {
+    S.oil = false; S.dirty40 = false;
+    say('info', 'Olio rimosso: vetrino e obiettivo puliti con la cartina per lenti.');
+  } else {
+    if (!S.slideOn) { say('warn', 'Metti prima un vetrino sul tavolino.'); return; }
+    if (S.broken) { say('warn', 'Il vetrino è rotto: sostituiscilo.'); return; }
+    S.oil = true; S.oilAt = [S.cx, S.cy];
+    say('info', S.obj === 3 ? 'Goccia d’olio a immersione sul vetrino: ora la lente del 100× è immersa nell’olio.' : 'Goccia d’olio a immersione sul vetrino. Ora ruota il revolver sul 100×: la sua lente deve immergersi nella goccia.');
+  }
+  invalidate();
+}
+function moveSlide(dxRight, dyDown) {
+  if (!S.slideOn) { sayOnce('noslide', 2000, 'warn', 'Non c’è nessun vetrino sul tavolino.'); return; }
+  if (!S.clips) { sayOnce('clips', 2500, 'warn', 'Fissa il vetrino con le pinzette prima di spostarlo con il traslatore.'); return; }
+  S.cx = clamp(S.cx - dxRight, -14000, 14000);
+  S.cy = clamp(S.cy - dyDown, -9500, 9500);
+  if (!S.moved) {
+    S.moved = true;
+    say('info', 'Hai spostato il vetrino: nell’oculare l’immagine si muove nel verso opposto, perché è capovolta.');
+  }
+  invalidate();
+}
+function setSlideType(id) {
+  if (id === S.slide) return true;
+  if (S.slideOn) {
+    if (!removeSlide(true)) return false;
+    S.slide = id;
+    placeSlide();
+  } else {
+    S.slide = id;
+    say('info', `Preparato scelto: ${SL().name.toLowerCase()}. Appoggialo sul tavolino.`);
+  }
+  invalidate();
+  return true;
+}
+
+/* =====================================================================
+   Disegno: obiettivi, manopole, etichette
+   ===================================================================== */
+const svg = $('#scope');
+function knurlLines(cx, cy, r, n, len) {
+  let s = '';
+  for (let i = 0; i < n; i++) {
+    const a = i / n * TAU, c = Math.cos(a), si = Math.sin(a);
+    s += `<line x1="${(cx + c * (r - len)).toFixed(1)}" y1="${(cy + si * (r - len)).toFixed(1)}" x2="${(cx + c * (r - 0.6)).toFixed(1)}" y2="${(cy + si * (r - 0.6)).toFixed(1)}"/>`;
+  }
+  return s;
+}
+$$('[data-knurl]', svg).forEach(g => {
+  const [cx, cy, r, n, len] = g.dataset.knurl.split(',').map(Number);
+  g.insertAdjacentHTML('afterbegin', knurlLines(cx, cy, r, n, len));
+});
+(function buildObjectives() {
+  let html = '';
+  OBJ.forEach((o, i) => {
+    const x = 300, top = PIVOT_Y, L = o.len, bodyEnd = top + L - 14;
+    const wT = 25, wB = [21, 19, 17, 15][i];
+    const ringY = top + 12 + (bodyEnd - top - 12) * 0.3;
+    const txtY = (ringY + 4 + bodyEnd) / 2 + 2.7;
+    html += `<g class="objective part" data-part="obiettivi" data-obj="${i}" id="obj${i}">
+      <rect x="${x - 13}" y="${top}" width="26" height="8" fill="url(#gGr)"/>
+      <path d="M${x - wT / 2} ${top + 8} H${x + wT / 2} L${x + wB / 2} ${bodyEnd} H${x - wB / 2} Z" fill="url(#gCh)" class="edge thin"/>
+      <rect x="${x - wT / 2 + 0.6}" y="${ringY.toFixed(1)}" width="${wT - 1.2}" height="4" fill="${o.color}" class="ring"/>
+      ${o.oil ? `<rect x="${x - wB / 2 + 0.5}" y="${(bodyEnd - 4).toFixed(1)}" width="${wB - 1}" height="1.6" fill="#1b1b1b"/>` : ''}
+      <text x="${x}" y="${txtY.toFixed(1)}" class="objtxt">${o.mag}×</text>
+      <path d="M${x - wB / 2} ${bodyEnd} H${x + wB / 2} L${x + o.noseW / 2} ${(top + L - 1).toFixed(1)} Q${x} ${(top + L + 0.6).toFixed(1)} ${x - o.noseW / 2} ${(top + L - 1).toFixed(1)} Z" fill="url(#gCh)" class="edge thin"/>
+      <ellipse cx="${x}" cy="${(top + L - 0.7).toFixed(1)}" rx="${o.lens}" ry="0.9" class="flens"/>
+    </g>`;
+  });
+  $('#objectives').innerHTML = html;
+})();
+const labelsG = $('#labels');
+const lblEls = {};
+(function buildLabels() {
+  const NS = 'http://www.w3.org/2000/svg';
+  let nLbl = 0, legendHTML = '';
+  for (const id of Object.keys(LBL)) {
+    const [side, y] = LBL[id];
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('class', 'lbl'); g.dataset.part = id;
+    const line = document.createElementNS(NS, 'line');
+    const dot = document.createElementNS(NS, 'circle'); dot.setAttribute('r', '2.3');
+    const text = document.createElementNS(NS, 'text');
+    text.textContent = PART[id].short || PART[id].name;
+    const nr = document.createElementNS(NS, 'text');
+    nr.textContent = ++nLbl;
+    for (const t of [text, nr]) {
+      t.setAttribute('x', side === 'L' ? 152 : 486);
+      t.setAttribute('y', t === nr ? y + 3 : y);
+      t.setAttribute('text-anchor', side === 'L' ? 'end' : 'start');
+    }
+    text.setAttribute('class', 't-name'); nr.setAttribute('class', 't-num');
+    g.append(line, dot, text, nr);
+    labelsG.append(g);
+    lblEls[id] = { g, line, dot, side, y };
+    legendHTML += `<li><button data-part="${id}"><b>${nLbl}</b><span>${PART[id].name}</span></button></li>`;
+  }
+  $('#legend').innerHTML = legendHTML;
+})();
+const narrowMQ = window.matchMedia ? matchMedia('(max-width: 600px)') : { matches: false };
+if (narrowMQ.addEventListener) narrowMQ.addEventListener('change', () => invalidate());
+$$('.part', svg).forEach(el => {
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('role', 'button');
+});
+
+function updateScope() {
+  st.dy = (H_FOCUS - S.h) * PX_UM;
+  st.c = (1 - S.cond) * 16;
+  st.lever = lerp(270, 248, S.iris);
+  const set = (id, a, v) => $(id).setAttribute(a, v);
+  set('#stageAsm', 'transform', `translate(0 ${st.dy.toFixed(2)})`);
+  set('#condAsm', 'transform', `translate(0 ${st.c.toFixed(2)})`);
+  set('#leverLine', 'x2', (st.lever + 2).toFixed(1));
+  set('#leverKnob', 'cx', st.lever.toFixed(1));
+  const ang = S.clips ? (S.slideOn ? 0 : 5.3) : -13;
+  set('#clipLArm', 'transform', `rotate(${ang} 214 293.4)`);
+  set('#clipRArm', 'transform', `rotate(${-ang} 386 293.4)`);
+  $('#slideG').style.display = S.slideOn ? '' : 'none';
+  set('#specMark', 'fill', SL().color);
+  $('#oilDrop').style.display = S.oil ? '' : 'none';
+  $('#slideCrack').style.display = S.broken ? '' : 'none';
+  // luce
+  const I = S.light ? S.intensity : 0;
+  set('#beam', 'opacity', S.light ? (0.2 + 0.8 * I).toFixed(2) : 0);
+  set('#lampGlow', 'opacity', S.light ? (0.3 + 0.7 * I).toFixed(2) : 0);
+  $('#lampLens').classList.toggle('lit', S.light);
+  $('#pSwitch').classList.toggle('on', S.light);
+  $('#pilot').classList.toggle('on', S.light);
+  $('#rockTxt').textContent = S.light ? 'I' : 'O';
+  const cb = 352 + st.dy + st.c, ct = 318 + st.dy + st.c, sp = 295 + st.dy, o = OBJ[S.obj], tip = PIVOT_Y + o.len;
+  const hw = 3 + 11 * S.iris;
+  set('#beamA', 'points', `289,556 311,556 314,${cb} 286,${cb}`);
+  set('#beamB', 'points', `${300 - hw},${ct} ${300 + hw},${ct} 301.3,${sp} 298.7,${sp}`);
+  set('#beamC', 'points', `298.7,${sp} 301.3,${sp} ${300 + o.lens},${tip} ${300 - o.lens},${tip}`);
+  $('#beamC').style.display = sp > tip ? '' : 'none';
+  // manopole
+  set('#dialRot', 'transform', `rotate(${(-140 + 280 * S.intensity).toFixed(1)} 441 607)`);
+  set('#macroRot', 'transform', `rotate(${(S.h * 0.18).toFixed(1)} 424 382)`);
+  set('#microRot', 'transform', `rotate(${((S.h * 3.6) % 360).toFixed(1)} 424 458)`);
+  set('#condRot', 'transform', `rotate(${(S.cond * 300).toFixed(1)} 336 366)`);
+  $('#eyeTxt').textContent = S.eye + '×';
+  // revolver
+  OBJ.forEach((_, i) => {
+    const rel = (i - S.obj + 4) % 4, el = $('#obj' + i);
+    el.style.transform = `rotate(${[0, 30, 0, -30][rel]}deg)`;
+    el.style.opacity = rel === 2 ? 0 : 1;
+    el.style.pointerEvents = rel === 2 ? 'none' : '';
+    el.setAttribute('aria-label', `Obiettivo ${OBJ[i].mag}×`);
+  });
+  // etichette
+  for (const id in lblEls) {
+    const L = lblEls[id], [ax, ay] = LBL[id][2]();
+    const lx = L.side === 'L' ? 157 : 481, ly = L.y - 4.5;
+    L.line.setAttribute('x1', lx); L.line.setAttribute('y1', ly);
+    L.line.setAttribute('x2', ax.toFixed(1)); L.line.setAttribute('y2', ay.toFixed(1));
+    L.dot.setAttribute('cx', ax.toFixed(1)); L.dot.setAttribute('cy', ay.toFixed(1));
+    L.g.classList.toggle('sel', S.sel === id && S.mode !== 'quiz');
+  }
+  $$('.part', svg).forEach(el => {
+    el.classList.toggle('sel', S.mode !== 'quiz' && el.dataset.part === S.sel);
+    el.setAttribute('aria-label', S.mode === 'quiz' ? 'Parte del microscopio' : (PART[el.dataset.part].name + (el.dataset.obj ? ' ' + OBJ[el.dataset.obj].mag + '×' : '')));
+  });
+  const showL = $('#optLabels').checked && S.mode !== 'quiz';
+  svg.classList.toggle('show-labels', showL);
+  svg.classList.toggle('quiz', S.mode === 'quiz');
+  svg.classList.toggle('numbers', narrowMQ.matches);
+  $('#legend').hidden = !(narrowMQ.matches && showL);
+  $$('#legend button').forEach(b => b.classList.toggle('sel', S.mode !== 'quiz' && b.dataset.part === S.sel));
+}
+
+/* =====================================================================
+   Campo visivo
+   ===================================================================== */
+const layers = [$('#L0'), $('#L1'), $('#L2')];
+const ctxs = layers.map(c => c.getContext('2d'));
+const stack = $('#stack'), lampbg = $('#lampbg'), field = $('#field');
+let lastKey = '';
+function sizeCanvases() {
+  D = ocular.clientWidth || 380;
+  const px = Math.round(D * DPR());
+  layers.forEach(c => { if (c.width !== px) { c.width = px; c.height = px; } });
+  lastKey = '';
+}
+function drawLayers(g) {
+  const dpr = DPR(), sl = SL();
+  const k = g.s * dpr, R = (g.circle / 2 + 36) / g.s;
+  const v = {
+    s: g.s, k, dpr, px: 1 / k, cx: S.cx, cy: S.cy, R,
+    x0: S.cx - R, x1: S.cx + R, y0: S.cy - R, y1: S.cy + R,
+    ex: (D / 2 + g.s * S.cx) * dpr, ey: (D / 2 + g.s * S.cy) * dpr,
+  };
+  layers.forEach((c, i) => {
+    const ctx = ctxs[i];
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    const L = S.slideOn && sl.layers[i];
+    if (!L) return;
+    ctx.save();
+    ctx.setTransform(-k, 0, 0, -k, v.ex, v.ey);
+    L.draw(ctx, v);
+    ctx.restore();
+  });
+}
+function mixHex(a, b, t) {
+  const pa = [1, 3, 5].map(i => parseInt(a.slice(i, i + 2), 16)), pb = [1, 3, 5].map(i => parseInt(b.slice(i, i + 2), 16));
+  return `rgb(${pa.map((x, i) => Math.round(lerp(x, pb[i], t))).join(',')})`;
+}
+function updateView() {
+  const g = geom(), sl = SL();
+  const fr = g.circle / 2;
+  field.style.setProperty('--fr', fr.toFixed(1) + 'px');
+  const key = [S.slideOn, S.slide, S.cx.toFixed(2), S.cy.toFixed(2), g.s.toFixed(6), D, DPR()].join('|');
+  if (key !== lastKey) { lastKey = key; drawLayers(g); }
+  const ex = exposure();
+  let c = 0.8 + 0.75 * (1 - S.iris) + (1 - S.cond) * 0.15;
+  if (OBJ[S.obj].oil && !S.oil) c *= 0.85;
+  stack.style.filter = `contrast(${c.toFixed(3)}) brightness(${ex.E.toFixed(3)})`;
+  lampbg.style.setProperty('--lamp', mixHex('#f2d49c', '#f7f5ef', clamp(S.intensity * 1.4, 0, 1)));
+  layers.forEach((cv, i) => {
+    const L = S.slideOn && sl.layers[i];
+    cv.style.display = L ? '' : 'none';
+    if (!L) return;
+    const b = layerBlur(L.z, g);
+    cv.style.filter = b > 0.15 ? `blur(${b.toFixed(2)}px)` : 'none';
+    cv.style.opacity = (1 / (1 + Math.pow(b / 14, 2))).toFixed(3);
+  });
+  field.style.setProperty('--vig', (0.26 + (1 - S.cond) * 0.3).toFixed(2));
+  $('#cracks').toggleAttribute('hidden', !(S.slideOn && S.broken));
+  // barra di scala
+  const sb = $('#scalebar');
+  sb.hidden = !S.scale;
+  if (S.scale) {
+    const target = g.fieldUm * 0.25, p = Math.pow(10, Math.floor(Math.log10(target)));
+    const nice = [5, 2, 1].map(m => m * p).find(v => v <= target) || p;
+    $('#scaleLine').style.width = (nice * g.s).toFixed(1) + 'px';
+    $('#scaleTxt').textContent = nice >= 1000 ? num(nice / 1000) + ' mm' : num(nice, 0) + ' µm';
+    sb.style.top = (D / 2 + fr * 0.62).toFixed(0) + 'px';
+  }
+  $('#slideName').textContent = S.slideOn ? sl.name : 'nessun vetrino';
+}
+function updateReadouts() {
+  const g = geom(), o = OBJ[S.obj], ex = exposure();
+  $('#rTotal').textContent = g.total + '×';
+  $('#rFormula').textContent = `${S.eye}× oculare × ${o.mag}× obiettivo`;
+  const f = g.fieldUm;
+  $('#rField').textContent = f >= 1000 ? `Ø ${num(f / 1000, 1)} mm` : `Ø ${num(Math.round(f / 10) * 10, 0)} µm`;
+  $('#rObj').textContent = `${o.mag}× / ${o.na}${o.oil ? ' olio' : ''}`;
+  $('#rLight').innerHTML = `<span class="pill ${ex.c}">${ex.t}</span>`;
+}
+
+/* =====================================================================
+   Vista dall'alto (traslatore)
+   ===================================================================== */
+const mini = $('#mini'), mctx = mini.getContext('2d');
+function miniScale() { return Math.min(mini.clientWidth / 60000, mini.clientHeight / 34000); }
+function drawMini() {
+  if (!mini.clientWidth) return;
+  const dpr = DPR(), W = mini.clientWidth, H = mini.clientHeight;
+  if (mini.width !== Math.round(W * dpr)) { mini.width = Math.round(W * dpr); mini.height = Math.round(H * dpr); }
+  const ctx = mctx, m = miniScale();
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = '#2a2f35'; ctx.fillRect(0, 0, W, H);
+  const hole = 6000 * m;
+  ctx.fillStyle = S.light ? `rgba(255,236,170,${(0.25 + 0.6 * S.intensity).toFixed(2)})` : '#15181b';
+  circle(ctx, W / 2, H / 2, hole);
+  if (S.slideOn) {
+    const sl = SL();
+    ctx.save();
+    ctx.translate(W / 2 - S.cx * m, H / 2 - S.cy * m);
+    ctx.scale(m, m);
+    ctx.fillStyle = 'rgba(200,228,240,0.42)'; ctx.fillRect(-37500, -12500, 75000, 25000);
+    ctx.strokeStyle = 'rgba(220,240,250,0.85)'; ctx.lineWidth = 1.2 / m; ctx.strokeRect(-37500, -12500, 75000, 25000);
+    ctx.fillStyle = 'rgba(242,245,247,0.94)'; ctx.fillRect(-37500, -12500, 19000, 25000);
+    ctx.fillStyle = '#2b3138'; ctx.font = `600 ${3600}px "Barlow Condensed", "Arial Narrow", sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(sl.short, -28000, 0);
+    ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.strokeRect(-11000, -11000, 22000, 22000);
+    sl.overview(ctx, m);
+    if (S.oil) { ctx.fillStyle = 'rgba(240,215,120,0.35)'; circle(ctx, S.oilAt[0], S.oilAt[1], 2600); }
+    if (S.broken) {
+      ctx.strokeStyle = 'rgba(20,20,20,0.85)'; ctx.lineWidth = 1.2 / m;
+      ctx.beginPath(); ctx.moveTo(-20000, -12500); ctx.lineTo(-6000, -2000); ctx.lineTo(4000, 3000); ctx.lineTo(16000, 12500);
+      ctx.moveTo(-6000, -2000); ctx.lineTo(-3000, 12500); ctx.stroke();
+    }
+    ctx.restore();
+    ctx.fillStyle = S.clips ? '#9aa3ab' : '#5a6168';
+    ctx.fillRect(W / 2 - 24000 * m, H / 2 - 13600 * m, 7000 * m, 4200 * m);
+    ctx.fillRect(W / 2 + 17000 * m, H / 2 - 13600 * m, 7000 * m, 4200 * m);
+  } else {
+    ctx.fillStyle = '#cfd6dc'; ctx.font = '600 13px "Barlow Condensed", "Arial Narrow", sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('nessun vetrino sul tavolino', W / 2, H - 16);
+  }
+  const g = geom(), r = Math.max(2.5, g.fieldUm / 2 * m);
+  ctx.strokeStyle = '#ffd34d'; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.arc(W / 2, H / 2, r, 0, TAU); ctx.stroke();
+  ctx.strokeStyle = 'rgba(255,211,77,0.55)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(W / 2 - r - 8, H / 2); ctx.lineTo(W / 2 - r - 2, H / 2); ctx.moveTo(W / 2 + r + 2, H / 2); ctx.lineTo(W / 2 + r + 8, H / 2);
+  ctx.moveTo(W / 2, H / 2 - r - 8); ctx.lineTo(W / 2, H / 2 - r - 2); ctx.moveTo(W / 2, H / 2 + r + 2); ctx.lineTo(W / 2, H / 2 + r + 8); ctx.stroke();
+}
+
+/* =====================================================================
+   Console dei comandi
+   ===================================================================== */
+const cInt = $('#cInt'), cIris = $('#cIris'), cCond = $('#cCond');
+function updateControls() {
+  const L = $('#cLight');
+  L.setAttribute('aria-checked', S.light);
+  $('#cLightTxt').textContent = S.light ? 'Accesa' : 'Spenta';
+  cInt.value = Math.round(S.intensity * 100); $('#oInt').textContent = Math.round(S.intensity * 100) + '%';
+  cIris.value = Math.round(S.iris * 100); $('#oIris').textContent = Math.round(S.iris * 100) + '% aperto';
+  cCond.value = Math.round(S.cond * 100); $('#oCond').textContent = S.cond > 0.92 ? 'in alto' : S.cond < 0.08 ? 'in basso' : Math.round(S.cond * 100) + '%';
+  $$('#cEye button').forEach(b => b.setAttribute('aria-checked', +b.dataset.eye === S.eye));
+  $$('#cObj button').forEach(b => b.setAttribute('aria-checked', +b.dataset.obj === S.obj));
+  $('#cSlide').textContent = S.slideOn ? (S.broken ? 'Togli il vetrino rotto' : 'Togli il vetrino') : 'Appoggia il vetrino';
+  $('#cClips').textContent = S.clips ? 'Solleva le pinzette' : 'Abbassa le pinzette';
+  $('#cOil').textContent = S.oil || S.dirty40 ? 'Pulisci l’olio' : 'Metti l’olio a immersione';
+  $('#cSlideSel').value = S.slide;
+  $('#slideDesc').textContent = SL().desc;
+  const pos = (S.h / 1000).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  $('#kMacro').setAttribute('aria-valuetext', `Tavolino a ${pos} mm`);
+  $('#kMicro').setAttribute('aria-valuetext', `Tavolino a ${pos} mm`);
+  $('#kMacro .k-rot').setAttribute('transform', `rotate(${(S.h * 0.18).toFixed(1)})`);
+  $('#kMicro .k-rot').setAttribute('transform', `rotate(${((S.h * 3.6) % 360).toFixed(1)})`);
+}
+function knobSVG() {
+  let t = '';
+  for (let i = 0; i < 30; i++) { const a = i / 30 * TAU; t += `<line x1="${(Math.cos(a) * 38).toFixed(1)}" y1="${(Math.sin(a) * 38).toFixed(1)}" x2="${(Math.cos(a) * 47).toFixed(1)}" y2="${(Math.sin(a) * 47).toFixed(1)}"/>`; }
+  return `<svg viewBox="-50 -50 100 100" aria-hidden="true"><circle r="48" class="k-out"/><g class="k-rot">${t}<circle cx="0" cy="-41" r="4.5" class="k-dot"/></g><circle r="27" class="k-cap"/></svg>`;
+}
+$('#kMacro').innerHTML = knobSVG();
+$('#kMicro').innerHTML = knobSVG();
+
+function wheelAmount(e) {
+  const dy = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
+  return clamp(-dy / 100, -3, 3);
+}
+function dragKnob(el, perPx, kind) {
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    el.setPointerCapture(e.pointerId);
+    let last = e.clientY;
+    const move = ev => { const d = last - ev.clientY; last = ev.clientY; if (d) focusBy(d * perPx, kind); };
+    const up = () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); };
+    el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  });
+  el.addEventListener('wheel', e => { e.preventDefault(); focusBy(wheelAmount(e) * (kind === 'macro' ? MACRO : MICRO), kind); }, { passive: false });
+  el.addEventListener('keydown', e => {
+    const k = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1, PageUp: 3, PageDown: -3 }[e.key];
+    if (k) { e.preventDefault(); focusBy(k * (kind === 'macro' ? MACRO : MICRO), kind); }
+  });
+}
+dragKnob($('#kMacro'), 12, 'macro');
+dragKnob($('#kMicro'), 0.35, 'micro');
+
+function holdRepeat(el, fn) {
+  let t1 = 0, t2 = 0;
+  const stop = () => { clearTimeout(t1); clearInterval(t2); };
+  el.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    fn();
+    stop();
+    t1 = setTimeout(() => { t2 = setInterval(fn, 70); }, 380);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach(ev => el.addEventListener(ev, stop));
+  el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); } });
+  el.addEventListener('contextmenu', e => e.preventDefault());
+}
+$$('.hold').forEach(b => holdRepeat(b, () => focusBy(+b.dataset.d * (b.dataset.f === 'macro' ? MACRO : MICRO), b.dataset.f)));
+const MV = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+$$('#cPad button').forEach(b => holdRepeat(b, () => {
+  const [dx, dy] = MV[b.dataset.mv], step = geom().fieldUm * 0.08;
+  moveSlide(dx * step, dy * step);
+}));
+
+$('#cLight').addEventListener('click', () => setLight(!S.light));
+cInt.addEventListener('input', () => { S.intensity = cInt.value / 100; invalidate(); });
+cIris.addEventListener('input', () => { S.iris = cIris.value / 100; invalidate(); });
+cCond.addEventListener('input', () => { S.cond = cCond.value / 100; invalidate(); });
+$$('#cEye button').forEach(b => b.addEventListener('click', () => setEye(+b.dataset.eye)));
+$('#cObj').innerHTML = OBJ.map((o, i) => `<button role="radio" data-obj="${i}" aria-checked="false"><i style="--c:${o.color}"></i>${o.mag}×</button>`).join('');
+$$('#cObj button').forEach(b => b.addEventListener('click', () => rotateTo(+b.dataset.obj)));
+$('#cSlideSel').innerHTML = Object.values(SLIDES).map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+$('#cSlideSel').addEventListener('change', e => { if (!setSlideType(e.target.value)) e.target.value = S.slide; });
+$('#cSlide').addEventListener('click', () => (S.slideOn ? removeSlide() : placeSlide()));
+$('#cClips').addEventListener('click', toggleClips);
+$('#cOil').addEventListener('click', toggleOil);
+
+/* trascinamento del vetrino nella vista dall'alto */
+mini.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  mini.setPointerCapture(e.pointerId);
+  let lx = e.clientX, ly = e.clientY;
+  const move = ev => {
+    const m = miniScale(), dx = ev.clientX - lx, dy = ev.clientY - ly;
+    lx = ev.clientX; ly = ev.clientY;
+    if (dx || dy) moveSlide(dx / m, dy / m);
+  };
+  const up = () => { mini.removeEventListener('pointermove', move); mini.removeEventListener('pointerup', up); mini.removeEventListener('pointercancel', up); };
+  mini.addEventListener('pointermove', move); mini.addEventListener('pointerup', up); mini.addEventListener('pointercancel', up);
+});
+
+/* =====================================================================
+   Interazione con il disegno
+   ===================================================================== */
+const tip = $('#tip'), scopeCard = $('#scopeCard');
+let dragInfo = null;
+function partAt(target) { return target && target.closest ? target.closest('[data-part]') : null; }
+svg.addEventListener('pointermove', e => {
+  const p = partAt(e.target);
+  if (!p || S.mode === 'quiz' || e.pointerType === 'touch') { tip.hidden = true; return; }
+  const r = scopeCard.getBoundingClientRect();
+  let name = PART[p.dataset.part].name;
+  if (p.dataset.obj) name = `Obiettivo ${OBJ[p.dataset.obj].mag}×`;
+  tip.textContent = name;
+  tip.style.left = (e.clientX - r.left) + 'px';
+  tip.style.top = (e.clientY - r.top) + 'px';
+  tip.hidden = false;
+});
+svg.addEventListener('pointerleave', () => { tip.hidden = true; });
+
+const DRAG = {
+  macro: d => focusBy(d * 12, 'macro'),
+  micro: d => focusBy(d * 0.35, 'micro'),
+  intensita: d => { S.intensity = clamp(S.intensity + d / 160, 0, 1); invalidate(); },
+  viteCond: d => { S.cond = clamp(S.cond + d / 120, 0, 1); invalidate(); },
+  diaframma: (d, dx) => { S.iris = clamp(S.iris + dx / 60 + d / 120, 0.05, 1); invalidate(); },
+};
+svg.addEventListener('pointerdown', e => {
+  const p = partAt(e.target);
+  if (!p || S.mode !== 'usa' || !DRAG[p.dataset.part]) return;
+  e.preventDefault();
+  dragInfo = { id: p.dataset.part, x: e.clientX, y: e.clientY, moved: 0, cap: false };
+});
+svg.addEventListener('pointermove', e => {
+  if (!dragInfo) return;
+  const dy = dragInfo.y - e.clientY, dx = dragInfo.x - e.clientX;
+  dragInfo.x = e.clientX; dragInfo.y = e.clientY;
+  dragInfo.moved += Math.abs(dx) + Math.abs(dy);
+  if (dragInfo.moved > 4) {
+    if (!dragInfo.cap) { dragInfo.cap = true; try { svg.setPointerCapture(e.pointerId); } catch (_) { /* puntatore già rilasciato */ } }
+    DRAG[dragInfo.id](dy, dx);
+  }
+});
+const endDrag = () => { setTimeout(() => { dragInfo = null; }, 0); };
+svg.addEventListener('pointerup', endDrag);
+svg.addEventListener('pointercancel', endDrag);
+svg.addEventListener('wheel', e => {
+  const p = partAt(e.target);
+  if (!p || S.mode !== 'usa') return;
+  const a = wheelAmount(e), id = p.dataset.part;
+  const fn = {
+    macro: () => focusBy(a * MACRO, 'macro'),
+    micro: () => focusBy(a * MICRO, 'micro'),
+    intensita: () => { S.intensity = clamp(S.intensity + a * 0.05, 0, 1); invalidate(); },
+    viteCond: () => { S.cond = clamp(S.cond + a * 0.08, 0, 1); invalidate(); },
+    diaframma: () => { S.iris = clamp(S.iris + a * 0.05, 0.05, 1); invalidate(); },
+    traslatore: () => { const st2 = geom().fieldUm * 0.06 * a; if (e.shiftKey) moveSlide(st2, 0); else moveSlide(0, -st2); },
+  }[id];
+  if (fn) { e.preventDefault(); fn(); }
+}, { passive: false });
+
+svg.addEventListener('click', e => {
+  const p = partAt(e.target);
+  if (!p) return;
+  if (dragInfo && dragInfo.moved > 4) return;
+  const id = p.dataset.part;
+  if (S.mode === 'quiz') { quizAnswer(id, p); return; }
+  if (S.mode === 'esplora') { selectPart(id); return; }
+  if (p.classList.contains('lbl')) { S.sel = id; say('info', `${PART[id].name}: ${PART[id].what}`); invalidate(); return; }
+  usePart(id, p, e);
+});
+svg.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('part')) {
+    e.preventDefault();
+    e.target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  }
+});
+function svgPoint(e) {
+  const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  const m = svg.getScreenCTM();
+  return m ? pt.matrixTransform(m.inverse()) : { x: 0, y: 0 };
+}
+function usePart(id, el, e) {
+  S.sel = id;
+  const P = PART[id];
+  switch (id) {
+    case 'interruttore': setLight(!S.light); break;
+    case 'oculare': setEye({ 10: 15, 15: 5, 5: 10 }[S.eye]); break;
+    case 'obiettivi': {
+      const i = +el.dataset.obj;
+      if (i === S.obj) say('info', `L’obiettivo ${OBJ[i].mag}× è già in posizione. Tocca un altro obiettivo o il revolver per cambiarlo.`);
+      else rotateTo(i);
+      break;
+    }
+    case 'revolver': rotateTo((S.obj + 1) % 4); break;
+    case 'pinzette': toggleClips(); break;
+    case 'vetrino': say('info', `${SL().name}. ${SL().desc}`); break;
+    case 'macro': case 'micro': case 'viteCond': {
+      const c = { macro: 382, micro: 458, viteCond: 366 + st.dy }[id];
+      const up = svgPoint(e).y < c ? 1 : -1;
+      if (id === 'viteCond') { S.cond = clamp(S.cond + up * 0.1, 0, 1); say('info', `Condensatore ${up > 0 ? 'alzato' : 'abbassato'}.`); invalidate(); }
+      else focusBy(up * (id === 'macro' ? MACRO : MICRO), id);
+      break;
+    }
+    case 'intensita': say('info', 'Regolatore della luce: trascinalo in su o in giù oppure usa la rotellina.'); break;
+    case 'diaframma': say('info', 'Diaframma a iride: trascina la levetta o usa la rotellina per aprirlo e chiuderlo.'); break;
+    case 'traslatore': say('info', 'Traslatore: usa le frecce qui a destra, la rotellina sulle manopole o trascina il vetrino nella vista dall’alto.'); break;
+    default: say('info', `${P.name}: ${P.what}`);
+  }
+  invalidate();
+}
+
+/* =====================================================================
+   Conosci le parti
+   ===================================================================== */
+function selectPart(id) {
+  S.sel = id;
+  const P = PART[id];
+  $('#infoCat').textContent = CAT[P.cat];
+  $('#infoCat').className = 'cat ' + P.cat;
+  $('#infoName').textContent = P.name;
+  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  $('#infoBody').innerHTML = `<h4>A cosa serve</h4><p>${esc(P.what)}</p><h4>Come si usa</h4><p>${esc(P.how)}</p>${P.note ? `<h4>Da sapere</h4><p>${esc(P.note)}</p>` : ''}`;
+  $('#infoTry').hidden = !P.ctl;
+  $$('#partGroups button').forEach(b => b.classList.toggle('sel', b.dataset.part === id));
+  say('info', `${P.name}: ${P.what}`);
+  invalidate();
+}
+(function buildGroups() {
+  const order = ['ottica', 'illuminazione', 'meccanica', 'accessorio'];
+  $('#partGroups').innerHTML = order.map(c => `<div><h4>${CAT[c]}</h4><div class="chips">${PARTS.filter(p => p.cat === c).map(p => `<button data-part="${p.id}">${p.name}</button>`).join('')}</div></div>`).join('');
+  $$('#partGroups button').forEach(b => b.addEventListener('click', () => selectPart(b.dataset.part)));
+})();
+$('#legend').addEventListener('click', e => {
+  const b = e.target.closest('button[data-part]');
+  if (!b) return;
+  if (S.mode === 'esplora') selectPart(b.dataset.part);
+  else { const P = PART[b.dataset.part]; S.sel = P.id; say('info', `${P.name}: ${P.what}`); invalidate(); }
+});
+$('#infoTry').addEventListener('click', () => {
+  const P = PART[S.sel];
+  setMode('usa');
+  const el = $('#' + P.ctl);
+  if (el) {
+    el.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' });
+    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+  }
+});
+
+/* =====================================================================
+   Procedura guidata
+   ===================================================================== */
+const PROC = { on: false, i: 0, errors: {} };
+const STEPS = [
+  { t: () => 'Accendi la lampada con l’interruttore.', ok: () => S.light },
+  { t: () => 'Porta l’intensità della luce a un livello medio, tra il 30% e l’80%.', ok: () => S.light && S.intensity >= 0.3 && S.intensity <= 0.8 },
+  { t: () => 'Ruota il revolver fino all’obiettivo 4×, il più corto, con l’anello rosso.', ok: () => S.obj === 0 },
+  { t: () => 'Abbassa il tavolino con la vite macrometrica, per fare spazio al vetrino.', ok: () => S.h <= H_LOW },
+  { t: () => 'Appoggia il vetrino sul tavolino, con il preparato sopra il foro.', ok: () => S.slideOn },
+  { t: () => 'Fissa il vetrino abbassando le pinzette.', ok: () => S.slideOn && S.clips },
+  { t: () => 'Guarda nell’oculare e alza piano il tavolino con la vite macrometrica finché compare l’immagine.', ok: () => S.slideOn && S.obj === 0 && sharp() < 3 },
+  { t: () => 'Rendi l’immagine nitida con la vite micrometrica.', ok: () => S.slideOn && S.obj === 0 && sharp() < 0.45 },
+  { t: () => 'Regola intensità e diaframma: l’immagine deve essere luminosa ma non abbagliante, con un buon contrasto (diaframma non tutto aperto).', ok: () => exposure().k === 'ok' && S.iris >= 0.2 && S.iris <= 0.85 },
+  { t: () => `Con il traslatore porta al centro del campo visivo ${SL().targetText}.`, ok: () => S.moved && onTarget() },
+  { t: () => 'Passa all’obiettivo 10× e correggi il fuoco solo con la vite micrometrica.', ok: () => S.slideOn && S.obj === 1 && sharp() < 0.8 },
+  { t: () => 'Passa all’obiettivo 40×: metti a fuoco solo con la micrometrica e aumenta un po’ la luce.', ok: () => S.slideOn && S.obj === 2 && sharp() < 0.8 && exposure().k === 'ok' },
+  { t: () => 'Per finire: torna al 4×, abbassa il tavolino, togli il vetrino e spegni la luce.', ok: () => S.obj === 0 && S.h <= H_LOW && !S.slideOn && !S.light },
+];
+const ERRTXT = {
+  macro: 'Hai usato la vite macrometrica con un obiettivo forte (40× o 100×).',
+  crash: 'L’obiettivo ha urtato e rotto il vetrino.',
+  oil40: 'Hai immerso nell’olio l’obiettivo 40×.',
+};
+function procErr(k) { if (PROC.on && PROC.i < STEPS.length) PROC.errors[k] = (PROC.errors[k] || 0) + 1; }
+function procStart() {
+  Object.assign(S, { light: false, intensity: 0.2, iris: 1, cond: 1, eye: 10, obj: 1, h: 1700, slideOn: false, clips: true, oil: false, dirty40: false, broken: false, moved: false, busy: false });
+  PROC.on = true; PROC.i = 0; PROC.errors = {};
+  say('info', 'Procedura iniziata: il microscopio è spento, con l’obiettivo 10× in posizione. Segui i passaggi.');
+  invalidate();
+}
+function procStop() { PROC.on = false; say('info', 'Procedura chiusa. Puoi continuare a usare il microscopio liberamente.'); invalidate(); }
+function checkProc() {
+  if (!PROC.on) return;
+  let adv = false;
+  while (PROC.i < STEPS.length && STEPS[PROC.i].ok()) { PROC.i++; adv = true; }
+  if (adv) {
+    if (PROC.i < STEPS.length) say('ok', `Fatto! Passo ${PROC.i + 1}: ${STEPS[PROC.i].t()}`);
+    else if (Object.keys(PROC.errors).length) say('warn', 'Procedura completata, ma con qualche errore: leggi l’elenco nel riquadro della procedura.');
+    else say('ok', 'Procedura completata senza errori: hai usato il microscopio nell’ordine giusto.');
+  }
+}
+function renderProc() {
+  $('#procIntro').hidden = PROC.on;
+  $('#procRun').hidden = !PROC.on;
+  if (!PROC.on) return;
+  const n = STEPS.length, i = PROC.i;
+  $('#procTot').textContent = n;
+  $('#procN').textContent = Math.min(i + 1, n);
+  $('#procBar').style.width = (i / n * 100).toFixed(1) + '%';
+  $('#procNow').textContent = i < n ? STEPS[i].t() : '';
+  $('#procNow').hidden = i >= n;
+  const errs = Object.entries(PROC.errors);
+  const nErr = errs.reduce((a, [, c]) => a + c, 0);
+  const done = $('#procDone');
+  done.hidden = i < n;
+  if (i >= n) done.textContent = nErr ? `Procedura completata, con ${nErr} ${nErr === 1 ? 'errore' : 'errori'}. Rileggi qui sotto cosa evitare e riprova.` : 'Procedura completata senza errori. Ottimo lavoro!';
+  const html = STEPS.map((s, k) => `<li class="${k < i ? 'done' : k === i ? 'cur' : ''}">${s.t()}</li>`).join('');
+  if ($('#procList').innerHTML !== html) $('#procList').innerHTML = html;
+  $('#procErr').innerHTML = nErr ? `<b>Errori: ${nErr}</b><ul>${errs.map(([k, c]) => `<li>${ERRTXT[k]}${c > 1 ? ` (${c} volte)` : ''}</li>`).join('')}</ul>` : '';
+}
+$('#procStart').addEventListener('click', procStart);
+$('#procStop').addEventListener('click', procStop);
+
+/* =====================================================================
+   Quiz
+   ===================================================================== */
+const Q = { list: [], i: 0, score: 0, answered: false, results: [] };
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function quizStart() {
+  const ids = shuffle(PARTS.filter(p => p.id !== 'vetrino').map(p => p.id)).slice(0, 10);
+  Q.list = ids.map((id, k) => ({ id, kind: k % 2 ? 'f' : 'n' }));
+  Q.i = 0; Q.score = 0; Q.answered = false; Q.results = [];
+  $('#quizCard').hidden = false; $('#quizEnd').hidden = true;
+  renderQuiz();
+}
+function clearQuizMarks() { $$('.q-ok, .q-bad', svg).forEach(el => el.classList.remove('q-ok', 'q-bad')); }
+function renderQuiz() {
+  clearQuizMarks();
+  const q = Q.list[Q.i];
+  $('#qN').textContent = Q.i + 1; $('#qTot').textContent = Q.list.length;
+  $('#qScore').textContent = Q.score;
+  $('#qBar').style.width = (Q.i / Q.list.length * 100) + '%';
+  $('#qKind').textContent = q.kind === 'n' ? 'Tocca sul disegno la parte che si chiama:' : 'Tocca sul disegno la parte che:';
+  $('#qPrompt').textContent = q.kind === 'n' ? PART[q.id].name : PART[q.id].q;
+  $('#qFb').textContent = ''; $('#qFb').className = 'quiz-fb';
+  $('#qNext').hidden = true; $('#qSkip').hidden = false;
+  Q.answered = false;
+  say('info', 'Quiz: rispondi toccando una parte del disegno.');
+}
+function markPart(id, cls) { $$(`.part[data-part="${id}"]`, svg).forEach(el => el.classList.add(cls)); }
+function quizAnswer(id) {
+  if (Q.answered || S.mode !== 'quiz') return;
+  const q = Q.list[Q.i], ok = id === q.id;
+  Q.answered = true;
+  Q.results.push({ id: q.id, ok });
+  if (ok) {
+    Q.score++;
+    markPart(id, 'q-ok');
+    $('#qFb').textContent = q.kind === 'n' ? 'Giusto!' : `Giusto! È «${PART[q.id].name}».`;
+    $('#qFb').className = 'quiz-fb ok';
+  } else {
+    markPart(id, 'q-bad'); markPart(q.id, 'q-ok');
+    $('#qFb').textContent = `No, hai toccato «${PART[id].name}». La risposta giusta, evidenziata in verde, è «${PART[q.id].name}».`;
+    $('#qFb').className = 'quiz-fb bad';
+  }
+  $('#qScore').textContent = Q.score;
+  $('#qNext').hidden = false; $('#qSkip').hidden = true;
+  $('#qNext').textContent = Q.i + 1 < Q.list.length ? 'Avanti' : 'Vedi il risultato';
+  $('#qNext').focus({ preventScroll: true });
+}
+function quizNext() {
+  if (Q.i + 1 < Q.list.length) { Q.i++; renderQuiz(); return; }
+  clearQuizMarks();
+  $('#quizCard').hidden = true; $('#quizEnd').hidden = false;
+  const n = Q.list.length;
+  $('#qFinal').textContent = `${Q.score} / ${n}`;
+  $('#qMsg').textContent = Q.score === n ? 'Perfetto: conosci tutte le parti del microscopio.' : Q.score >= n * 0.7 ? 'Bene! Ripassa le parti che hai sbagliato.' : 'Ripassa le parti nella sezione «Conosci le parti» e riprova.';
+  $('#qReview').innerHTML = Q.results.map(r => `<li class="${r.ok ? 'ok' : 'bad'}">${r.ok ? '✓' : '✗'} ${PART[r.id].name}</li>`).join('');
+}
+$('#qNext').addEventListener('click', quizNext);
+$('#qSkip').addEventListener('click', () => {
+  if (Q.answered) return;
+  const q = Q.list[Q.i];
+  Q.answered = true; Q.results.push({ id: q.id, ok: false });
+  markPart(q.id, 'q-ok');
+  $('#qFb').textContent = `La risposta è «${PART[q.id].name}»: la vedi evidenziata in verde.`;
+  $('#qFb').className = 'quiz-fb bad';
+  $('#qNext').hidden = false; $('#qSkip').hidden = true;
+  $('#qNext').textContent = Q.i + 1 < Q.list.length ? 'Avanti' : 'Vedi il risultato';
+});
+$('#qAgain').addEventListener('click', quizStart);
+
+/* =====================================================================
+   Modalità
+   ===================================================================== */
+function setMode(m) {
+  if (S.mode === m) return;
+  S.mode = m;
+  document.body.classList.toggle('mode-usa', m === 'usa');
+  $$('.modes button').forEach(b => b.setAttribute('aria-selected', b.dataset.mode === m));
+  ['esplora', 'usa', 'quiz'].forEach(k => { $('#pane-' + k).hidden = k !== m; });
+  tip.hidden = true;
+  clearQuizMarks();
+  if (m === 'quiz') { S.sel = null; quizStart(); }
+  if (m === 'usa') say('info', 'Usa i comandi della console oppure agisci sulle parti del disegno: tocca l’interruttore, il revolver, gli obiettivi, l’oculare; trascina o usa la rotellina sulle viti.');
+  if (m === 'esplora') say('info', S.sel ? `${PART[S.sel].name}: ${PART[S.sel].what}` : 'Tocca una parte del microscopio per scoprirne nome e funzione.');
+  $('#scopeHint').textContent = { esplora: 'Tocca una parte per saperne di più', usa: 'Le parti del disegno funzionano davvero', quiz: 'Nomi nascosti durante il quiz' }[m];
+  invalidate();
+}
+$$('.modes button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+$('#optLabels').addEventListener('change', invalidate);
+$('#optScale').addEventListener('change', e => { S.scale = e.target.checked; invalidate(); });
+
+document.addEventListener('keydown', e => {
+  if (S.mode !== 'usa' || e.ctrlKey || e.metaKey || e.altKey) return;
+  const t = e.target;
+  if (t && (t.matches('input, select, textarea, [role="slider"]'))) return;
+  const step = geom().fieldUm * 0.08;
+  const act = {
+    ArrowUp: () => moveSlide(0, -step), ArrowDown: () => moveSlide(0, step),
+    ArrowLeft: () => moveSlide(-step, 0), ArrowRight: () => moveSlide(step, 0),
+    PageUp: () => focusBy(MACRO, 'macro'), PageDown: () => focusBy(-MACRO, 'macro'),
+    '+': () => focusBy(MICRO, 'micro'), '=': () => focusBy(MICRO, 'micro'), '-': () => focusBy(-MICRO, 'micro'),
+    l: () => setLight(!S.light), L: () => setLight(!S.light),
+    r: () => rotateTo((S.obj + 1) % 4), R: () => rotateTo((S.obj + 1) % 4),
+  }[e.key];
+  if (act) { e.preventDefault(); act(); }
+});
+
+/* =====================================================================
+   Ciclo di disegno
+   ===================================================================== */
+let raf = 0;
+function invalidate() { if (!raf) raf = requestAnimationFrame(renderAll); }
+function renderAll() {
+  raf = 0;
+  checkProc();
+  updateScope();
+  updateView();
+  updateReadouts();
+  updateControls();
+  drawMini();
+  renderProc();
+}
+const ro = new ResizeObserver(() => { sizeCanvases(); invalidate(); });
+ro.observe(ocular);
+ro.observe(mini);
+sizeCanvases();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(invalidate);
+renderAll();
+})();
+</script>
+</body>
+</html>
