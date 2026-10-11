@@ -4,19 +4,17 @@ Materiali ed esercizi di Scienze integrate
 ## Materiali
 
 ### Il microscopio ottico — laboratorio virtuale
-[`microscopio/index.html`](microscopio/index.html) è un simulatore interattivo del microscopio ottico composto. È un unico file HTML: si apre con un doppio clic in qualsiasi browser, anche senza connessione (con la connessione usa caratteri tipografici più curati).
+[`microscopio/index.html`](microscopio/index.html) è un simulatore del microscopio ottico composto pensato per il telefono. È un unico file HTML che funziona da solo: si manda agli studenti (per esempio su Classroom o WhatsApp) e si apre con il browser, anche senza connessione. Non richiama siti esterni e non contiene link.
 
-Tre modalità:
+Tutto sta in una sola tavola:
 
-- **Conosci le parti** — disegno del microscopio con i nomi di tutte le parti (oculare, tubo ottico, revolver, obiettivi, tavolino, pinzette, traslatore, condensatore, diaframma a iride, vite del condensatore, sorgente luminosa, regolatore della luce, interruttore, viti macrometrica e micrometrica, braccio, base, vetrino). Toccando una parte si legge a cosa serve e come si usa, divisa tra parte ottica, parte meccanica e sistema di illuminazione.
-- **Usa il microscopio** — si osserva un vetrino nell'oculare e si regolano:
-  - luce (interruttore e intensità), diaframma a iride e altezza del condensatore;
-  - oculare 5×, 10× o 15× e obiettivi 4×, 10×, 40× e 100× a immersione, con calcolo dell'ingrandimento totale e del campo visivo;
+- **L'immagine del microscopio** con i nomi di tutte le parti: oculare, tubo ottico, revolver, obiettivi, braccio, vetrino, pinzette, tavolino, traslatore, condensatore, diaframma a iride, vite del condensatore, viti macrometrica e micrometrica, sorgente luminosa, regolatore della luce, interruttore e base.
+- **Il cerchio dell'oculare**, in cima alla stessa immagine, mostra quello che si vede nel microscopio: un vetrino è già pronto e a fuoco all'apertura.
+- **Toccando un nome** si apre dal basso un pannello con la spiegazione della parte e il comando per usarla, mentre l'oculare resta visibile sopra:
+  - luce (interruttore e intensità), diaframma a iride e condensatore;
+  - oculare 5×, 10× o 15× e obiettivi 4×, 10×, 40× e 100× a immersione, con ingrandimento totale e campo visivo;
   - messa a fuoco con le viti macrometrica e micrometrica;
-  - posizione del vetrino con il traslatore e vista dall'alto, per notare che l'immagine è capovolta;
-  - olio a immersione per il 100×.
+  - quattro preparati (lettera «e», epidermide di cipolla, striscio di sangue, fili colorati), traslatore, pinzette e olio a immersione.
+- **Toccando il titolo** «Il microscopio ottico» si apre la guida: spiegazione generale, elenco delle parti, procedura d'uso passo per passo, un esercizio guidato che parte dal microscopio spento e segnala gli errori tipici, e un quiz in cui si tocca sul disegno la parte richiesta.
 
-  Ci sono quattro preparati: lettera «e» di giornale, epidermide di cipolla, striscio di sangue e fili colorati incrociati (per la profondità di campo). La **procedura guidata** fa seguire i passaggi corretti dall'accensione allo spegnimento e segnala gli errori tipici: macrometrica usata con il 40×, obiettivo che urta e rompe il vetrino, obiettivo a secco immerso nell'olio.
-- **Quiz** — dieci domande: si risponde toccando sul disegno la parte indicata per nome o per funzione.
-
-Si usa con il mouse, con il touch su tablet e telefono, e con la tastiera.
+Se il file viene aperto in un'anteprima che non esegue JavaScript (per esempio l'anteprima dei file di alcuni telefoni), si vedono comunque il disegno con i nomi e le spiegazioni di tutte le parti. Per usare il simulatore va aperto con il browser (Chrome, Safari, Firefox).

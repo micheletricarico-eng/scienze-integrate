@@ -3,99 +3,102 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e8eef1">
 <title>Microscopio ottico virtuale</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
-/* Layout: banco di laboratorio — lo strumento a sinistra, il campo visivo al centro, la console di comando a destra */
+/* Layout: una sola tavola — il cerchio dell’oculare in alto, il microscopio con i nomi sotto, un pannello che sale dal basso */
 :root{
   --bench:#e8eef1; --panel:#ffffff; --panel-2:#f2f6f8; --ink:#14202b; --muted:#53616d; --line:#d0d9e0;
   --accent:#2350a8; --accent-soft:#e1e9fa; --on-accent:#ffffff;          /* blu di metilene */
-  --eosin:#c22d64; --eosin-soft:#fbe4ed;                                  /* eosina: parte selezionata */
+  --eosin:#c22d64; --eosin-soft:#fbe4ed; --on-eosin:#ffffff;              /* eosina: parte scelta */
   --ok:#22744a; --ok-soft:#ddf1e5; --warn:#94590a; --warn-soft:#fbeed6; --bad:#b0322a; --bad-soft:#fbe2df;
   --en1:#ffffff; --en2:#e5e9ed; --en3:#bec7cf; --edge:#8995a0;          /* smalto dello strumento */
   --gr1:#4b545d; --gr2:#252a30; --ch1:#7b848c; --ch2:#f1f4f6; --ch3:#a9b1b8;
-  --lbl:#2b3845; --leader:#8391a0;
+  --lbl:#22303c; --leader:#7e8c99;
   --oc0:#050607; --oc1:#1b1e22; --oc2:#30363c;
-  --f-display:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
-  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --r:10px;
+  --toast:#14202b; --on-toast:#f4f7f9;
+  --f-display:"Avenir Next Condensed","Roboto Condensed","Arial Narrow",sans-serif-condensed,"Helvetica Neue",Arial,sans-serif;
+  --f-body:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-mono:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
+  --r:12px;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bench:#0e1317; --panel:#161e25; --panel-2:#1d2730; --ink:#e2e9ee; --muted:#96a4af; --line:#29353f;
+    --bench:#0e1317; --panel:#161e25; --panel-2:#1d2730; --ink:#e2e9ee; --muted:#96a4af; --line:#2c3943;
     --accent:#8aaeff; --accent-soft:#1b2946; --on-accent:#0b1322;
-    --eosin:#ff7dab; --eosin-soft:#3a1a28;
+    --eosin:#ff7dab; --eosin-soft:#3a1a28; --on-eosin:#2a0b18;
     --ok:#62cf8e; --ok-soft:#14301f; --warn:#f0b75a; --warn-soft:#36280f; --bad:#ff8273; --bad-soft:#3b1915;
     --en1:#eef1f3; --en2:#cdd4da; --en3:#98a3ad; --edge:#55616b;
     --gr1:#5a636d; --gr2:#2b3138; --ch1:#6d767e; --ch2:#e4e8ec; --ch3:#98a1a9;
-    --lbl:#cfd8df; --leader:#5e6d79;
+    --lbl:#dbe3e9; --leader:#64737f;
+    --toast:#e8eef2; --on-toast:#101820;
     color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bench:#0e1317; --panel:#161e25; --panel-2:#1d2730; --ink:#e2e9ee; --muted:#96a4af; --line:#29353f;
+  --bench:#0e1317; --panel:#161e25; --panel-2:#1d2730; --ink:#e2e9ee; --muted:#96a4af; --line:#2c3943;
   --accent:#8aaeff; --accent-soft:#1b2946; --on-accent:#0b1322;
-  --eosin:#ff7dab; --eosin-soft:#3a1a28;
+  --eosin:#ff7dab; --eosin-soft:#3a1a28; --on-eosin:#2a0b18;
   --ok:#62cf8e; --ok-soft:#14301f; --warn:#f0b75a; --warn-soft:#36280f; --bad:#ff8273; --bad-soft:#3b1915;
   --en1:#eef1f3; --en2:#cdd4da; --en3:#98a3ad; --edge:#55616b;
   --gr1:#5a636d; --gr2:#2b3138; --ch1:#6d767e; --ch2:#e4e8ec; --ch3:#98a1a9;
-  --lbl:#cfd8df; --leader:#5e6d79;
+  --lbl:#dbe3e9; --leader:#64737f;
+  --toast:#e8eef2; --on-toast:#101820;
   color-scheme:dark;
 }
 
 *,*::before,*::after{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bench);color:var(--ink);font:400 16px/1.5 var(--f-body)}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bench);color:var(--ink);font:400 16px/1.45 var(--f-body)}
 [hidden]{display:none!important}
 button,input,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-p{margin:0}
+p,h2,h3{margin:0}
+h2,h3{text-wrap:balance}
 
-.app{max-width:1480px;margin:0 auto;padding-inline:clamp(16px,2.4vw,32px);padding-block:14px 40px}
-.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 28px;padding-block:6px 16px;margin-bottom:18px;border-bottom:1px solid var(--line)}
-.brand{min-width:0;display:grid;gap:4px}
-.eyebrow{margin:0;font:600 .8rem/1.2 var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-h1{margin:0;font:700 clamp(2.1rem,4.2vw,3.1rem)/1 var(--f-display);letter-spacing:.005em;text-wrap:balance}
-h2,h3,h4{text-wrap:balance}
-.sub{color:var(--muted);max-width:62ch}
-.modes{display:flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:999px}
-.modes button{border:0;background:none;color:var(--muted);padding:10px 18px;border-radius:999px;font:600 1.05rem/1 var(--f-display);letter-spacing:.03em}
-.modes button:hover{color:var(--ink)}
-.modes button[aria-selected="true"]{background:var(--accent);color:var(--on-accent)}
+/* ---------- intestazione ---------- */
+.top{position:sticky;top:0;z-index:30;background:var(--bench);border-bottom:1px solid var(--line);padding:calc(6px + env(safe-area-inset-top,0px)) 14px 6px}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:1000px;margin:0 auto}
+.title-btn{display:flex;align-items:center;gap:10px;min-width:0;border:0;background:none;padding:4px 0;text-align:left;color:inherit;border-radius:8px}
+.tb-text{display:grid;min-width:0}
+.eyebrow{font:600 .7rem/1.2 var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.tb-h{font:700 clamp(1.2rem,5.6vw,1.6rem)/1.05 var(--f-display);letter-spacing:.005em;white-space:nowrap}
+.tb-i{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:700 .95rem/1 Georgia,"Times New Roman",serif;font-style:italic}
+.title-btn:hover .tb-h{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+.top-mag{flex:none;display:grid;justify-items:end;text-align:right}
+.top-mag b{font:700 1.75rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.top-mag span{font:500 .7rem/1.3 var(--f-mono);color:var(--muted);white-space:nowrap}
 
-.bench{display:grid;gap:18px;grid-template-columns:minmax(0,1.22fr) minmax(0,.94fr) minmax(0,.94fr);align-items:start}
-.col{min-width:0;display:flex;flex-direction:column;gap:14px}
-.pane{display:flex;flex-direction:column;gap:14px}
-@media (min-width:1181px) and (min-height:780px){
-  .col-scope,.col-view{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
-}
-@media (max-width:1180px){.bench{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.col-panel{grid-column:1/-1}.pane{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}.pane>.wide{grid-column:1/-1}}
-@media (min-width:761px) and (max-width:1180px){#grpMag{order:1;grid-column:1/-1}#grpSlide{order:2}}
-@media (max-width:760px){.bench{grid-template-columns:minmax(0,1fr)}.pane{grid-template-columns:minmax(0,1fr)}body.mode-usa .col-view{order:-1}}
-@media (max-width:560px){
-  .modes{width:100%;border-radius:14px}
-  .modes button{flex:1 1 auto;padding:10px 6px;font-size:.98rem;white-space:nowrap}
-  .knob{width:60px;height:60px}.knob.sm{width:46px;height:46px;margin-inline:7px}
-  .card{padding:14px}
-}
+.banner{max-width:1000px;margin:6px auto 0;padding:8px 10px;border-radius:10px;background:var(--panel);border:1px solid var(--line)}
+.bn-row{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.bn-text{font-size:.92rem;font-weight:700;line-height:1.3}
+.bn-text small{display:block;font:600 .68rem/1.3 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.bn-fb{margin-top:4px;font-size:.88rem;font-weight:700}
+.bn-fb.ok{color:var(--ok)} .bn-fb.bad{color:var(--bad)}
+.bn-actions{display:flex;gap:6px;margin-top:6px}
+.progress{height:5px;border-radius:99px;background:var(--panel-2);overflow:hidden;margin-top:6px;box-shadow:inset 0 0 0 1px var(--line)}
+.progress i{display:block;height:100%;width:0;background:var(--ok);transition:width .35s ease}
 
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;min-width:0}
-.small{font-size:.86rem;color:var(--muted)}
+/* ---------- tavola ---------- */
+.layout{display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;gap:6px;padding:6px 10px 14px}
+.scene{position:relative;width:100%;max-width:520px}
+#scope{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.scene-hint{font-size:.84rem;color:var(--muted);text-align:center;max-width:46ch}
+.ro{position:absolute;top:0;width:21%;display:grid;gap:2px;font-size:.78rem;line-height:1.2;pointer-events:none}
+.ro-l{left:0}
+.ro-r{right:0;justify-items:end;text-align:right}
+.ro b{font:600 .86rem/1.15 var(--f-display);letter-spacing:.01em}
+.pill{display:inline-block;margin-top:2px;padding:1px 7px;border-radius:999px;font:700 .72rem/1.5 var(--f-body);background:var(--panel-2);color:var(--muted)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
 
-/* ---------- disegno del microscopio ---------- */
-.scope-card{position:relative;padding:8px 8px 12px}
-#scope{display:block;width:100%;height:auto;max-height:78vh;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-.scope-foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 16px;padding:4px 8px 0}
-.check{display:inline-flex;align-items:center;gap:8px;font-size:.92rem;font-weight:700;cursor:pointer}
-.check input{width:18px;height:18px;accent-color:var(--accent)}
-#scope .edge{stroke:var(--edge);stroke-width:1}
-#scope .thin{stroke-width:.6}
-#scope .crease{stroke:var(--en1);stroke-width:1.4;fill:none;opacity:.9}
+/* disegno */
+#scope .edge{stroke:var(--edge);stroke-width:1.2}
+#scope .thin{stroke-width:.8}
+#scope .crease{stroke:var(--en1);stroke-width:1.6;fill:none;opacity:.9}
 #scope .shadow{fill:rgba(0,0,0,.13)}
 #scope .lens{fill:#9fc4d9;stroke:#4f6b7c;stroke-width:.6}
 #scope .lens.lit{fill:#fff4c8}
@@ -117,537 +120,436 @@ h2,h3,h4{text-wrap:balance}
 #scope .pilot.on{fill:#3ee07c}
 #scope .hit{fill:transparent}
 #scope .part{cursor:pointer;outline:none}
-body.mode-usa #scope .knobpart{touch-action:none;cursor:ns-resize}
-#scope .objective{transition:transform .3s ease,opacity .3s ease;transform-box:view-box;transform-origin:300px 200px}
-#scope:not(.quiz) .part:hover,#scope .part:focus-visible{filter:url(#fHov)}
+#scope .part:focus-visible,#scope:not(.quiz) .part:hover{filter:url(#fHov)}
 #scope .part.sel,#scope .part.sel:hover{filter:url(#fSel)}
 #scope .part.q-ok,#scope .part.q-ok:hover{filter:url(#fOk)}
 #scope .part.q-bad,#scope .part.q-bad:hover{filter:url(#fBad)}
-#scope .lbl{display:none;cursor:pointer}
-#scope.show-labels .lbl,#scope .lbl.sel{display:inline}
-#scope.quiz .lbl{display:none!important}
-#scope .lbl text{font:600 14.5px var(--f-display);fill:var(--lbl);letter-spacing:.01em}
-#scope .lbl line{stroke:var(--leader);stroke-width:1}
-#scope .lbl circle{fill:var(--leader)}
-#scope .lbl:hover text{fill:var(--accent)}
-#scope .lbl.sel text{fill:var(--eosin);font-weight:700}
-#scope .lbl.sel line{stroke:var(--eosin);stroke-width:1.5}
-#scope .lbl.sel circle{fill:var(--eosin)}
 #beam{transition:opacity .25s}
-#scope .lbl .t-num{font:700 22px var(--f-display);fill:var(--lbl)}
-#scope.numbers .lbl .t-name,#scope:not(.numbers) .lbl .t-num{display:none}
-#scope .lbl.sel .t-num{fill:var(--eosin)}
-.legend{list-style:none;margin:8px 0 0;padding:0 4px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 10px}
-.legend button{display:flex;gap:8px;align-items:baseline;width:100%;border:0;background:none;padding:5px 4px;border-radius:6px;text-align:left;font-size:.88rem;line-height:1.25}
-.legend button b{flex:none;min-width:1.4em;font:700 1rem/1 var(--f-display);color:var(--accent);text-align:right}
-.legend button.sel{background:var(--eosin-soft);color:var(--eosin)}
-.legend button.sel b{color:var(--eosin)}
-.tip{position:absolute;z-index:3;pointer-events:none;background:var(--ink);color:var(--panel);font:600 .95rem/1.2 var(--f-display);letter-spacing:.02em;padding:5px 9px;border-radius:6px;transform:translate(-50%,calc(-100% - 12px));white-space:nowrap}
+#scope .link-dash{stroke:var(--leader);stroke-width:1.2;stroke-dasharray:3 3;fill:none}
+
+/* nomi delle parti */
+#scope .lbl{cursor:pointer;outline:none}
+#scope .lbl .lh{fill:transparent}
+#scope .lbl .lb{fill:var(--panel);stroke:var(--line);stroke-width:.9}
+#scope .lbl text{font:600 12.5px/1 var(--f-display);fill:var(--lbl);letter-spacing:.01em}
+#scope .lbl .ld{stroke:var(--leader);stroke-width:.9}
+#scope .lbl .la{fill:var(--leader)}
+#scope .lbl:hover .lb,#scope .lbl:focus-visible .lb{stroke:var(--accent);stroke-width:1.6}
+#scope .lbl.sel .lb{fill:var(--eosin);stroke:var(--eosin)}
+#scope .lbl.sel text{fill:var(--on-eosin)}
+#scope .lbl.sel .ld{stroke:var(--eosin);stroke-width:1.5}
+#scope .lbl.sel .la{fill:var(--eosin)}
+#scope.quiz .lbl{display:none}
 
 /* ---------- oculare ---------- */
-.view-card{display:flex;flex-direction:column;gap:14px}
-.view-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.ocular{position:relative;width:min(100% - 24px,430px);aspect-ratio:1/1;margin:8px auto 6px;border-radius:50%;background:var(--oc0);box-shadow:0 0 0 9px var(--oc1),0 0 0 11px var(--oc2),0 16px 34px rgba(0,0,0,.28);overflow:hidden;touch-action:none}
-.field{position:absolute;inset:0;clip-path:circle(var(--fr,46%) at 50% 50%)}
-.stack{position:absolute;inset:0;isolation:isolate;transition:filter .12s linear}
-.lampbg{position:absolute;inset:0;background:var(--lamp,#f6f3ea)}
-.layer{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:multiply}
-.vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,0) calc(var(--fr,46%) * .5),rgba(0,0,0,var(--vig,.3)) var(--fr,46%))}
-.cracks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ocular-wrap{position:absolute;left:21.154%;top:2%;width:57.692%;aspect-ratio:1/1;border-radius:50%;background:var(--oc0);box-shadow:0 0 0 6px var(--oc1),0 0 0 8px var(--oc2),0 10px 24px rgba(0,0,0,.25)}
+.ocular{position:absolute;inset:0;border-radius:50%;background:var(--oc0);touch-action:none}
+/* il preparato è composto in un'unica tela già ritagliata a cerchio: niente ritagli né fusioni affidati al CSS */
+.view{position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .12s linear}
+.vig{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,0) calc(var(--fr,46%) * .5),rgba(0,0,0,var(--vig,.3)) calc(var(--fr,46%) - .5px),rgba(0,0,0,0) var(--fr,46%))}
 .scalebar{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
-.scalebar span{display:block;height:5px;background:#fff;box-shadow:0 0 0 1.5px #111}
-.scalebar b{font:500 .74rem/1 var(--f-mono);color:#fff;text-shadow:0 0 3px #000,0 0 2px #000}
-.readout{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
-.mag b{display:block;font:700 2.7rem/1 var(--f-display);font-variant-numeric:tabular-nums}
-.mag span{display:block;font:500 .8rem/1.3 var(--f-mono);color:var(--muted)}
-.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0;padding-top:12px;border-top:1px solid var(--line)}
-.facts dt{font:600 .72rem/1.2 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.facts dd{margin:3px 0 0;font:500 .92rem/1.25 var(--f-mono)}
-.pill{display:inline-block;padding:1px 9px;border-radius:999px;font:700 .82rem/1.55 var(--f-body);background:var(--panel-2);color:var(--muted)}
-.pill.ok{background:var(--ok-soft);color:var(--ok)}
-.pill.warn{background:var(--warn-soft);color:var(--warn)}
-.pill.bad{background:var(--bad-soft);color:var(--bad)}
-.view-opts{display:flex;flex-wrap:wrap;gap:8px 18px}
-.status{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:8px;background:var(--panel-2);min-height:3.4em;font-size:.95rem}
-.status i{flex:none;width:9px;height:9px;border-radius:50%;margin-top:.45em;background:var(--accent)}
-.status.ok{background:var(--ok-soft)} .status.ok i{background:var(--ok)}
-.status.warn{background:var(--warn-soft)} .status.warn i{background:var(--warn)}
-.status.bad{background:var(--bad-soft)} .status.bad i{background:var(--bad)}
+.scalebar span{display:block;height:4px;background:#fff;box-shadow:0 0 0 1.5px #111}
+.scalebar b{font:500 .68rem/1 var(--f-mono);color:#fff;text-shadow:0 0 3px #000,0 0 2px #000}
 
-/* ---------- console ---------- */
-.ctl-h{margin:0 0 12px;font:700 1.3rem/1.1 var(--f-display);letter-spacing:.02em}
-.lab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700;font-size:.92rem}
-output{font:500 .82rem var(--f-mono);color:var(--muted);font-weight:500}
-.slider{display:block;margin-top:10px}
-input[type=range]{display:block;width:100%;height:30px;margin:2px 0 0;accent-color:var(--accent)}
-.ends{display:flex;justify-content:space-between;font-size:.74rem;color:var(--muted);margin-top:-4px}
-.row{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.switch{display:inline-flex;align-items:center;gap:10px;padding:6px 12px 6px 6px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);font-weight:700}
-.switch .sw{position:relative;width:44px;height:26px;border-radius:999px;background:var(--line);transition:background .2s}
-.switch .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
-.switch[aria-checked="true"] .sw{background:var(--ok)}
-.switch[aria-checked="true"] .sw::after{transform:translateX(18px)}
-.seg{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 14px}
-.seg:last-child{margin-bottom:0}
-.seg button{flex:1 1 0;min-width:58px;padding:10px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);font:700 1.15rem/1 var(--f-display);display:inline-flex;align-items:center;justify-content:center;gap:7px;font-variant-numeric:tabular-nums}
-.seg button:hover{border-color:var(--accent)}
-.seg button[aria-checked="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
-.seg i{width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
-.btn{padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);font-weight:700;font-size:.93rem;line-height:1.25}
+/* ---------- pannello ---------- */
+.sheet{position:fixed;z-index:40;left:0;right:0;bottom:0;max-height:var(--sheet-max,58vh);overflow-y:auto;overscroll-behavior:contain;background:var(--panel);border-top:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:0 -12px 32px rgba(0,0,0,.2);padding:4px 16px calc(16px + env(safe-area-inset-bottom,0px));transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s}
+.sheet.open{transform:none;visibility:visible;transition:transform .25s ease}
+.sh-grip{width:42px;height:5px;border-radius:99px;background:var(--line);margin:6px auto 8px}
+.sh-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:8px 10px;position:sticky;top:-4px;background:var(--panel);padding:4px 0 8px;z-index:1}
+.sh-status{flex:1 1 100%;display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border-radius:9px;background:var(--accent-soft);font-size:.86rem;line-height:1.35;cursor:pointer}
+.sh-status i{flex:none;width:8px;height:8px;border-radius:50%;margin-top:.42em;background:var(--accent)}
+.sh-status.ok{background:var(--ok-soft)} .sh-status.ok i{background:var(--ok)}
+.sh-status.warn{background:var(--warn-soft)} .sh-status.warn i{background:var(--warn)}
+.sh-status.bad{background:var(--bad-soft)} .sh-status.bad i{background:var(--bad)}
+.sh-titles{min-width:0}
+.sh-titles h2{font:700 1.5rem/1.08 var(--f-display);letter-spacing:.01em;margin-top:2px}
+.sh-nav{display:flex;gap:6px;flex:none}
+.iconbtn{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel-2);font-size:1.15rem;line-height:1;padding:0}
+.iconbtn:hover{border-color:var(--accent)}
+.cat-ottica{color:var(--accent)} .cat-illuminazione{color:var(--warn)}
+.what{font-size:1rem}
+.ctl-slot{margin-top:12px;padding:12px;border-radius:10px;background:var(--panel-2);display:grid;gap:10px}
+.how{margin-top:12px}
+.how summary{cursor:pointer;font-weight:700;color:var(--accent);font-size:.93rem}
+.how p{margin-top:6px;font-size:.94rem}
+.how .note{color:var(--muted)}
+.sh-guide{display:grid;gap:12px}
+.sh-guide h3{font:700 .78rem/1.2 var(--f-display);letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.formula{padding:9px 11px;border-radius:8px;background:var(--panel-2);font:500 .86rem/1.45 var(--f-mono)}
+.groups{display:grid;gap:10px}
+.groups h4{margin:0 0 5px;font:600 .74rem/1.2 var(--f-display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);font-size:.88rem;font-weight:700}
+.chips button:hover{border-color:var(--accent)}
+.steps{margin:0;padding-left:1.4em;display:grid;gap:4px;font-size:.9rem}
+.steps li.done{color:var(--ok)}
+.steps li.done::marker{content:"✓  "}
+.steps li.cur{font-weight:700}
+.proc-err{font-size:.88rem;color:var(--bad)}
+.proc-err ul{margin:4px 0 0;padding-left:1.2em}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px}
+.btn{padding:9px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-weight:700;font-size:.92rem;line-height:1.2}
 .btn:hover{border-color:var(--accent)}
 .btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.linkbtn{border:0;background:none;padding:0;color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px}
-select{width:100%;padding:9px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);margin-top:4px;font-weight:700}
-.focus{display:grid;gap:14px}
-.fk{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center}
-.fk-txt b{display:block;font:700 1.1rem/1.1 var(--f-display);letter-spacing:.02em}
-.fk-txt span{font-size:.84rem;color:var(--muted)}
-.knob{width:74px;height:74px;border-radius:50%;touch-action:none;cursor:ns-resize}
-.knob.sm{width:56px;height:56px;margin-inline:9px}
-.knob svg{display:block;width:100%;height:100%}
-.knob .k-out{fill:url(#kGr)}
-.knob .k-rot line{stroke:rgba(255,255,255,.32);stroke-width:2.6}
-.knob .k-cap{fill:url(#kCh)}
-.knob .k-dot{fill:var(--eosin)}
-.fk-btns{display:flex;flex-direction:column;gap:6px}
-.hold{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);font-weight:700;font-size:.88rem;user-select:none;-webkit-user-select:none;touch-action:manipulation;white-space:nowrap}
+.btn.sm{padding:6px 11px;font-size:.85rem}
+.small{font-size:.84rem;color:var(--muted)}
+
+/* comandi */
+.crow{display:grid;gap:4px;padding:6px 8px;margin:-6px -8px;border-radius:8px;transition:background .2s}
+.crow.hl{background:var(--eosin-soft);box-shadow:inset 3px 0 0 var(--eosin)}
+.lab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700;font-size:.9rem}
+.lab small{display:block;font-weight:400;font-size:.78rem;color:var(--muted)}
+output{font:500 .8rem var(--f-mono);color:var(--muted)}
+input[type=range]{display:block;width:100%;height:30px;margin:0;accent-color:var(--accent)}
+.ends{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:-6px}
+.inline{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.switch{display:inline-flex;align-items:center;gap:9px;padding:5px 12px 5px 5px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-weight:700}
+.switch .sw{position:relative;width:42px;height:24px;border-radius:999px;background:var(--line);transition:background .2s}
+.switch .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--panel);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .2s}
+.switch[aria-checked="true"] .sw{background:var(--ok)}
+.switch[aria-checked="true"] .sw::after{transform:translateX(18px)}
+.seg{display:flex;gap:5px}
+.seg button{flex:1 1 0;min-width:0;padding:9px 4px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font:700 1.05rem/1 var(--f-display);display:inline-flex;align-items:center;justify-content:center;gap:5px;font-variant-numeric:tabular-nums}
+.seg button:hover{border-color:var(--accent)}
+.seg button[aria-checked="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.seg i{width:11px;height:11px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35);flex:none}
+.check{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;font-weight:700;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--accent)}
+.fbtns{display:flex;gap:6px}
+.hold{min-width:58px;padding:10px 12px;border-radius:9px;border:1px solid var(--line);background:var(--panel);font-weight:700;font-size:.95rem;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;white-space:nowrap}
 .hold:hover{border-color:var(--accent)}
 .hold:active{background:var(--accent-soft)}
-.trasl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;margin-top:14px}
-.mini-wrap{position:relative;min-width:0}
-#mini{display:block;width:100%;height:140px;border-radius:8px;touch-action:none;cursor:grab;background:#2a2f35}
-#mini:active{cursor:grabbing}
-.mini-cap{position:absolute;left:8px;top:6px;font:600 .72rem/1 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:#cfd6dc;pointer-events:none}
-.pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:4px}
-.pad button{border:1px solid var(--line);border-radius:8px;background:var(--panel-2);font-size:1rem;line-height:1;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-weight:700}
+.pad{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(3,38px);gap:4px}
+.pad button{border:1px solid var(--line);border-radius:8px;background:var(--panel);font-size:.95rem;line-height:1;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .pad button:hover{border-color:var(--accent)}
 .pad button:active{background:var(--accent-soft)}
-.pad [data-mv="up"]{grid-area:1/2}
-.pad [data-mv="left"]{grid-area:2/1}
-.pad [data-mv="right"]{grid-area:2/3}
-.pad [data-mv="down"]{grid-area:3/2}
-.pad .padc{grid-area:2/2;display:grid;place-items:center;font:600 .62rem/1.1 var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center}
-.flash{animation:flash 1.6s ease}
-@keyframes flash{0%,60%{box-shadow:0 0 0 3px var(--eosin)}100%{box-shadow:0 0 0 0 transparent}}
+.pad [data-mv="up"]{grid-area:1/2} .pad [data-mv="left"]{grid-area:2/1} .pad [data-mv="right"]{grid-area:2/3} .pad [data-mv="down"]{grid-area:3/2}
 
-/* ---------- procedura ---------- */
-.proc h2,.info h2,.quiz h2{margin:2px 0 8px;font:700 1.7rem/1.05 var(--f-display);letter-spacing:.01em}
-.proc-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.progress{height:7px;border-radius:99px;background:var(--panel-2);overflow:hidden;margin-top:8px;box-shadow:inset 0 0 0 1px var(--line)}
-.progress i{display:block;height:100%;width:0;background:var(--ok);transition:width .35s ease}
-.proc-now{font-size:1.08rem;font-weight:700;margin-top:12px}
-.proc details{margin-top:12px}
-.proc summary{cursor:pointer;font-weight:700;font-size:.92rem;color:var(--accent)}
-.proc ol{margin:8px 0 0;padding-left:1.6em;display:grid;gap:4px;font-size:.92rem}
-.proc li{color:var(--muted)}
-.proc li.done{color:var(--ok)}
-.proc li.done::marker{content:"✓  "}
-.proc li.cur{color:var(--ink);font-weight:700}
-.proc-err{margin-top:10px;font-size:.9rem}
-.proc-err ul{margin:4px 0 0;padding-left:1.2em;color:var(--bad)}
-.done-box{margin-top:10px;padding:12px;border-radius:8px;background:var(--ok-soft);color:var(--ok);font-weight:700}
+/* avvisi */
+.toast{position:fixed;z-index:50;left:50%;transform:translateX(-50%);bottom:calc(var(--sheet-h,0px) + 12px + env(safe-area-inset-bottom,0px));width:min(calc(100vw - 24px),460px);display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:12px;background:var(--toast);color:var(--on-toast);box-shadow:0 8px 24px rgba(0,0,0,.25);font-size:.9rem;line-height:1.35;cursor:pointer}
+.toast i{flex:none;width:9px;height:9px;border-radius:50%;margin-top:.4em;background:var(--accent)}
+.toast.ok i{background:var(--ok)} .toast.warn i{background:var(--warn)} .toast.bad i{background:var(--bad)}
 
-/* ---------- schede ---------- */
-.info .cat{display:inline-block;padding:2px 10px;border-radius:999px;font:600 .74rem/1.6 var(--f-display);letter-spacing:.12em;text-transform:uppercase;background:var(--panel-2);color:var(--muted)}
-.info .cat.ottica{background:var(--accent-soft);color:var(--accent)}
-.info .cat.illuminazione{background:var(--warn-soft);color:var(--warn)}
-.info h4{margin:16px 0 4px;font:700 .8rem/1.2 var(--f-display);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
-.info p+p{margin-top:8px}
-.info .btn{margin-top:14px}
-.formula{margin-top:12px;padding:10px 12px;border-radius:8px;background:var(--panel-2);font:500 .92rem/1.4 var(--f-mono)}
-.groups{display:grid;gap:14px}
-.groups h4{margin:0 0 6px;font:700 .8rem/1.2 var(--f-display);letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
-.chips{display:flex;flex-wrap:wrap;gap:6px}
-.chips button{padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel-2);font-size:.9rem;font-weight:700}
-.chips button:hover{border-color:var(--accent)}
-.chips button.sel{border-color:var(--eosin);color:var(--eosin);background:var(--eosin-soft)}
+/* senza JavaScript */
+.nojs{max-width:640px;margin:0 auto;padding:0 16px 24px;display:grid;gap:8px}
+.nojs details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.nojs summary{font-weight:700;cursor:pointer}
+.nojs p{margin-top:6px}
 
-/* ---------- quiz ---------- */
-.quiz-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.quiz-prompt{margin-top:10px;font:700 1.55rem/1.15 var(--f-display);letter-spacing:.01em}
-.quiz-fb{margin-top:12px;min-height:1.5em;font-weight:700}
-.quiz-fb.ok{color:var(--ok)} .quiz-fb.bad{color:var(--bad)}
-.score{font:500 .9rem var(--f-mono);color:var(--muted)}
-.score b{color:var(--ink)}
-.big-score{font:700 3.4rem/1 var(--f-display);margin:6px 0}
-.review{margin:10px 0 0;padding-left:1.2em;font-size:.9rem;display:grid;gap:3px}
-.review .ok{color:var(--ok)} .review .bad{color:var(--bad)}
-
-footer{margin-top:22px;padding-top:14px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 24px;font-size:.84rem;color:var(--muted)}
-kbd{font:500 .78rem var(--f-mono);padding:1px 5px;border-radius:4px;border:1px solid var(--line);background:var(--panel)}
+/* schermi larghi: pannello accanto alla tavola */
+@media (min-width:860px){
+  .top{padding-inline:24px}
+  .layout{grid-template-columns:auto 380px;justify-content:center;align-items:start;gap:28px;padding:16px 24px 32px}
+  .scene{width:min(540px,calc((100vh - var(--top-h,64px) - 56px) * 400 / 700));min-width:340px}
+  .scene-hint{grid-column:1}
+  .sheet{position:sticky;top:calc(var(--top-h,64px) + 16px);grid-column:2;grid-row:1 / span 2;max-height:calc(100vh - var(--top-h,64px) - 32px);transform:none;visibility:visible;transition:none;border:1px solid var(--line);border-radius:var(--r);box-shadow:none;padding:6px 18px 18px}
+  .sh-grip{display:none}
+  .toast{left:auto;right:24px;transform:none;width:380px}
+}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
-<div class="app">
-  <header class="top">
-    <div class="brand">
-      <p class="eyebrow">Scienze integrate · laboratorio virtuale</p>
-      <h1>Il microscopio ottico</h1>
-      <p class="sub">Scopri il nome e la funzione di ogni parte, poi impara a usarlo con un vetrino: luce, diaframma, obiettivi, oculari e messa a fuoco.</p>
+<header class="top" id="top">
+  <div class="top-row">
+    <button class="title-btn" id="titleBtn" aria-controls="sheet" aria-expanded="false">
+      <span class="tb-text"><span class="eyebrow">Scienze integrate</span><span class="tb-h">Il microscopio ottico</span></span>
+      <span class="tb-i" aria-hidden="true">i</span>
+    </button>
+    <div class="top-mag js-only" aria-live="polite"><span class="eyebrow">ingrandimento</span><b id="rTotal">40×</b><span id="rFormula">10× × 4×</span></div>
+  </div>
+  <div class="banner js-only" id="banner" hidden>
+    <div class="bn-row"><p class="bn-text" id="bnText"></p><button class="iconbtn" id="bnClose" aria-label="Esci">✕</button></div>
+    <div class="progress" id="bnProg"><i id="bnBar"></i></div>
+    <p class="bn-fb" id="bnFb" hidden></p>
+    <div class="bn-actions" id="bnActions" hidden><button class="btn primary sm" id="bnNext">Avanti</button><button class="btn sm" id="bnSkip">Non lo so</button></div>
+  </div>
+</header>
+
+<main class="layout">
+  <div class="scene" id="scene">
+    <svg id="scope" viewBox="-8 0 416 700" role="group" aria-labelledby="scopeTitle">
+      <title id="scopeTitle">Microscopio ottico composto visto di lato, con i nomi delle parti. In alto il cerchio mostra cosa si vede nell’oculare.</title>
+      <defs>
+        <linearGradient id="gEn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--en1)"/><stop offset=".6" style="stop-color:var(--en2)"/><stop offset="1" style="stop-color:var(--en3)"/></linearGradient>
+        <linearGradient id="gEnV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--en1)"/><stop offset=".55" style="stop-color:var(--en2)"/><stop offset="1" style="stop-color:var(--en3)"/></linearGradient>
+        <linearGradient id="gGr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--gr1)"/><stop offset="1" style="stop-color:var(--gr2)"/></linearGradient>
+        <linearGradient id="gCh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--ch1)"/><stop offset=".3" style="stop-color:var(--ch2)"/><stop offset=".62" style="stop-color:var(--ch3)"/><stop offset=".86" style="stop-color:var(--ch2)"/><stop offset="1" style="stop-color:var(--ch1)"/></linearGradient>
+        <radialGradient id="gGlow"><stop offset="0" stop-color="#fff4c6" stop-opacity="1"/><stop offset="1" stop-color="#ffd25e" stop-opacity="0"/></radialGradient>
+        <linearGradient id="gBeam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffdc7a" stop-opacity=".7"/><stop offset="1" stop-color="#ffe7a6" stop-opacity=".4"/></linearGradient>
+        <filter id="fSel" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="3.6" result="d"/><feFlood style="flood-color:var(--eosin)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="fHov" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="2.6" result="d"/><feFlood style="flood-color:var(--accent)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="fOk" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="4.5" result="d"/><feFlood style="flood-color:var(--ok)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="fBad" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="4.5" result="d"/><feFlood style="flood-color:var(--bad)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <path class="link-dash js-only" d="M109 268 L131 239"/>
+      <g id="drawing" transform="translate(-4.8 261) scale(.64)">
+        <!-- percorso della luce -->
+        <g id="beam" opacity="0" pointer-events="none">
+        <polygon id="beamA" fill="url(#gBeam)"/>
+        <polygon id="beamB" fill="url(#gBeam)"/>
+        <polygon id="beamC" fill="url(#gBeam)"/>
+        </g>
+        <ellipse cx="320" cy="640" rx="170" ry="6" class="shadow"/>
+        <!-- braccio -->
+        <g class="part" data-part="braccio">
+        <path d="M395 582 L395 345 C395 285 386 243 362 203 L352 188 L402 160 C434 207 454 266 454 345 L454 582 Z" fill="url(#gEn)" class="edge"/>
+        <path d="M404 580 L404 350 C404 296 396 256 375 218" class="crease"/>
+        </g>
+        <!-- base -->
+        <g class="part" data-part="base">
+        <path d="M184 580 H460 Q472 580 474 592 L478 620 Q480 634 466 634 H174 Q160 634 162 620 L166 592 Q168 580 184 580 Z" fill="url(#gEnV)" class="edge"/>
+        <path d="M170 589 H474" class="crease"/>
+        </g>
+        <!-- sorgente luminosa -->
+        <g class="part" data-part="lampada">
+        <rect x="277" y="557" width="46" height="24" rx="4" fill="url(#gGr)"/>
+        <ellipse id="lampGlow" cx="300" cy="556" rx="40" ry="15" fill="url(#gGlow)" opacity="0"/>
+        <ellipse id="lampLens" cx="300" cy="557" rx="19" ry="4.5" class="lens"/>
+        </g>
+        <!-- interruttore -->
+        <g class="part" data-part="interruttore" id="pSwitch">
+        <rect x="184" y="594" width="54" height="30" class="hit"/>
+        <rect x="189" y="599" width="27" height="18" rx="3.5" fill="url(#gGr)"/>
+        <rect x="193" y="602" width="19" height="12" rx="2" class="rocker"/>
+        <text id="rockTxt" x="202.5" y="611.5" class="engr" style="fill:#e8ecef;font-size:8.5px">O</text>
+        <circle id="pilot" cx="228" cy="608" r="3.2" class="pilot"/>
+        </g>
+        <!-- regolatore intensità -->
+        <g class="part knobpart" data-part="intensita">
+        <circle cx="441" cy="607" r="15" fill="url(#gGr)"/>
+        <g id="dialRot" class="knurl" data-knurl="441,607,15,22,4"><line x1="452.0" y1="607.0" x2="455.4" y2="607.0"/><line x1="451.6" y1="610.1" x2="454.8" y2="611.1"/><line x1="450.3" y1="612.9" x2="453.1" y2="614.8"/><line x1="448.2" y1="615.3" x2="450.4" y2="617.9"/><line x1="445.6" y1="617.0" x2="447.0" y2="620.1"/><line x1="442.6" y1="617.9" x2="443.0" y2="621.3"/><line x1="439.4" y1="617.9" x2="439.0" y2="621.3"/><line x1="436.4" y1="617.0" x2="435.0" y2="620.1"/><line x1="433.8" y1="615.3" x2="431.6" y2="617.9"/><line x1="431.7" y1="612.9" x2="428.9" y2="614.8"/><line x1="430.4" y1="610.1" x2="427.2" y2="611.1"/><line x1="430.0" y1="607.0" x2="426.6" y2="607.0"/><line x1="430.4" y1="603.9" x2="427.2" y2="602.9"/><line x1="431.7" y1="601.1" x2="428.9" y2="599.2"/><line x1="433.8" y1="598.7" x2="431.6" y2="596.1"/><line x1="436.4" y1="597.0" x2="435.0" y2="593.9"/><line x1="439.4" y1="596.1" x2="439.0" y2="592.7"/><line x1="442.6" y1="596.1" x2="443.0" y2="592.7"/><line x1="445.6" y1="597.0" x2="447.0" y2="593.9"/><line x1="448.2" y1="598.7" x2="450.4" y2="596.1"/><line x1="450.3" y1="601.1" x2="453.1" y2="599.2"/><line x1="451.6" y1="603.9" x2="454.8" y2="602.9"/><circle class="mark" cx="441" cy="595.5" r="2"/></g>
+        <circle cx="441" cy="607" r="7.5" fill="url(#gCh)" class="edge thin"/>
+        </g>
+        <!-- tavolino e parti che si muovono con la messa a fuoco -->
+        <g id="stageAsm">
+        <rect x="391" y="300" width="14" height="58" rx="2" fill="url(#gGr)"/>
+        <rect x="318" y="350" width="86" height="8" rx="2" fill="url(#gGr)"/>
+        <g id="condAsm">
+        <g class="part" data-part="condensatore">
+        <rect x="282" y="318" width="36" height="34" rx="3" fill="url(#gGr)"/>
+        <rect x="284" y="323" width="32" height="5" fill="url(#gCh)" opacity=".75"/>
+        <ellipse cx="300" cy="318" rx="16" ry="3" class="lens"/>
+        </g>
+        <g class="part knobpart" data-part="diaframma">
+        <rect x="244" y="332" width="40" height="20" class="hit"/>
+        <rect x="278" y="338" width="44" height="8" rx="2" fill="url(#gCh)" class="edge thin"/>
+        <line id="leverLine" x1="280" y1="342" x2="258" y2="342" class="lever"/>
+        <circle id="leverKnob" cx="256" cy="342" r="4.2" fill="url(#gGr)"/>
+        </g>
+        </g>
+        <g class="part knobpart" data-part="viteCond">
+        <circle cx="336" cy="366" r="12" class="hit"/>
+        <circle cx="336" cy="366" r="8.5" fill="url(#gGr)"/>
+        <g id="condRot" class="knurl" data-knurl="336,366,8.5,14,2.5"><line x1="342.0" y1="366.0" x2="343.9" y2="366.0"/><line x1="341.4" y1="368.6" x2="343.1" y2="369.4"/><line x1="339.7" y1="370.7" x2="340.9" y2="372.2"/><line x1="337.3" y1="371.8" x2="337.8" y2="373.7"/><line x1="334.7" y1="371.8" x2="334.2" y2="373.7"/><line x1="332.3" y1="370.7" x2="331.1" y2="372.2"/><line x1="330.6" y1="368.6" x2="328.9" y2="369.4"/><line x1="330.0" y1="366.0" x2="328.1" y2="366.0"/><line x1="330.6" y1="363.4" x2="328.9" y2="362.6"/><line x1="332.3" y1="361.3" x2="331.1" y2="359.8"/><line x1="334.7" y1="360.2" x2="334.2" y2="358.3"/><line x1="337.3" y1="360.2" x2="337.8" y2="358.3"/><line x1="339.7" y1="361.3" x2="340.9" y2="359.8"/><line x1="341.4" y1="363.4" x2="343.1" y2="362.6"/><circle class="mark" cx="336" cy="359.5" r="1.3"/></g>
+        <circle cx="336" cy="366" r="3.6" fill="url(#gCh)"/>
+        </g>
+        <g class="part" data-part="tavolino">
+        <rect x="204" y="299" width="89" height="12" rx="2" fill="url(#gGr)"/>
+        <rect x="307" y="299" width="98" height="12" rx="2" fill="url(#gGr)"/>
+        <rect x="206" y="299.6" width="85" height="1.4" fill="#ffffff" opacity=".22"/>
+        <rect x="309" y="299.6" width="94" height="1.4" fill="#ffffff" opacity=".22"/>
+        </g>
+        <g class="part" data-part="traslatore">
+        <rect x="371" y="311" width="6" height="32" fill="url(#gGr)"/>
+        <rect x="362" y="320" width="24" height="10" rx="3" fill="url(#gGr)" class="edge thin"/>
+        <rect x="359" y="333" width="30" height="12" rx="3" fill="url(#gGr)" class="edge thin"/>
+        <path d="M366 321v8M370 321v8M374 321v8M378 321v8M382 321v8M363 334v10M367 334v10M371 334v10M375 334v10M379 334v10M383 334v10" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
+        </g>
+        <g class="part" data-part="vetrino" id="slideG">
+        <rect x="228" y="286" width="144" height="14" class="hit"/>
+        <rect x="232" y="295.5" width="136" height="3.5" rx=".8" class="glass"/>
+        <rect x="232.4" y="295.9" width="24" height="2.8" class="frost"/>
+        <rect id="specMark" x="289" y="294.7" width="22" height="1" fill="#333"/>
+        <rect x="284" y="294.1" width="32" height="1.3" class="glass"/>
+        <path id="oilDrop" d="M290 294.2 Q300 287.6 310 294.2 Z" class="oil"/>
+        <path id="slideCrack" d="M262 295.6 L268 298.9 M300 294.2 l-6 4.7 m6 -4.7 l5 4.8 M336 295.6 l4 3.3" class="crackline"/>
+        </g>
+        <g class="part" data-part="pinzette">
+        <g id="clipL">
+        <rect x="207" y="290" width="14" height="9" rx="2" fill="url(#gGr)"/>
+        <path id="clipLArm" d="M214 292.2 L252 294.4 L252 295.5 L214 294.6 Z" fill="url(#gCh)" class="edge thin"/>
+        </g>
+        <g id="clipR">
+        <rect x="379" y="290" width="14" height="9" rx="2" fill="url(#gGr)"/>
+        <path id="clipRArm" d="M386 292.2 L348 294.4 L348 295.5 L386 294.6 Z" fill="url(#gCh)" class="edge thin"/>
+        </g>
+        </g>
+        </g>
+        <!-- viti di messa a fuoco -->
+        <g class="part" data-part="macro" id="pMacro">
+        <circle cx="424" cy="382" r="31" fill="url(#gGr)"/>
+        <g id="macroRot" class="knurl" data-knurl="424,382,31,44,6"><line x1="449.0" y1="382.0" x2="454.4" y2="382.0"/><line x1="448.7" y1="385.6" x2="454.1" y2="386.3"/><line x1="448.0" y1="389.0" x2="453.2" y2="390.6"/><line x1="446.7" y1="392.4" x2="451.7" y2="394.6"/><line x1="445.0" y1="395.5" x2="449.6" y2="398.4"/><line x1="442.9" y1="398.4" x2="447.0" y2="401.9"/><line x1="440.4" y1="400.9" x2="443.9" y2="405.0"/><line x1="437.5" y1="403.0" x2="440.4" y2="407.6"/><line x1="434.4" y1="404.7" x2="436.6" y2="409.7"/><line x1="431.0" y1="406.0" x2="432.6" y2="411.2"/><line x1="427.6" y1="406.7" x2="428.3" y2="412.1"/><line x1="424.0" y1="407.0" x2="424.0" y2="412.4"/><line x1="420.4" y1="406.7" x2="419.7" y2="412.1"/><line x1="417.0" y1="406.0" x2="415.4" y2="411.2"/><line x1="413.6" y1="404.7" x2="411.4" y2="409.7"/><line x1="410.5" y1="403.0" x2="407.6" y2="407.6"/><line x1="407.6" y1="400.9" x2="404.1" y2="405.0"/><line x1="405.1" y1="398.4" x2="401.0" y2="401.9"/><line x1="403.0" y1="395.5" x2="398.4" y2="398.4"/><line x1="401.3" y1="392.4" x2="396.3" y2="394.6"/><line x1="400.0" y1="389.0" x2="394.8" y2="390.6"/><line x1="399.3" y1="385.6" x2="393.9" y2="386.3"/><line x1="399.0" y1="382.0" x2="393.6" y2="382.0"/><line x1="399.3" y1="378.4" x2="393.9" y2="377.7"/><line x1="400.0" y1="375.0" x2="394.8" y2="373.4"/><line x1="401.3" y1="371.6" x2="396.3" y2="369.4"/><line x1="403.0" y1="368.5" x2="398.4" y2="365.6"/><line x1="405.1" y1="365.6" x2="401.0" y2="362.1"/><line x1="407.6" y1="363.1" x2="404.1" y2="359.0"/><line x1="410.5" y1="361.0" x2="407.6" y2="356.4"/><line x1="413.6" y1="359.3" x2="411.4" y2="354.3"/><line x1="417.0" y1="358.0" x2="415.4" y2="352.8"/><line x1="420.4" y1="357.3" x2="419.7" y2="351.9"/><line x1="424.0" y1="357.0" x2="424.0" y2="351.6"/><line x1="427.6" y1="357.3" x2="428.3" y2="351.9"/><line x1="431.0" y1="358.0" x2="432.6" y2="352.8"/><line x1="434.4" y1="359.3" x2="436.6" y2="354.3"/><line x1="437.5" y1="361.0" x2="440.4" y2="356.4"/><line x1="440.4" y1="363.1" x2="443.9" y2="359.0"/><line x1="442.9" y1="365.6" x2="447.0" y2="362.1"/><line x1="445.0" y1="368.5" x2="449.6" y2="365.6"/><line x1="446.7" y1="371.6" x2="451.7" y2="369.4"/><line x1="448.0" y1="375.0" x2="453.2" y2="373.4"/><line x1="448.7" y1="378.4" x2="454.1" y2="377.7"/><circle class="mark" cx="424" cy="356" r="2.6"/></g>
+        <circle cx="424" cy="382" r="17" fill="url(#gCh)" class="edge thin"/>
+        <circle cx="424" cy="382" r="4" fill="url(#gGr)"/>
+        </g>
+        <g class="part" data-part="micro" id="pMicro">
+        <circle cx="424" cy="458" r="17" fill="url(#gGr)"/>
+        <g id="microRot" class="knurl" data-knurl="424,458,17,26,4"><line x1="437.0" y1="458.0" x2="440.4" y2="458.0"/><line x1="436.6" y1="461.1" x2="439.9" y2="461.9"/><line x1="435.5" y1="464.0" x2="438.5" y2="465.6"/><line x1="433.7" y1="466.6" x2="436.3" y2="468.9"/><line x1="431.4" y1="468.7" x2="433.3" y2="471.5"/><line x1="428.6" y1="470.2" x2="429.8" y2="473.3"/><line x1="425.6" y1="470.9" x2="426.0" y2="474.3"/><line x1="422.4" y1="470.9" x2="422.0" y2="474.3"/><line x1="419.4" y1="470.2" x2="418.2" y2="473.3"/><line x1="416.6" y1="468.7" x2="414.7" y2="471.5"/><line x1="414.3" y1="466.6" x2="411.7" y2="468.9"/><line x1="412.5" y1="464.0" x2="409.5" y2="465.6"/><line x1="411.4" y1="461.1" x2="408.1" y2="461.9"/><line x1="411.0" y1="458.0" x2="407.6" y2="458.0"/><line x1="411.4" y1="454.9" x2="408.1" y2="454.1"/><line x1="412.5" y1="452.0" x2="409.5" y2="450.4"/><line x1="414.3" y1="449.4" x2="411.7" y2="447.1"/><line x1="416.6" y1="447.3" x2="414.7" y2="444.5"/><line x1="419.4" y1="445.8" x2="418.2" y2="442.7"/><line x1="422.4" y1="445.1" x2="422.0" y2="441.7"/><line x1="425.6" y1="445.1" x2="426.0" y2="441.7"/><line x1="428.6" y1="445.8" x2="429.8" y2="442.7"/><line x1="431.4" y1="447.3" x2="433.3" y2="444.5"/><line x1="433.7" y1="449.4" x2="436.3" y2="447.1"/><line x1="435.5" y1="452.0" x2="438.5" y2="450.4"/><line x1="436.6" y1="454.9" x2="439.9" y2="454.1"/><circle class="mark" cx="424" cy="444" r="1.8"/></g>
+        <circle cx="424" cy="458" r="9" fill="url(#gCh)" class="edge thin"/>
+        </g>
+        <!-- obiettivi (generati) -->
+        <g id="objectives"><g class="objective part" data-part="obiettivi" data-obj="0" id="obj0" transform="rotate(0 300 200)" style="opacity:1"><rect x="287" y="200" width="26" height="8" fill="url(#gGr)"/><path d="M287.5 208 H312.5 L310.5 231 H289.5 Z" fill="url(#gCh)" class="edge thin"/><rect x="288.1" y="217.7" width="23.8" height="4" fill="#d6392f" class="ring"/><text x="300" y="229" class="objtxt">4×</text><path d="M289.5 231 H310.5 L308.5 244 Q300 245.6 291.5 244 Z" fill="url(#gCh)" class="edge thin"/><ellipse cx="300" cy="244.3" rx="7" ry="0.9" class="flens"/></g><g class="objective part" data-part="obiettivi" data-obj="1" id="obj1" transform="rotate(30 300 200)" style="opacity:1"><rect x="287" y="200" width="26" height="8" fill="url(#gGr)"/><path d="M287.5 208 H312.5 L309.5 251 H290.5 Z" fill="url(#gCh)" class="edge thin"/><rect x="288.1" y="223.7" width="23.8" height="4" fill="#e9c22b" class="ring"/><text x="300" y="242" class="objtxt">10×</text><path d="M290.5 251 H309.5 L306 264 Q300 265.6 294 264 Z" fill="url(#gCh)" class="edge thin"/><ellipse cx="300" cy="264.3" rx="5" ry="0.9" class="flens"/></g><g class="objective part" data-part="obiettivi" data-obj="2" id="obj2" transform="rotate(0 300 200)" style="opacity:0"><rect x="287" y="200" width="26" height="8" fill="url(#gGr)"/><path d="M287.5 208 H312.5 L308.5 271 H291.5 Z" fill="url(#gCh)" class="edge thin"/><rect x="288.1" y="229.7" width="23.8" height="4" fill="#49a7dd" class="ring"/><text x="300" y="255" class="objtxt">40×</text><path d="M291.5 271 H308.5 L304.5 284 Q300 285.6 295.5 284 Z" fill="url(#gCh)" class="edge thin"/><ellipse cx="300" cy="284.3" rx="3.6" ry="0.9" class="flens"/></g><g class="objective part" data-part="obiettivi" data-obj="3" id="obj3" transform="rotate(-30 300 200)" style="opacity:1"><rect x="287" y="200" width="26" height="8" fill="url(#gGr)"/><path d="M287.5 208 H312.5 L307.5 277.7 H292.5 Z" fill="url(#gCh)" class="edge thin"/><rect x="288.1" y="231.7" width="23.8" height="4" fill="#f3f3f3" class="ring"/><rect x="293" y="273.7" width="14" height="1.6" fill="#1b1b1b"/><text x="300" y="259.4" class="objtxt">100×</text><path d="M292.5 277.7 H307.5 L303.5 290.7 Q300 292.3 296.5 290.7 Z" fill="url(#gCh)" class="edge thin"/><ellipse cx="300" cy="291" rx="2.8" ry="0.9" class="flens"/></g></g>
+        <!-- revolver -->
+        <g class="part" data-part="revolver">
+        <path d="M250 176 H350 L343 197 Q341 203 334 203 H266 Q259 203 257 197 Z" fill="url(#gCh)" class="edge"/>
+        <path d="M262 186v8M267 186v8M272 186v8M277 186v8M282 186v8M287 186v8M292 186v8M297 186v8M302 186v8M307 186v8M312 186v8M317 186v8M322 186v8M327 186v8M332 186v8M337 186v8" stroke="rgba(0,0,0,.22)" stroke-width="1.2"/>
+        </g>
+        <!-- tubo ottico e testata -->
+        <g class="part" data-part="tubo">
+        <g transform="translate(276 128) rotate(-42)">
+        <rect x="-17" y="-98" width="34" height="104" fill="url(#gEn)" class="edge"/>
+        <rect x="-19" y="-100" width="38" height="9" rx="2" fill="url(#gGr)"/>
+        </g>
+        <path d="M248 120 H372 Q394 120 394 142 V158 Q394 178 374 178 H250 Q236 178 236 164 V134 Q236 120 248 120 Z" fill="url(#gEnV)" class="edge"/>
+        <path d="M246 128 H380" class="crease"/>
+        </g>
+        <!-- oculare -->
+        <g class="part" data-part="oculare">
+        <g transform="translate(276 128) rotate(-42)">
+        <rect x="-20" y="-150" width="40" height="56" class="hit"/>
+        <rect x="-14" y="-132" width="28" height="34" fill="url(#gCh)" class="edge thin"/>
+        <rect x="-17" y="-147" width="34" height="17" rx="4" class="rubber"/>
+        <text id="eyeTxt" x="0" y="-111" class="engr">10×</text>
+        </g>
+        </g>
+      </g>
+      <g id="labels">
+        <g class="lbl" data-part="oculare" data-side="L" data-cy="284" data-edge="89" tabindex="0" role="button" aria-label="Oculare"><line class="ld" x1="89" y1="284" x2="125.8" y2="290.4"/><circle class="la" cx="125.8" cy="290.4" r="1.8"/><rect class="lh" x="30.2" y="270" width="62.8" height="28"/><rect class="lb" x="34.2" y="274.2" width="54.8" height="19.5" rx="5"/><text x="84" y="288.3" text-anchor="end">Oculare</text></g>
+        <g class="lbl" data-part="tubo" data-side="L" data-cy="318" data-edge="89" tabindex="0" role="button" aria-label="Tubo ottico"><line class="ld" x1="89" y1="318" x2="152.6" y2="321.2"/><circle class="la" cx="152.6" cy="321.2" r="1.8"/><rect class="lh" x="4.6" y="304" width="88.4" height="28"/><rect class="lb" x="8.6" y="308.2" width="80.4" height="19.5" rx="5"/><text x="84" y="322.3" text-anchor="end">Tubo ottico</text></g>
+        <g class="lbl" data-part="revolver" data-side="L" data-cy="362" data-edge="89" tabindex="0" role="button" aria-label="Revolver portaobiettivi"><line class="ld" x1="89" y1="362" x2="159.7" y2="380.7"/><circle class="la" cx="159.7" cy="380.7" r="1.8"/><rect class="lh" x="23.8" y="348" width="69.2" height="28"/><rect class="lb" x="27.8" y="352.2" width="61.2" height="19.5" rx="5"/><text x="84" y="366.3" text-anchor="end">Revolver</text></g>
+        <g class="lbl" data-part="obiettivi" data-side="L" data-cy="398" data-edge="89" tabindex="0" role="button" aria-label="Obiettivi"><line class="ld" x1="89" y1="398" x2="179.5" y2="404.8"/><circle class="la" cx="179.5" cy="404.8" r="1.8"/><rect class="lh" x="17.4" y="384" width="75.6" height="28"/><rect class="lb" x="21.4" y="388.2" width="67.6" height="19.5" rx="5"/><text x="84" y="402.3" text-anchor="end">Obiettivi</text></g>
+        <g class="lbl" data-part="pinzette" data-side="L" data-cy="432" data-edge="89" tabindex="0" role="button" aria-label="Pinzette fermavetrino"><line class="ld" x1="89" y1="432" x2="132.2" y2="448.5"/><circle class="la" cx="132.2" cy="448.5" r="1.8"/><rect class="lh" x="23.8" y="418" width="69.2" height="28"/><rect class="lb" x="27.8" y="422.2" width="61.2" height="19.5" rx="5"/><text x="84" y="436.3" text-anchor="end">Pinzette</text></g>
+        <g class="lbl" data-part="tavolino" data-side="L" data-cy="460" data-edge="89" tabindex="0" role="button" aria-label="Tavolino portaoggetti"><line class="ld" x1="89" y1="460" x2="127" y2="456.8"/><circle class="la" cx="127" cy="456.8" r="1.8"/><rect class="lh" x="23.8" y="446" width="69.2" height="28"/><rect class="lb" x="27.8" y="450.2" width="61.2" height="19.5" rx="5"/><text x="84" y="464.3" text-anchor="end">Tavolino</text></g>
+        <g class="lbl" data-part="condensatore" data-side="L" data-cy="490" data-edge="89" tabindex="0" role="button" aria-label="Condensatore"><line class="ld" x1="89" y1="490" x2="176.3" y2="472.2"/><circle class="la" cx="176.3" cy="472.2" r="1.8"/><rect class="lh" x="-1.8" y="476" width="94.8" height="28"/><rect class="lb" x="2.2" y="480.2" width="86.8" height="19.5" rx="5"/><text x="84" y="494.3" text-anchor="end">Condensatore</text></g>
+        <g class="lbl" data-part="diaframma" data-side="L" data-cy="524" data-edge="89" tabindex="0" role="button" aria-label="Diaframma a iride"><line class="ld" x1="89" y1="524" x2="158.3" y2="479.9"/><circle class="la" cx="158.3" cy="479.9" r="1.8"/><rect class="lh" x="17.4" y="503.5" width="75.6" height="41"/><rect class="lb" x="21.4" y="507.5" width="67.6" height="33" rx="5"/><text x="84" y="521.4" text-anchor="end"><tspan x="84" y="521.4">Diaframma</tspan><tspan x="84" y="534.9">a iride</tspan></text></g>
+        <g class="lbl" data-part="viteCond" data-side="L" data-cy="562" data-edge="89" tabindex="0" role="button" aria-label="Vite del condensatore"><line class="ld" x1="89" y1="562" x2="204.5" y2="495.2"/><circle class="la" cx="204.5" cy="495.2" r="1.8"/><rect class="lh" x="-1.8" y="541.5" width="94.8" height="41"/><rect class="lb" x="2.2" y="545.5" width="86.8" height="33" rx="5"/><text x="84" y="559.4" text-anchor="end"><tspan x="84" y="559.4">Vite del</tspan><tspan x="84" y="572.9">condensatore</tspan></text></g>
+        <g class="lbl" data-part="lampada" data-side="L" data-cy="608" data-edge="89" tabindex="0" role="button" aria-label="Sorgente luminosa"><line class="ld" x1="89" y1="608" x2="173.8" y2="623.2"/><circle class="la" cx="173.8" cy="623.2" r="1.8"/><rect class="lh" x="23.8" y="587.5" width="69.2" height="41"/><rect class="lb" x="27.8" y="591.5" width="61.2" height="33" rx="5"/><text x="84" y="605.4" text-anchor="end"><tspan x="84" y="605.4">Sorgente</tspan><tspan x="84" y="618.9">luminosa</tspan></text></g>
+        <g class="lbl" data-part="interruttore" data-side="L" data-cy="660" data-edge="89" tabindex="0" role="button" aria-label="Interruttore"><line class="ld" x1="89" y1="660" x2="116.2" y2="650.1"/><circle class="la" cx="116.2" cy="650.1" r="1.8"/><rect class="lh" x="-1.8" y="646" width="94.8" height="28"/><rect class="lb" x="2.2" y="650.2" width="86.8" height="19.5" rx="5"/><text x="84" y="664.3" text-anchor="end">Interruttore</text></g>
+        <g class="lbl" data-part="braccio" data-side="R" data-cy="400" data-edge="311" tabindex="0" role="button" aria-label="Braccio (stativo)"><line class="ld" x1="311" y1="400" x2="277.4" y2="428.7"/><circle class="la" cx="277.4" cy="428.7" r="1.8"/><rect class="lh" x="307" y="386" width="62.8" height="28"/><rect class="lb" x="311" y="390.2" width="54.8" height="19.5" rx="5"/><text x="316" y="404.3" text-anchor="start">Braccio</text></g>
+        <g class="lbl" data-part="vetrino" data-side="R" data-cy="432" data-edge="311" tabindex="0" role="button" aria-label="Vetrino"><line class="ld" x1="311" y1="432" x2="229.4" y2="451.1"/><circle class="la" cx="229.4" cy="451.1" r="1.8"/><rect class="lh" x="307" y="418" width="62.8" height="28"/><rect class="lb" x="311" y="422.2" width="54.8" height="19.5" rx="5"/><text x="316" y="436.3" text-anchor="start">Vetrino</text></g>
+        <g class="lbl" data-part="traslatore" data-side="R" data-cy="466" data-edge="311" tabindex="0" role="button" aria-label="Traslatore"><line class="ld" x1="311" y1="466" x2="243.5" y2="478"/><circle class="la" cx="243.5" cy="478" r="1.8"/><rect class="lh" x="307" y="452" width="82" height="28"/><rect class="lb" x="311" y="456.2" width="74" height="19.5" rx="5"/><text x="316" y="470.3" text-anchor="start">Traslatore</text></g>
+        <g class="lbl" data-part="macro" data-side="R" data-cy="514" data-edge="311" tabindex="0" role="button" aria-label="Vite macrometrica"><line class="ld" x1="311" y1="514" x2="286.4" y2="505.5"/><circle class="la" cx="286.4" cy="505.5" r="1.8"/><rect class="lh" x="307" y="493.5" width="94.8" height="41"/><rect class="lb" x="311" y="497.5" width="86.8" height="33" rx="5"/><text x="316" y="511.4" text-anchor="start"><tspan x="316" y="511.4">Vite</tspan><tspan x="316" y="524.9">macrometrica</tspan></text></g>
+        <g class="lbl" data-part="micro" data-side="R" data-cy="570" data-edge="311" tabindex="0" role="button" aria-label="Vite micrometrica"><line class="ld" x1="311" y1="570" x2="277.4" y2="554.1"/><circle class="la" cx="277.4" cy="554.1" r="1.8"/><rect class="lh" x="307" y="549.5" width="94.8" height="41"/><rect class="lb" x="311" y="553.5" width="86.8" height="33" rx="5"/><text x="316" y="567.4" text-anchor="start"><tspan x="316" y="567.4">Vite</tspan><tspan x="316" y="580.9">micrometrica</tspan></text></g>
+        <g class="lbl" data-part="intensita" data-side="R" data-cy="626" data-edge="311" tabindex="0" role="button" aria-label="Regolatore dell’intensità luminosa"><line class="ld" x1="311" y1="626" x2="287" y2="649.5"/><circle class="la" cx="287" cy="649.5" r="1.8"/><rect class="lh" x="307" y="605.5" width="82" height="41"/><rect class="lb" x="311" y="609.5" width="74" height="33" rx="5"/><text x="316" y="623.4" text-anchor="start"><tspan x="316" y="623.4">Regolatore</tspan><tspan x="316" y="636.9">della luce</tspan></text></g>
+        <g class="lbl" data-part="base" data-side="R" data-cy="676" data-edge="311" tabindex="0" role="button" aria-label="Base (piede)"><line class="ld" x1="311" y1="676" x2="293.4" y2="662.9"/><circle class="la" cx="293.4" cy="662.9" r="1.8"/><rect class="lh" x="307" y="662" width="43.6" height="28"/><rect class="lb" x="311" y="666.2" width="35.6" height="19.5" rx="5"/><text x="316" y="680.3" text-anchor="start">Base</text></g>
+      </g>
+    </svg>
+
+    <div class="ocular-wrap js-only"><div class="ocular" id="ocular" role="img" aria-label="Immagine vista attraverso l’oculare">
+      <canvas class="view" id="view"></canvas>
+      <div class="vig"></div>
+      <div class="scalebar" id="scalebar" hidden><span id="scaleLine"></span><b id="scaleTxt"></b></div>
+    </div></div>
+    <div class="ro ro-l js-only"><span class="eyebrow">Nell’oculare</span><b id="slideName">Lettera «e»</b></div>
+    <div class="ro ro-r js-only"><span class="eyebrow">Campo visivo</span><b id="rField">Ø 4,5 mm</b><span class="pill ok" id="rLight">luce buona</span></div>
+  </div>
+  <p class="scene-hint js-only">Tocca un nome sul disegno: si apre la spiegazione con il comando per usare quella parte.</p>
+
+  <aside class="sheet js-only" id="sheet" aria-labelledby="shName">
+    <div class="sh-grip" aria-hidden="true"></div>
+    <div class="sh-head">
+      <div class="sh-titles"><p class="eyebrow" id="shCat">Guida</p><h2 id="shName">Il microscopio ottico</h2></div>
+      <div class="sh-nav">
+        <button class="iconbtn" id="shPrev" aria-label="Parte precedente">‹</button>
+        <button class="iconbtn" id="shNext" aria-label="Parte successiva">›</button>
+        <button class="iconbtn" id="shClose" aria-label="Chiudi">✕</button>
+      </div>
+      <p class="sh-status" id="shStatus" role="status" aria-live="polite" hidden><i></i><span id="shStatusTxt"></span></p>
     </div>
-    <nav class="modes" role="tablist" aria-label="Modalità">
-      <button role="tab" id="tab-esplora" data-mode="esplora" aria-selected="true" aria-controls="pane-esplora">Conosci le parti</button>
-      <button role="tab" id="tab-usa" data-mode="usa" aria-selected="false" aria-controls="pane-usa">Usa il microscopio</button>
-      <button role="tab" id="tab-quiz" data-mode="quiz" aria-selected="false" aria-controls="pane-quiz">Quiz</button>
-    </nav>
-  </header>
+    <div id="shPart" hidden>
+      <p class="what" id="shWhat"></p>
+      <div class="ctl-slot" id="ctlSlot" hidden></div>
+      <details class="how" id="shHowBox"><summary>Come si usa</summary><p id="shHow"></p><p class="note" id="shNote"></p></details>
+    </div>
+    <div class="sh-guide" id="shGuide">
+      <p>Il microscopio ottico usa la luce e due sistemi di lenti, l’<b>obiettivo</b> e l’<b>oculare</b>, per ingrandire ciò che è troppo piccolo per l’occhio nudo.</p>
+      <p class="formula">ingrandimento totale = oculare × obiettivo<br>esempio: 10× × 40× = 400×</p>
+      <p>Tocca un nome sul disegno: si apre la spiegazione con il comando per usare quella parte. Il cerchio in alto mostra cosa vedi nell’oculare.</p>
+      <h3>Le parti</h3>
+      <div class="groups" id="partGroups"></div>
+      <h3>Come si usa, passo per passo</h3>
+      <ol class="steps" id="procList"></ol>
+      <div class="proc-err" id="procErr"></div>
+      <div class="btnrow"><button class="btn primary" id="procStart">Esercitati da zero</button><button class="btn" id="quizStartBtn">Quiz: trova le parti</button></div>
+    </div>
+  </aside>
+</main>
 
-  <main class="bench">
-    <!-- ===== Strumento ===== -->
-    <section class="col col-scope" aria-label="Disegno del microscopio">
-      <div class="card scope-card" id="scopeCard">
-        <svg id="scope" class="show-labels" viewBox="0 0 640 660" aria-labelledby="scopeTitle">
-          <title id="scopeTitle">Microscopio ottico composto visto di lato. Tocca una parte.</title>
-          <defs>
-            <linearGradient id="gEn" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--en1)"/><stop offset=".6" style="stop-color:var(--en2)"/><stop offset="1" style="stop-color:var(--en3)"/></linearGradient>
-            <linearGradient id="gEnV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--en1)"/><stop offset=".55" style="stop-color:var(--en2)"/><stop offset="1" style="stop-color:var(--en3)"/></linearGradient>
-            <linearGradient id="gGr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--gr1)"/><stop offset="1" style="stop-color:var(--gr2)"/></linearGradient>
-            <linearGradient id="gCh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" style="stop-color:var(--ch1)"/><stop offset=".3" style="stop-color:var(--ch2)"/><stop offset=".62" style="stop-color:var(--ch3)"/><stop offset=".86" style="stop-color:var(--ch2)"/><stop offset="1" style="stop-color:var(--ch1)"/></linearGradient>
-            <radialGradient id="gGlow"><stop offset="0" stop-color="#fff4c6" stop-opacity="1"/><stop offset="1" stop-color="#ffd25e" stop-opacity="0"/></radialGradient>
-            <linearGradient id="gBeam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffdc7a" stop-opacity=".7"/><stop offset="1" stop-color="#ffe7a6" stop-opacity=".4"/></linearGradient>
-            <filter id="fSel" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="2.4" result="d"/><feFlood style="flood-color:var(--eosin)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <filter id="fHov" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="1.8" result="d"/><feFlood style="flood-color:var(--accent)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <filter id="fOk" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d"/><feFlood style="flood-color:var(--ok)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <filter id="fBad" x="-30%" y="-30%" width="160%" height="160%"><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="d"/><feFlood style="flood-color:var(--bad)"/><feComposite in2="d" operator="in" result="o"/><feMerge><feMergeNode in="o"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          </defs>
-
-          <!-- percorso della luce -->
-          <g id="beam" opacity="0" pointer-events="none">
-            <polygon id="beamA" fill="url(#gBeam)"/>
-            <polygon id="beamB" fill="url(#gBeam)"/>
-            <polygon id="beamC" fill="url(#gBeam)"/>
-          </g>
-
-          <ellipse cx="320" cy="640" rx="170" ry="6" class="shadow"/>
-
-          <!-- braccio -->
-          <g class="part" data-part="braccio">
-            <path d="M395 582 L395 345 C395 285 386 243 362 203 L352 188 L402 160 C434 207 454 266 454 345 L454 582 Z" fill="url(#gEn)" class="edge"/>
-            <path d="M404 580 L404 350 C404 296 396 256 375 218" class="crease"/>
-          </g>
-
-          <!-- base -->
-          <g class="part" data-part="base">
-            <path d="M184 580 H460 Q472 580 474 592 L478 620 Q480 634 466 634 H174 Q160 634 162 620 L166 592 Q168 580 184 580 Z" fill="url(#gEnV)" class="edge"/>
-            <path d="M170 589 H474" class="crease"/>
-          </g>
-
-          <!-- sorgente luminosa -->
-          <g class="part" data-part="lampada">
-            <rect x="277" y="557" width="46" height="24" rx="4" fill="url(#gGr)"/>
-            <ellipse id="lampGlow" cx="300" cy="556" rx="40" ry="15" fill="url(#gGlow)" opacity="0"/>
-            <ellipse id="lampLens" cx="300" cy="557" rx="19" ry="4.5" class="lens"/>
-          </g>
-
-          <!-- interruttore -->
-          <g class="part" data-part="interruttore" id="pSwitch">
-            <rect x="184" y="594" width="54" height="30" class="hit"/>
-            <rect x="189" y="599" width="27" height="18" rx="3.5" fill="url(#gGr)"/>
-            <rect x="193" y="602" width="19" height="12" rx="2" class="rocker"/>
-            <text id="rockTxt" x="202.5" y="611.5" class="engr" style="fill:#e8ecef;font-size:8.5px">O</text>
-            <circle id="pilot" cx="228" cy="608" r="3.2" class="pilot"/>
-          </g>
-
-          <!-- regolatore intensità -->
-          <g class="part knobpart" data-part="intensita">
-            <circle cx="441" cy="607" r="15" fill="url(#gGr)"/>
-            <g id="dialRot" class="knurl" data-knurl="441,607,15,22,4"><circle class="mark" cx="441" cy="595.5" r="2"/></g>
-            <circle cx="441" cy="607" r="7.5" fill="url(#gCh)" class="edge thin"/>
-          </g>
-
-          <!-- tavolino e parti che si muovono con la messa a fuoco -->
-          <g id="stageAsm">
-            <rect x="391" y="300" width="14" height="58" rx="2" fill="url(#gGr)"/>
-            <rect x="318" y="350" width="86" height="8" rx="2" fill="url(#gGr)"/>
-            <g id="condAsm">
-              <g class="part" data-part="condensatore">
-                <rect x="282" y="318" width="36" height="34" rx="3" fill="url(#gGr)"/>
-                <rect x="284" y="323" width="32" height="5" fill="url(#gCh)" opacity=".75"/>
-                <ellipse cx="300" cy="318" rx="16" ry="3" class="lens"/>
-              </g>
-              <g class="part knobpart" data-part="diaframma">
-                <rect x="244" y="332" width="40" height="20" class="hit"/>
-                <rect x="278" y="338" width="44" height="8" rx="2" fill="url(#gCh)" class="edge thin"/>
-                <line id="leverLine" x1="280" y1="342" x2="258" y2="342" class="lever"/>
-                <circle id="leverKnob" cx="256" cy="342" r="4.2" fill="url(#gGr)"/>
-              </g>
-            </g>
-            <g class="part knobpart" data-part="viteCond">
-              <circle cx="336" cy="366" r="12" class="hit"/>
-              <circle cx="336" cy="366" r="8.5" fill="url(#gGr)"/>
-              <g id="condRot" class="knurl" data-knurl="336,366,8.5,14,2.5"><circle class="mark" cx="336" cy="359.5" r="1.3"/></g>
-              <circle cx="336" cy="366" r="3.6" fill="url(#gCh)"/>
-            </g>
-            <g class="part" data-part="tavolino">
-              <rect x="204" y="299" width="89" height="12" rx="2" fill="url(#gGr)"/>
-              <rect x="307" y="299" width="98" height="12" rx="2" fill="url(#gGr)"/>
-              <rect x="206" y="299.6" width="85" height="1.4" fill="#ffffff" opacity=".22"/>
-              <rect x="309" y="299.6" width="94" height="1.4" fill="#ffffff" opacity=".22"/>
-            </g>
-            <g class="part" data-part="traslatore">
-              <rect x="371" y="311" width="6" height="32" fill="url(#gGr)"/>
-              <rect x="362" y="320" width="24" height="10" rx="3" fill="url(#gGr)" class="edge thin"/>
-              <rect x="359" y="333" width="30" height="12" rx="3" fill="url(#gGr)" class="edge thin"/>
-              <path d="M366 321v8M370 321v8M374 321v8M378 321v8M382 321v8M363 334v10M367 334v10M371 334v10M375 334v10M379 334v10M383 334v10" stroke="rgba(255,255,255,.25)" stroke-width="1"/>
-            </g>
-            <g class="part" data-part="vetrino" id="slideG">
-              <rect x="228" y="286" width="144" height="14" class="hit"/>
-              <rect x="232" y="295.5" width="136" height="3.5" rx=".8" class="glass"/>
-              <rect x="232.4" y="295.9" width="24" height="2.8" class="frost"/>
-              <rect id="specMark" x="289" y="294.7" width="22" height="1" fill="#333"/>
-              <rect x="284" y="294.1" width="32" height="1.3" class="glass"/>
-              <path id="oilDrop" d="M290 294.2 Q300 287.6 310 294.2 Z" class="oil"/>
-              <path id="slideCrack" d="M262 295.6 L268 298.9 M300 294.2 l-6 4.7 m6 -4.7 l5 4.8 M336 295.6 l4 3.3" class="crackline"/>
-            </g>
-            <g class="part" data-part="pinzette">
-              <g id="clipL">
-                <rect x="207" y="290" width="14" height="9" rx="2" fill="url(#gGr)"/>
-                <path id="clipLArm" d="M214 292.2 L252 294.4 L252 295.5 L214 294.6 Z" fill="url(#gCh)" class="edge thin"/>
-              </g>
-              <g id="clipR">
-                <rect x="379" y="290" width="14" height="9" rx="2" fill="url(#gGr)"/>
-                <path id="clipRArm" d="M386 292.2 L348 294.4 L348 295.5 L386 294.6 Z" fill="url(#gCh)" class="edge thin"/>
-              </g>
-            </g>
-          </g>
-
-          <!-- viti di messa a fuoco -->
-          <g class="part" data-part="macro" id="pMacro">
-            <circle cx="424" cy="382" r="31" fill="url(#gGr)"/>
-            <g id="macroRot" class="knurl" data-knurl="424,382,31,44,6"><circle class="mark" cx="424" cy="356" r="2.6"/></g>
-            <circle cx="424" cy="382" r="17" fill="url(#gCh)" class="edge thin"/>
-            <circle cx="424" cy="382" r="4" fill="url(#gGr)"/>
-          </g>
-          <g class="part" data-part="micro" id="pMicro">
-            <circle cx="424" cy="458" r="17" fill="url(#gGr)"/>
-            <g id="microRot" class="knurl" data-knurl="424,458,17,26,4"><circle class="mark" cx="424" cy="444" r="1.8"/></g>
-            <circle cx="424" cy="458" r="9" fill="url(#gCh)" class="edge thin"/>
-          </g>
-
-          <!-- obiettivi (generati) -->
-          <g id="objectives"></g>
-
-          <!-- revolver -->
-          <g class="part" data-part="revolver">
-            <path d="M250 176 H350 L343 197 Q341 203 334 203 H266 Q259 203 257 197 Z" fill="url(#gCh)" class="edge"/>
-            <path d="M262 186v8M267 186v8M272 186v8M277 186v8M282 186v8M287 186v8M292 186v8M297 186v8M302 186v8M307 186v8M312 186v8M317 186v8M322 186v8M327 186v8M332 186v8M337 186v8" stroke="rgba(0,0,0,.22)" stroke-width="1.2"/>
-          </g>
-
-          <!-- tubo ottico e testata -->
-          <g class="part" data-part="tubo">
-            <g transform="translate(276 128) rotate(-42)">
-              <rect x="-17" y="-98" width="34" height="104" fill="url(#gEn)" class="edge"/>
-              <rect x="-19" y="-100" width="38" height="9" rx="2" fill="url(#gGr)"/>
-            </g>
-            <path d="M248 120 H372 Q394 120 394 142 V158 Q394 178 374 178 H250 Q236 178 236 164 V134 Q236 120 248 120 Z" fill="url(#gEnV)" class="edge"/>
-            <path d="M246 128 H380" class="crease"/>
-          </g>
-
-          <!-- oculare -->
-          <g class="part" data-part="oculare">
-            <g transform="translate(276 128) rotate(-42)">
-              <rect x="-20" y="-150" width="40" height="56" class="hit"/>
-              <rect x="-14" y="-132" width="28" height="34" fill="url(#gCh)" class="edge thin"/>
-              <rect x="-17" y="-147" width="34" height="17" rx="4" class="rubber"/>
-              <text id="eyeTxt" x="0" y="-111" class="engr">10×</text>
-            </g>
-          </g>
-
-          <g id="labels"></g>
-        </svg>
-        <div class="tip" id="tip" hidden></div>
-        <ol class="legend" id="legend" hidden aria-label="Legenda delle parti"></ol>
-        <div class="scope-foot">
-          <label class="check" for="optLabels"><input type="checkbox" id="optLabels" checked> Mostra i nomi delle parti</label>
-          <span class="small" id="scopeHint">Tocca una parte per saperne di più</span>
-        </div>
+<!-- comandi: vengono spostati nel pannello della parte scelta -->
+<div id="panels" hidden>
+  <div class="panel" id="pn-luce">
+    <div class="crow inline" data-row="interruttore"><span class="lab">Interruttore</span><button class="switch" id="cLight" role="switch" aria-checked="true"><span class="sw"></span><span id="cLightTxt">Accesa</span></button></div>
+    <label class="crow" data-row="intensita" for="cInt"><span class="lab">Intensità della luce <output id="oInt" for="cInt">55%</output></span><input type="range" id="cInt" min="0" max="100" value="55"></label>
+    <label class="crow" data-row="diaframma" for="cIris"><span class="lab">Diaframma a iride <output id="oIris" for="cIris">55% aperto</output></span><input type="range" id="cIris" min="5" max="100" value="55"><span class="ends"><span>chiuso</span><span>aperto</span></span></label>
+    <label class="crow" data-row="condensatore" for="cCond"><span class="lab">Altezza del condensatore <output id="oCond" for="cCond">in alto</output></span><input type="range" id="cCond" min="0" max="100" value="100"><span class="ends"><span>basso</span><span>alto</span></span></label>
+  </div>
+  <div class="panel" id="pn-mag">
+    <div class="crow" data-row="oculare"><span class="lab">Oculare</span>
+      <div class="seg" id="cEye" role="radiogroup" aria-label="Oculare">
+        <button role="radio" data-eye="5" aria-checked="false">5×</button>
+        <button role="radio" data-eye="10" aria-checked="true">10×</button>
+        <button role="radio" data-eye="15" aria-checked="false">15×</button>
       </div>
-    </section>
-
-    <!-- ===== Campo visivo ===== -->
-    <section class="col col-view" aria-label="Cosa vedi nell’oculare">
-      <div class="card view-card">
-        <div class="view-head">
-          <p class="eyebrow">Nell’oculare</p>
-          <p class="small" id="slideName"></p>
-        </div>
-        <div class="ocular" id="ocular" role="img" aria-label="Immagine vista attraverso l’oculare">
-          <div class="field" id="field">
-            <div class="stack" id="stack">
-              <div class="lampbg" id="lampbg"></div>
-              <canvas class="layer" id="L0"></canvas>
-              <canvas class="layer" id="L1"></canvas>
-              <canvas class="layer" id="L2"></canvas>
-            </div>
-            <div class="vig"></div>
-            <svg class="cracks" id="cracks" viewBox="0 0 100 100" preserveAspectRatio="none" hidden>
-              <path d="M6 31 L27 38 L41 34 L55 47 L71 43 L95 58 M41 34 L45 18 L52 4 M55 47 L52 66 L60 82 L57 97 M27 38 L22 55 L9 63" fill="none" stroke="rgba(15,15,15,.6)" stroke-width=".7"/>
-              <path d="M6 31.6 L27 38.6 L41 34.6 L55 47.6 L71 43.6 L95 58.6 M55 47.6 L52.6 66 L60.6 82" fill="none" stroke="rgba(255,255,255,.55)" stroke-width=".35"/>
-            </svg>
-            <div class="scalebar" id="scalebar" hidden><span id="scaleLine"></span><b id="scaleTxt"></b></div>
-          </div>
-        </div>
-        <div class="readout">
-          <div class="mag"><p class="eyebrow">Ingrandimento totale</p><b id="rTotal">40×</b><span id="rFormula">10× oculare × 4× obiettivo</span></div>
-          <dl class="facts">
-            <div><dt>Campo visivo</dt><dd id="rField">Ø 4,5 mm</dd></div>
-            <div><dt>Obiettivo</dt><dd id="rObj">4× / 0,10</dd></div>
-            <div><dt>Luce</dt><dd id="rLight"><span class="pill ok">buona</span></dd></div>
-          </dl>
-          <div class="view-opts">
-            <label class="check" for="optScale"><input type="checkbox" id="optScale"> Barra di scala</label>
-          </div>
-        </div>
-        <div class="status" id="status" role="status" aria-live="polite"><i></i><p id="statusTxt">Tocca una parte del microscopio per scoprirne nome e funzione.</p></div>
+    </div>
+    <div class="crow" data-row="obiettivi"><span class="lab">Obiettivo (ruota il revolver)</span><div class="seg" id="cObj" role="radiogroup" aria-label="Obiettivo"></div></div>
+    <label class="check" for="optScale"><input type="checkbox" id="optScale"> Mostra la barra di scala nell’oculare</label>
+  </div>
+  <div class="panel" id="pn-fuoco">
+    <div class="crow inline" data-row="macro"><span class="lab"><span>Vite macrometrica<small>grandi spostamenti</small></span></span><div class="fbtns"><button class="hold" data-f="macro" data-d="-1" aria-label="Abbassa il tavolino con la vite macrometrica">▼ giù</button><button class="hold" data-f="macro" data-d="1" aria-label="Alza il tavolino con la vite macrometrica">▲ su</button></div></div>
+    <div class="crow inline" data-row="micro"><span class="lab"><span>Vite micrometrica<small>pochi micrometri</small></span></span><div class="fbtns"><button class="hold" data-f="micro" data-d="-1" aria-label="Abbassa il tavolino con la vite micrometrica">▼ giù</button><button class="hold" data-f="micro" data-d="1" aria-label="Alza il tavolino con la vite micrometrica">▲ su</button></div></div>
+    <p class="small">Tieni premuto per muovere il tavolino in continuo e guarda l’oculare.</p>
+  </div>
+  <div class="panel" id="pn-vetrino">
+    <label class="crow" data-row="vetrino" for="cSlideSel"><span class="lab">Preparato</span><select id="cSlideSel"></select><span class="small" id="slideDesc"></span></label>
+    <div class="btnrow crow" data-row="pinzette"><button class="btn" id="cSlide">Togli il vetrino</button><button class="btn" id="cClips">Solleva le pinzette</button><button class="btn" id="cOil">Metti l’olio a immersione</button></div>
+    <div class="crow inline" data-row="traslatore"><span class="lab"><span>Traslatore<small>sposta il vetrino; nell’oculare l’immagine va al contrario</small></span></span>
+      <div class="pad" id="cPad" aria-label="Traslatore">
+        <button data-mv="up" aria-label="Sposta il vetrino lontano da te">▲</button>
+        <button data-mv="left" aria-label="Sposta il vetrino a sinistra">◀</button>
+        <button data-mv="right" aria-label="Sposta il vetrino a destra">▶</button>
+        <button data-mv="down" aria-label="Sposta il vetrino verso di te">▼</button>
       </div>
-    </section>
-
-    <!-- ===== Pannelli ===== -->
-    <section class="col col-panel" aria-label="Pannello">
-      <!-- Conosci le parti -->
-      <div class="pane" id="pane-esplora" role="tabpanel" aria-labelledby="tab-esplora">
-        <article class="card info" id="info" aria-live="polite">
-          <span class="cat" id="infoCat">Introduzione</span>
-          <h2 id="infoName">Il microscopio ottico composto</h2>
-          <div id="infoBody">
-            <p>Usa la luce e due sistemi di lenti, l’<b>obiettivo</b> e l’<b>oculare</b>, per ingrandire oggetti troppo piccoli per l’occhio nudo, come le cellule.</p>
-            <p>La luce parte dalla lampada nella base, viene concentrata dal condensatore, attraversa il preparato sottile e arriva all’obiettivo e poi all’oculare.</p>
-            <div class="formula">ingrandimento totale = oculare × obiettivo<br>10× × 40× = 400×</div>
-            <p class="small" style="margin-top:12px">Tocca una parte del disegno o scegli dall’elenco qui sotto.</p>
-          </div>
-          <button class="btn" id="infoTry" hidden>Provala nel simulatore</button>
-        </article>
-        <section class="card">
-          <h3 class="ctl-h">Tutte le parti</h3>
-          <div class="groups" id="partGroups"></div>
-        </section>
-      </div>
-
-      <!-- Usa il microscopio -->
-      <div class="pane" id="pane-usa" role="tabpanel" aria-labelledby="tab-usa" hidden>
-        <section class="card proc wide" id="proc" aria-labelledby="procTitle">
-          <div id="procIntro">
-            <p class="eyebrow">Procedura guidata</p>
-            <h2 id="procTitle">Impara la sequenza corretta</h2>
-            <p>Si parte dal microscopio spento e si completano i passaggi uno alla volta, come in laboratorio. Ogni passaggio si spunta da solo quando lo esegui.</p>
-            <div class="btnrow"><button class="btn primary" id="procStart">Inizia la procedura</button></div>
-          </div>
-          <div id="procRun" hidden>
-            <div class="proc-head"><p class="eyebrow">Passo <span id="procN">1</span> di <span id="procTot">13</span></p><button class="linkbtn" id="procStop">Esci dalla procedura</button></div>
-            <div class="progress"><i id="procBar"></i></div>
-            <p class="proc-now" id="procNow"></p>
-            <div id="procDone" class="done-box" hidden></div>
-            <details><summary>Tutti i passaggi</summary><ol id="procList"></ol></details>
-            <div class="proc-err" id="procErr"></div>
-          </div>
-        </section>
-
-        <section class="card ctl" id="grpLuce" aria-labelledby="hLuce">
-          <h3 class="ctl-h" id="hLuce">Illuminazione</h3>
-          <div class="row">
-            <span class="lab">Interruttore</span>
-            <button class="switch" id="cLight" role="switch" aria-checked="true"><span class="sw"></span><span id="cLightTxt">Accesa</span></button>
-          </div>
-          <label class="slider" for="cInt"><span class="lab">Intensità della luce <output id="oInt" for="cInt">55%</output></span><input type="range" id="cInt" min="0" max="100" value="55"></label>
-          <label class="slider" for="cIris"><span class="lab">Diaframma a iride <output id="oIris" for="cIris">55% aperto</output></span><input type="range" id="cIris" min="5" max="100" value="55"><span class="ends"><span>chiuso</span><span>aperto</span></span></label>
-          <label class="slider" for="cCond"><span class="lab">Altezza del condensatore <output id="oCond" for="cCond">in alto</output></span><input type="range" id="cCond" min="0" max="100" value="100"><span class="ends"><span>basso</span><span>alto</span></span></label>
-        </section>
-
-        <section class="card ctl" id="grpMag" aria-labelledby="hMag">
-          <h3 class="ctl-h" id="hMag">Ingrandimento</h3>
-          <span class="lab">Oculare</span>
-          <div class="seg" id="cEye" role="radiogroup" aria-label="Oculare">
-            <button role="radio" data-eye="5" aria-checked="false">5×</button>
-            <button role="radio" data-eye="10" aria-checked="true">10×</button>
-            <button role="radio" data-eye="15" aria-checked="false">15×</button>
-          </div>
-          <span class="lab">Obiettivo (ruota il revolver)</span>
-          <div class="seg" id="cObj" role="radiogroup" aria-label="Obiettivo"></div>
-        </section>
-
-        <section class="card ctl" id="grpFuoco" aria-labelledby="hFuoco">
-          <h3 class="ctl-h" id="hFuoco">Messa a fuoco</h3>
-          <div class="focus">
-            <div class="fk" id="fkMacro">
-              <div class="knob" id="kMacro" role="slider" tabindex="0" aria-label="Vite macrometrica" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2"></div>
-              <div class="fk-txt"><b>Vite macrometrica</b><span>grandi spostamenti del tavolino</span></div>
-              <div class="fk-btns"><button class="hold" data-f="macro" data-d="1">▲ Alza</button><button class="hold" data-f="macro" data-d="-1">▼ Abbassa</button></div>
-            </div>
-            <div class="fk" id="fkMicro">
-              <div class="knob sm" id="kMicro" role="slider" tabindex="0" aria-label="Vite micrometrica" aria-valuemin="0" aria-valuemax="4" aria-valuenow="2"></div>
-              <div class="fk-txt"><b>Vite micrometrica</b><span>pochi micrometri alla volta</span></div>
-              <div class="fk-btns"><button class="hold" data-f="micro" data-d="1">▲ Alza</button><button class="hold" data-f="micro" data-d="-1">▼ Abbassa</button></div>
-            </div>
-          </div>
-          <p class="small" style="margin-top:12px">Trascina una manopola in su o in giù, usa la rotellina del mouse oppure tieni premuto un pulsante.</p>
-        </section>
-
-        <section class="card ctl wide" id="grpSlide" aria-labelledby="hSlide">
-          <h3 class="ctl-h" id="hSlide">Vetrino e tavolino</h3>
-          <label class="lab" for="cSlideSel">Preparato</label>
-          <select id="cSlideSel"></select>
-          <p class="small" id="slideDesc" style="margin-top:6px"></p>
-          <div class="btnrow">
-            <button class="btn" id="cSlide">Togli il vetrino</button>
-            <button class="btn" id="cClips">Apri le pinzette</button>
-            <button class="btn" id="cOil">Metti l’olio a immersione</button>
-          </div>
-          <div class="trasl">
-            <div class="mini-wrap"><canvas id="mini" aria-label="Vista dall’alto del vetrino sul tavolino: trascina per spostarlo"></canvas><span class="mini-cap">Vista dall’alto</span></div>
-            <div class="pad" id="cPad" aria-label="Traslatore">
-              <button data-mv="up" aria-label="Sposta il vetrino lontano da te">▲</button>
-              <button data-mv="left" aria-label="Sposta il vetrino a sinistra">◀</button>
-              <span class="padc" aria-hidden="true">tras&shy;latore</span>
-              <button data-mv="right" aria-label="Sposta il vetrino a destra">▶</button>
-              <button data-mv="down" aria-label="Sposta il vetrino verso di te">▼</button>
-            </div>
-          </div>
-          <p class="small" style="margin-top:10px">Le frecce spostano il <b>vetrino</b>. Nell’oculare l’immagine si muove nel verso opposto, perché il microscopio la capovolge.</p>
-        </section>
-      </div>
-
-      <!-- Quiz -->
-      <div class="pane" id="pane-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
-        <section class="card quiz" id="quizCard">
-          <div class="quiz-head"><p class="eyebrow">Domanda <span id="qN">1</span> di <span id="qTot">10</span></p><span class="score">Punti <b id="qScore">0</b></span></div>
-          <div class="progress"><i id="qBar"></i></div>
-          <p class="small" id="qKind" style="margin-top:12px"></p>
-          <p class="quiz-prompt" id="qPrompt"></p>
-          <p class="quiz-fb" id="qFb"></p>
-          <div class="btnrow"><button class="btn primary" id="qNext" hidden>Avanti</button><button class="btn" id="qSkip">Non lo so, mostrami</button></div>
-        </section>
-        <section class="card quiz" id="quizEnd" hidden>
-          <p class="eyebrow">Quiz completato</p>
-          <p class="big-score" id="qFinal"></p>
-          <p id="qMsg"></p>
-          <ol class="review" id="qReview"></ol>
-          <div class="btnrow"><button class="btn primary" id="qAgain">Nuovo quiz</button></div>
-        </section>
-        <p class="small">Nel quiz i nomi sul disegno sono nascosti. Rispondi toccando la parte giusta.</p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <span>Scorciatoie in «Usa il microscopio»: <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> traslatore · <kbd>PagSu</kbd>/<kbd>PagGiù</kbd> macrometrica · <kbd>+</kbd>/<kbd>−</kbd> micrometrica · <kbd>L</kbd> luce · <kbd>R</kbd> revolver</span>
-    <span>Simulazione didattica: proporzioni e valori sono semplificati.</span>
-  </footer>
+    </div>
+  </div>
 </div>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <linearGradient id="kGr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--gr1)"/><stop offset="1" style="stop-color:var(--gr2)"/></linearGradient>
-    <linearGradient id="kCh" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--ch2)"/><stop offset=".55" style="stop-color:var(--ch3)"/><stop offset="1" style="stop-color:var(--ch1)"/></linearGradient>
-  </defs>
-</svg>
+<div class="toast js-only" id="toast" role="status" aria-live="polite" hidden><i></i><p id="toastTxt"></p></div>
 
+<noscript>
+  <style>.js-only{display:none!important}</style>
+  <section class="nojs">
+    <p class="small">Per usare il simulatore apri questo file con un browser come Chrome o Safari. Qui sotto trovi comunque i nomi e le spiegazioni delle parti.</p>
+    <h2 class="eyebrow">Parte ottica</h2>
+    <details><summary>Oculare</summary><p>È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.</p><p>Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente.</p><p class="small">La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.</p></details>
+    <details><summary>Obiettivi</summary><p>Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.</p><p>Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione.</p><p class="small">Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.</p></details>
+    <h2 class="eyebrow">Sistema di illuminazione</h2>
+    <details><summary>Condensatore</summary><p>Sono lenti sotto il tavolino che raccolgono la luce della lampada e la concentrano sul preparato.</p><p>Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.</p></details>
+    <details><summary>Diaframma a iride</summary><p>È un’apertura regolabile dentro il condensatore, mossa da una levetta: decide quanta luce arriva al preparato.</p><p>Chiudendolo aumentano contrasto e profondità di campo, ma l’immagine si scurisce. Aprendolo diventa luminosa ma «slavata». Cerca il giusto mezzo.</p></details>
+    <details><summary>Vite del condensatore</summary><p>È la manopola che alza e abbassa il condensatore.</p><p>Porta il condensatore in alto per avere più luce e un’immagine più nitida.</p></details>
+    <details><summary>Sorgente luminosa</summary><p>È la lampada, oggi quasi sempre a LED, montata nella base: manda la luce dal basso attraverso il preparato.</p><p>Il preparato deve essere sottile e trasparente, perché la luce lo deve attraversare. Nei microscopi più semplici al posto della lampada c’è uno specchio.</p></details>
+    <details><summary>Interruttore</summary><p>Accende e spegne la lampada.</p><p>A fine lavoro abbassa l’intensità, spegni e copri il microscopio con la sua custodia.</p></details>
+    <details><summary>Regolatore dell’intensità luminosa</summary><p>È la manopola che rende la luce della lampada più forte o più debole.</p><p>Accendi sempre con l’intensità bassa e poi aumentala piano. Con gli obiettivi più forti serve più luce.</p></details>
+    <h2 class="eyebrow">Parte meccanica</h2>
+    <details><summary>Tubo ottico</summary><p>Collega l’oculare al revolver e tiene le lenti alla distanza giusta.</p><p>Nei microscopi moderni è inclinato, così si osserva stando seduti comodi. Nella testata c’è un prisma che devia la luce verso l’oculare.</p></details>
+    <details><summary>Revolver portaobiettivi</summary><p>È il disco girevole su cui sono avvitati gli obiettivi: ruotandolo porti in posizione l’obiettivo che vuoi usare.</p><p>Giralo afferrando la ghiera zigrinata, mai gli obiettivi. Uno scatto ti dice che l’obiettivo è allineato. Prima di ruotarlo controlla che il tavolino non sia troppo alto.</p></details>
+    <details><summary>Pinzette fermavetrino</summary><p>Sono due mollette che tengono fermo il vetrino sul tavolino.</p><p>Sollevale, infila il vetrino sotto e riabbassale con delicatezza. Il vetrino va fissato prima di spostarlo con il traslatore.</p></details>
+    <details><summary>Tavolino portaoggetti</summary><p>È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce.</p><p>Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.</p></details>
+    <details><summary>Braccio (stativo)</summary><p>È la struttura che regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco.</p><p>Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.</p></details>
+    <details><summary>Traslatore</summary><p>È il carrello con due manopole che sposta il vetrino avanti, indietro, a destra e a sinistra.</p><p>Serve a portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.</p></details>
+    <details><summary>Vite macrometrica</summary><p>È la manopola grande: alza e abbassa il tavolino a grandi passi.</p><p>Serve per la prima messa a fuoco con il 4× e il 10×. Con il 40× e il 100× non va usata: rischi di rompere il vetrino e l’obiettivo.</p></details>
+    <details><summary>Vite micrometrica</summary><p>È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.</p><p>Serve a rendere l’immagine nitida e a osservare piani diversi del preparato. È l’unica da usare con il 40× e il 100×.</p><p class="small">In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola sullo stesso asse della macrometrica.</p></details>
+    <details><summary>Base (piede)</summary><p>È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.</p><p>Tieni il microscopio su un piano stabile, lontano dal bordo del banco.</p></details>
+    <h2 class="eyebrow">Accessorio</h2>
+    <details><summary>Vetrino</summary><p>È la lastrina di vetro (76 × 26 mm) su cui si mette il preparato, coperto da un vetrino coprioggetto sottilissimo.</p><p>Tienilo per i bordi e centra il preparato sopra il foro del tavolino. Qui puoi scegliere tra quattro preparati.</p></details>
+  </section>
+</noscript>
+
+<script type="application/json" id="partsData">[{"id":"oculare","name":"Oculare","cat":"ottica","panel":"mag","rows":["oculare"],"what":"È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.","how":"Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente.","note":"La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.","q":"È la lente in cui guardi."},{"id":"tubo","name":"Tubo ottico","cat":"meccanica","panel":null,"rows":[],"what":"Collega l’oculare al revolver e tiene le lenti alla distanza giusta.","how":"Nei microscopi moderni è inclinato, così si osserva stando seduti comodi. Nella testata c’è un prisma che devia la luce verso l’oculare.","q":"Collega l’oculare al revolver."},{"id":"revolver","name":"Revolver portaobiettivi","cat":"meccanica","panel":"mag","rows":["obiettivi"],"what":"È il disco girevole su cui sono avvitati gli obiettivi: ruotandolo porti in posizione l’obiettivo che vuoi usare.","how":"Giralo afferrando la ghiera zigrinata, mai gli obiettivi. Uno scatto ti dice che l’obiettivo è allineato. Prima di ruotarlo controlla che il tavolino non sia troppo alto.","q":"Disco girevole che serve a cambiare obiettivo."},{"id":"obiettivi","name":"Obiettivi","cat":"ottica","panel":"mag","rows":["obiettivi"],"what":"Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.","how":"Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione.","note":"Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.","q":"Le lenti più vicine al preparato, con anelli colorati."},{"id":"pinzette","name":"Pinzette fermavetrino","cat":"meccanica","panel":"vetrino","rows":["pinzette"],"what":"Sono due mollette che tengono fermo il vetrino sul tavolino.","how":"Sollevale, infila il vetrino sotto e riabbassale con delicatezza. Il vetrino va fissato prima di spostarlo con il traslatore.","q":"Tengono fermo il vetrino sul tavolino."},{"id":"tavolino","name":"Tavolino portaoggetti","cat":"meccanica","panel":"fuoco","rows":["macro","micro"],"what":"È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce.","how":"Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.","q":"Piano con un foro al centro su cui si appoggia il vetrino."},{"id":"condensatore","name":"Condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"Sono lenti sotto il tavolino che raccolgono la luce della lampada e la concentrano sul preparato.","how":"Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.","q":"Lenti sotto il tavolino che concentrano la luce."},{"id":"diaframma","name":"Diaframma a iride","cat":"illuminazione","panel":"luce","rows":["diaframma"],"what":"È un’apertura regolabile dentro il condensatore, mossa da una levetta: decide quanta luce arriva al preparato.","how":"Chiudendolo aumentano contrasto e profondità di campo, ma l’immagine si scurisce. Aprendolo diventa luminosa ma «slavata». Cerca il giusto mezzo.","q":"Apertura regolabile che controlla luce e contrasto."},{"id":"viteCond","name":"Vite del condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"È la manopola che alza e abbassa il condensatore.","how":"Porta il condensatore in alto per avere più luce e un’immagine più nitida.","q":"Manopola che alza o abbassa il condensatore."},{"id":"lampada","name":"Sorgente luminosa","cat":"illuminazione","panel":"luce","rows":["interruttore","intensita"],"what":"È la lampada, oggi quasi sempre a LED, montata nella base: manda la luce dal basso attraverso il preparato.","how":"Il preparato deve essere sottile e trasparente, perché la luce lo deve attraversare. Nei microscopi più semplici al posto della lampada c’è uno specchio.","q":"Produce la luce che attraversa il preparato."},{"id":"interruttore","name":"Interruttore","cat":"illuminazione","panel":"luce","rows":["interruttore"],"what":"Accende e spegne la lampada.","how":"A fine lavoro abbassa l’intensità, spegni e copri il microscopio con la sua custodia.","q":"Accende e spegne la lampada."},{"id":"braccio","name":"Braccio (stativo)","cat":"meccanica","panel":null,"rows":[],"what":"È la struttura che regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco.","how":"Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.","q":"Da qui si afferra il microscopio per trasportarlo."},{"id":"vetrino","name":"Vetrino","cat":"accessorio","panel":"vetrino","rows":["vetrino"],"what":"È la lastrina di vetro (76 × 26 mm) su cui si mette il preparato, coperto da un vetrino coprioggetto sottilissimo.","how":"Tienilo per i bordi e centra il preparato sopra il foro del tavolino. Qui puoi scegliere tra quattro preparati.","q":"Lastrina di vetro su cui si mette il preparato."},{"id":"traslatore","name":"Traslatore","cat":"meccanica","panel":"vetrino","rows":["traslatore"],"what":"È il carrello con due manopole che sposta il vetrino avanti, indietro, a destra e a sinistra.","how":"Serve a portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.","q":"Sposta il vetrino avanti, indietro, a destra e a sinistra."},{"id":"macro","name":"Vite macrometrica","cat":"meccanica","panel":"fuoco","rows":["macro"],"what":"È la manopola grande: alza e abbassa il tavolino a grandi passi.","how":"Serve per la prima messa a fuoco con il 4× e il 10×. Con il 40× e il 100× non va usata: rischi di rompere il vetrino e l’obiettivo.","q":"Manopola grande per la messa a fuoco rapida."},{"id":"micro","name":"Vite micrometrica","cat":"meccanica","panel":"fuoco","rows":["micro"],"what":"È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.","how":"Serve a rendere l’immagine nitida e a osservare piani diversi del preparato. È l’unica da usare con il 40× e il 100×.","note":"In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola sullo stesso asse della macrometrica.","q":"Manopola piccola per la messa a fuoco fine."},{"id":"intensita","name":"Regolatore dell’intensità luminosa","cat":"illuminazione","panel":"luce","rows":["intensita"],"what":"È la manopola che rende la luce della lampada più forte o più debole.","how":"Accendi sempre con l’intensità bassa e poi aumentala piano. Con gli obiettivi più forti serve più luce.","q":"Manopola che rende la lampada più forte o più debole."},{"id":"base","name":"Base (piede)","cat":"meccanica","panel":null,"rows":[],"what":"È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.","how":"Tieni il microscopio su un piano stabile, lontano dal bordo del banco.","q":"Parte pesante che dà stabilità e contiene la lampada."}]</script>
 <script>
 (() => {
 'use strict';
-
 /* =====================================================================
    Utilità
    ===================================================================== */
@@ -1154,114 +1056,30 @@ const SLIDES = { lettera: LETTERA, cipolla: CIPOLLA, sangue: SANGUE, fili: FILI 
 /* =====================================================================
    Parti del microscopio
    ===================================================================== */
-const CAT = { ottica: 'Parte ottica', meccanica: 'Parte meccanica', illuminazione: 'Sistema di illuminazione', accessorio: 'Accessorio' };
-const PARTS = [
-  { id: 'oculare', name: 'Oculare', cat: 'ottica', ctl: 'grpMag',
-    what: 'È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.',
-    how: 'Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente e, se ci riesci, tieni aperto anche l’altro occhio.',
-    note: 'La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.',
-    q: 'È la lente in cui guardi: ingrandisce l’immagine formata dall’obiettivo.' },
-  { id: 'tubo', name: 'Tubo ottico', cat: 'meccanica',
-    what: 'Collega l’oculare al revolver e tiene le lenti alla distanza giusta. Nei microscopi moderni è inclinato, così puoi osservare stando seduto comodo.',
-    how: 'Non va smontato. Nella testata c’è un prisma che devia la luce verso l’oculare inclinato.',
-    q: 'Collega l’oculare al revolver e tiene le lenti alla giusta distanza.' },
-  { id: 'revolver', name: 'Revolver portaobiettivi', short: 'Revolver', cat: 'meccanica', ctl: 'grpMag',
-    what: 'È il disco girevole su cui sono avvitati gli obiettivi. Ruotandolo porti in posizione l’obiettivo che vuoi usare: uno scatto ti dice che è allineato.',
-    how: 'Fallo girare afferrando la ghiera zigrinata, mai gli obiettivi. Prima di ruotarlo controlla che il tavolino non sia troppo alto, altrimenti un obiettivo lungo può urtare il vetrino.',
-    q: 'Disco girevole che permette di cambiare obiettivo.' },
-  { id: 'obiettivi', name: 'Obiettivi', cat: 'ottica', ctl: 'grpMag',
-    what: 'Gruppi di lenti vicini al preparato: formano la prima immagine ingrandita, che è capovolta. Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco.',
-    how: 'Più l’ingrandimento è alto, più l’obiettivo è lungo e più la sua lente arriva vicino al vetrino quando l’immagine è a fuoco. Il 100× è «a immersione»: funziona con una goccia di olio tra lente e vetrino.',
-    note: 'Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Gli obiettivi sono parfocali: cambiando obiettivo l’immagine resta quasi a fuoco.',
-    q: 'Le lenti più vicine al preparato, ognuna con un anello colorato.' },
-  { id: 'tavolino', name: 'Tavolino portaoggetti', short: 'Tavolino', cat: 'meccanica', ctl: 'grpFuoco',
-    what: 'È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce che arriva dal basso.',
-    how: 'Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.',
-    q: 'Piano con un foro al centro su cui si appoggia il vetrino.' },
-  { id: 'pinzette', name: 'Pinzette fermavetrino', cat: 'meccanica', ctl: 'grpSlide',
-    what: 'Sono due mollette che tengono fermo il vetrino sul tavolino.',
-    how: 'Sollevale, infila il vetrino sotto e riabbassale con delicatezza. Il vetrino va fissato prima di spostarlo con il traslatore.',
-    q: 'Tengono fermo il vetrino sul tavolino.' },
-  { id: 'traslatore', name: 'Traslatore', cat: 'meccanica', ctl: 'grpSlide',
-    what: 'È il carrello con due manopole che sposta il vetrino con precisione: una lo muove avanti e indietro, l’altra a destra e a sinistra.',
-    how: 'Usalo per esplorare il preparato e portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.',
-    q: 'Sposta il vetrino con precisione avanti, indietro, a destra e a sinistra.' },
-  { id: 'condensatore', name: 'Condensatore', cat: 'illuminazione', ctl: 'grpLuce',
-    what: 'È un sistema di lenti sotto il tavolino che raccoglie la luce della lampada e la concentra sul preparato.',
-    how: 'Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.',
-    q: 'Lenti sotto il tavolino che concentrano la luce sul preparato.' },
-  { id: 'diaframma', name: 'Diaframma a iride', cat: 'illuminazione', ctl: 'grpLuce',
-    what: 'È un’apertura regolabile dentro il condensatore, comandata da una levetta. Decide quanta luce arriva al preparato e con quale angolo.',
-    how: 'Chiudendolo aumentano il contrasto e la profondità di campo, ma l’immagine si scurisce e perde dettaglio. Aprendolo l’immagine diventa luminosa ma «slavata». Cerca il giusto mezzo per ogni preparato.',
-    q: 'Apertura regolabile che controlla quantità di luce e contrasto.' },
-  { id: 'viteCond', name: 'Vite del condensatore', cat: 'illuminazione', ctl: 'grpLuce',
-    what: 'È la manopola che alza e abbassa il condensatore.',
-    how: 'Porta il condensatore in alto per avere più luce e un’immagine più nitida. Abbassalo solo se ti serve meno luce.',
-    q: 'Manopola che alza o abbassa il condensatore.' },
-  { id: 'lampada', name: 'Sorgente luminosa', cat: 'illuminazione', ctl: 'grpLuce',
-    what: 'È la lampada, oggi quasi sempre a LED, montata nella base. Manda la luce dal basso verso l’alto attraverso il preparato.',
-    how: 'Nei microscopi più semplici al suo posto c’è uno specchio che riflette la luce di una finestra. Il preparato deve essere sottile e trasparente, perché la luce lo deve attraversare.',
-    q: 'Produce la luce che attraversa il preparato dal basso.' },
-  { id: 'intensita', name: 'Regolatore dell’intensità luminosa', short: 'Regolatore della luce', cat: 'illuminazione', ctl: 'grpLuce',
-    what: 'È la manopola che rende la luce della lampada più forte o più debole.',
-    how: 'Accendi sempre con l’intensità bassa e poi aumentala piano. Con gli obiettivi più forti serve più luce.',
-    q: 'Manopola che rende la lampada più forte o più debole.' },
-  { id: 'interruttore', name: 'Interruttore', cat: 'illuminazione', ctl: 'grpLuce',
-    what: 'Accende e spegne la lampada.',
-    how: 'A fine lavoro abbassa l’intensità, spegni, scollega il cavo e copri il microscopio con la sua custodia.',
-    q: 'Accende e spegne la lampada.' },
-  { id: 'macro', name: 'Vite macrometrica', cat: 'meccanica', ctl: 'fkMacro',
-    what: 'È la manopola grande: alza e abbassa il tavolino a grandi passi.',
-    how: 'Serve per la prima messa a fuoco con gli obiettivi 4× e 10×. Quando avvicini il vetrino all’obiettivo guarda il microscopio di lato. Con 40× e 100× non va usata: rischi di rompere il vetrino e di rovinare l’obiettivo.',
-    q: 'Manopola grande per la messa a fuoco rapida, a grandi passi.' },
-  { id: 'micro', name: 'Vite micrometrica', cat: 'meccanica', ctl: 'fkMicro',
-    what: 'È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.',
-    how: 'Serve per rendere l’immagine nitida e per osservare piani diversi del preparato. È l’unica da usare con 40× e 100×.',
-    note: 'In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola montata sullo stesso asse della macrometrica.',
-    q: 'Manopola piccola per la messa a fuoco fine.' },
-  { id: 'braccio', name: 'Braccio (stativo)', short: 'Braccio', cat: 'meccanica',
-    what: 'È la struttura che regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco.',
-    how: 'Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.',
-    q: 'Da qui si afferra il microscopio per trasportarlo.' },
-  { id: 'base', name: 'Base (piede)', short: 'Base', cat: 'meccanica',
-    what: 'È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.',
-    how: 'Tieni il microscopio su un piano stabile, lontano dal bordo del banco.',
-    q: 'Parte pesante che dà stabilità e contiene la lampada.' },
-  { id: 'vetrino', name: 'Vetrino', cat: 'accessorio', ctl: 'grpSlide',
-    what: 'Il vetrino portaoggetti (76 × 26 mm) è la lastrina su cui si mette il preparato. Il vetrino coprioggetto, sottilissimo, lo copre e lo protegge.',
-    how: 'Tienilo per i bordi. Il preparato va centrato sopra il foro del tavolino.',
-    q: 'Lastrina di vetro su cui si mette il preparato.' },
-];
+const PARTS = JSON.parse(document.getElementById('partsData').textContent);
 const PART = Object.fromEntries(PARTS.map(p => [p.id, p]));
-
-/* posizione delle etichette sul disegno */
+const CAT = { ottica: 'Parte ottica', meccanica: 'Parte meccanica', illuminazione: 'Sistema di illuminazione', accessorio: 'Accessorio' };
+const NAV = ['oculare', 'tubo', 'revolver', 'obiettivi', 'braccio', 'vetrino', 'pinzette', 'tavolino', 'traslatore', 'condensatore', 'diaframma', 'viteCond', 'macro', 'micro', 'lampada', 'intensita', 'interruttore', 'base'];
+const SHORT = { lettera: 'Lettera «e»', cipolla: 'Cipolla', sangue: 'Sangue', fili: 'Tre fili' };
+/* il disegno è scalato dentro la tavola: translate(TX TY) scale(K) */
+const TX = -4.8, TY = 261, K = 0.64;
+const toScene = ([x, y]) => [TX + K * x, TY + K * y];
 const st = { dy: 0, c: 0, lever: 256 };
-const LBL = {
-  oculare:      ['L', 42,  () => [204, 46]],
-  tubo:         ['L', 100, () => [246, 94]],
-  revolver:     ['L', 158, () => [257, 187]],
-  obiettivi:    ['L', 224, () => [288, PIVOT_Y + OBJ[S.obj].len * 0.55]],
-  pinzette:     ['L', 268, () => [214, 293 + st.dy]],
-  tavolino:     ['L', 312, () => [206, 306 + st.dy]],
-  condensatore: ['L', 356, () => [283, 330 + st.dy + st.c]],
-  diaframma:    ['L', 398, () => [st.lever - 3, 342 + st.dy + st.c]],
-  viteCond:     ['L', 442, () => [327, 368 + st.dy]],
-  lampada:      ['L', 534, () => [279, 566]],
-  interruttore: ['L', 604, () => [189, 608]],
-  braccio:      ['R', 226, () => [441, 262]],
-  vetrino:      ['R', 278, () => [366, 297 + st.dy]],
-  traslatore:   ['R', 326, () => [388, 339 + st.dy]],
-  macro:        ['R', 386, () => [455, 382]],
-  micro:        ['R', 470, () => [441, 458]],
-  intensita:    ['R', 592, () => [456, 607]],
-  base:         ['R', 648, () => [466, 628]],
+const ANCH = {
+  oculare: () => [204, 46], tubo: () => [246, 94], revolver: () => [257, 187],
+  obiettivi: () => [288, PIVOT_Y + OBJ[S.obj].len * 0.55],
+  pinzette: () => [214, 293 + st.dy], tavolino: () => [206, 306 + st.dy],
+  condensatore: () => [283, 330 + st.dy + st.c], diaframma: () => [st.lever - 3, 342 + st.dy + st.c],
+  viteCond: () => [327, 366 + st.dy], lampada: () => [279, 566], interruttore: () => [189, 608],
+  braccio: () => [441, 262], vetrino: () => [366, 297 + st.dy], traslatore: () => [388, 339 + st.dy],
+  macro: () => [455, 382], micro: () => [441, 458], intensita: () => [456, 607], base: () => [466, 628],
 };
 
 /* =====================================================================
-   Stato
+   Stato e modello ottico
    ===================================================================== */
 const S = {
-  mode: 'esplora', light: true, intensity: 0.55, iris: 0.55, cond: 1,
+  mode: 'free', light: true, intensity: 0.55, iris: 0.55, cond: 1,
   eye: 10, obj: 0, h: H_FOCUS + 4,
   slide: 'lettera', slideOn: true, clips: true, cx: LETTERA.demo[0], cy: LETTERA.demo[1],
   oil: false, oilAt: [0, 0], dirty40: false, broken: false, moved: false,
@@ -1320,11 +1138,31 @@ const contactH = (i = S.obj) => H_FOCUS + OBJ[i].off + OBJ[i].wd + (S.slideOn ? 
 /* =====================================================================
    Messaggi
    ===================================================================== */
-const statusEl = $('#status'), statusTxt = $('#statusTxt');
+const toast = $('#toast'), toastTxt = $('#toastTxt');
+let toastTimer = 0;
+const shStatus = $('#shStatus'), shStatusTxt = $('#shStatusTxt');
+let statusTimer = 0;
+/* gli avvisi compaiono dentro il pannello quando è aperto (così non coprono l’oculare), altrimenti in basso */
 function say(kind, msg) {
-  statusEl.className = 'status' + (kind && kind !== 'info' ? ' ' + kind : '');
-  statusTxt.textContent = msg;
+  const k = kind || 'info', ms = k === 'bad' ? 8000 : k === 'warn' ? 6500 : 4500;
+  const inSheet = window.matchMedia('(min-width: 860px)').matches || $('#sheet').classList.contains('open');
+  clearTimeout(toastTimer); clearTimeout(statusTimer);
+  if (inSheet) {
+    toast.hidden = true;
+    shStatus.className = 'sh-status ' + k;
+    shStatusTxt.textContent = msg;
+    shStatus.hidden = false;
+    statusTimer = setTimeout(() => { shStatus.hidden = true; }, ms + 2000);
+  } else {
+    shStatus.hidden = true;
+    toast.className = 'toast js-only ' + k;
+    toastTxt.textContent = msg;
+    toast.hidden = false;
+    toastTimer = setTimeout(() => { toast.hidden = true; }, ms);
+  }
 }
+toast.addEventListener('click', () => { toast.hidden = true; });
+shStatus.addEventListener('click', () => { shStatus.hidden = true; });
 const lastWarn = {};
 function sayOnce(key, ms, kind, msg) {
   const t = performance.now();
@@ -1490,74 +1328,61 @@ function setSlideType(id) {
 }
 
 /* =====================================================================
-   Disegno: obiettivi, manopole, etichette
+   Disegno
    ===================================================================== */
 const svg = $('#scope');
-function knurlLines(cx, cy, r, n, len) {
-  let s = '';
-  for (let i = 0; i < n; i++) {
-    const a = i / n * TAU, c = Math.cos(a), si = Math.sin(a);
-    s += `<line x1="${(cx + c * (r - len)).toFixed(1)}" y1="${(cy + si * (r - len)).toFixed(1)}" x2="${(cx + c * (r - 0.6)).toFixed(1)}" y2="${(cy + si * (r - 0.6)).toFixed(1)}"/>`;
-  }
-  return s;
-}
-$$('[data-knurl]', svg).forEach(g => {
-  const [cx, cy, r, n, len] = g.dataset.knurl.split(',').map(Number);
-  g.insertAdjacentHTML('afterbegin', knurlLines(cx, cy, r, n, len));
-});
-(function buildObjectives() {
-  let html = '';
-  OBJ.forEach((o, i) => {
-    const x = 300, top = PIVOT_Y, L = o.len, bodyEnd = top + L - 14;
-    const wT = 25, wB = [21, 19, 17, 15][i];
-    const ringY = top + 12 + (bodyEnd - top - 12) * 0.3;
-    const txtY = (ringY + 4 + bodyEnd) / 2 + 2.7;
-    html += `<g class="objective part" data-part="obiettivi" data-obj="${i}" id="obj${i}">
-      <rect x="${x - 13}" y="${top}" width="26" height="8" fill="url(#gGr)"/>
-      <path d="M${x - wT / 2} ${top + 8} H${x + wT / 2} L${x + wB / 2} ${bodyEnd} H${x - wB / 2} Z" fill="url(#gCh)" class="edge thin"/>
-      <rect x="${x - wT / 2 + 0.6}" y="${ringY.toFixed(1)}" width="${wT - 1.2}" height="4" fill="${o.color}" class="ring"/>
-      ${o.oil ? `<rect x="${x - wB / 2 + 0.5}" y="${(bodyEnd - 4).toFixed(1)}" width="${wB - 1}" height="1.6" fill="#1b1b1b"/>` : ''}
-      <text x="${x}" y="${txtY.toFixed(1)}" class="objtxt">${o.mag}×</text>
-      <path d="M${x - wB / 2} ${bodyEnd} H${x + wB / 2} L${x + o.noseW / 2} ${(top + L - 1).toFixed(1)} Q${x} ${(top + L + 0.6).toFixed(1)} ${x - o.noseW / 2} ${(top + L - 1).toFixed(1)} Z" fill="url(#gCh)" class="edge thin"/>
-      <ellipse cx="${x}" cy="${(top + L - 0.7).toFixed(1)}" rx="${o.lens}" ry="0.9" class="flens"/>
-    </g>`;
-  });
-  $('#objectives').innerHTML = html;
-})();
-const labelsG = $('#labels');
+const objEls = OBJ.map((_, i) => $('#obj' + i));
 const lblEls = {};
-(function buildLabels() {
-  const NS = 'http://www.w3.org/2000/svg';
-  let nLbl = 0, legendHTML = '';
-  for (const id of Object.keys(LBL)) {
-    const [side, y] = LBL[id];
-    const g = document.createElementNS(NS, 'g');
-    g.setAttribute('class', 'lbl'); g.dataset.part = id;
-    const line = document.createElementNS(NS, 'line');
-    const dot = document.createElementNS(NS, 'circle'); dot.setAttribute('r', '2.3');
-    const text = document.createElementNS(NS, 'text');
-    text.textContent = PART[id].short || PART[id].name;
-    const nr = document.createElementNS(NS, 'text');
-    nr.textContent = ++nLbl;
-    for (const t of [text, nr]) {
-      t.setAttribute('x', side === 'L' ? 152 : 486);
-      t.setAttribute('y', t === nr ? y + 3 : y);
-      t.setAttribute('text-anchor', side === 'L' ? 'end' : 'start');
-    }
-    text.setAttribute('class', 't-name'); nr.setAttribute('class', 't-num');
-    g.append(line, dot, text, nr);
-    labelsG.append(g);
-    lblEls[id] = { g, line, dot, side, y };
-    legendHTML += `<li><button data-part="${id}"><b>${nLbl}</b><span>${PART[id].name}</span></button></li>`;
-  }
-  $('#legend').innerHTML = legendHTML;
-})();
-const narrowMQ = window.matchMedia ? matchMedia('(max-width: 600px)') : { matches: false };
-if (narrowMQ.addEventListener) narrowMQ.addEventListener('change', () => invalidate());
-$$('.part', svg).forEach(el => {
-  el.setAttribute('tabindex', '0');
-  el.setAttribute('role', 'button');
+$$('#labels .lbl').forEach(g => {
+  lblEls[g.dataset.part] = { g, line: $('.ld', g), dot: $('.la', g), box: $('.lb', g), hit: $('.lh', g), text: $('text', g), side: g.dataset.side, cy: +g.dataset.cy, edge: +g.dataset.edge };
 });
+function fitLabels() {
+  for (const id in lblEls) {
+    const L = lblEls[id];
+    let b;
+    try { b = L.text.getBBox(); } catch (_) { continue; }
+    if (!b || !b.width) continue;
+    const set = (el, x, y, w, h) => { el.setAttribute('x', x.toFixed(1)); el.setAttribute('y', y.toFixed(1)); el.setAttribute('width', w.toFixed(1)); el.setAttribute('height', h.toFixed(1)); };
+    set(L.box, b.x - 5, b.y - 3, b.width + 10, b.height + 6);
+    const hh = Math.max(b.height + 14, 28);
+    set(L.hit, b.x - 9, L.cy - hh / 2, b.width + 18, hh);
+    L.edge = L.side === 'L' ? b.x + b.width + 5 : b.x - 5;
+  }
+  invalidate();
+}
+/* revolver: gli obiettivi ruotano attorno al perno (300,200) del disegno */
+const objCur = OBJ.map(() => ({ a: 0, o: 1 }));
+let tweenRaf = 0, tweenLast = 0;
+function objTargets() {
+  return OBJ.map((_, i) => { const rel = (i - S.obj + 4) % 4; return { a: [0, 30, 0, -30][rel], o: rel === 2 ? 0 : 1 }; });
+}
+function applyObj() {
+  objCur.forEach((c, i) => {
+    objEls[i].setAttribute('transform', `rotate(${c.a.toFixed(2)} 300 200)`);
+    objEls[i].style.opacity = c.o.toFixed(3);
+    objEls[i].style.pointerEvents = c.o < 0.5 ? 'none' : '';
+  });
+}
+function tweenObj(t) {
+  const dt = tweenLast ? Math.min(50, t - tweenLast) : 16;
+  tweenLast = t;
+  const T = objTargets(), f = 1 - Math.exp(-dt / 70);
+  let moving = false;
+  objCur.forEach((c, i) => {
+    c.a += (T[i].a - c.a) * f; c.o += (T[i].o - c.o) * f;
+    if (Math.abs(T[i].a - c.a) > 0.05 || Math.abs(T[i].o - c.o) > 0.01) moving = true;
+    else { c.a = T[i].a; c.o = T[i].o; }
+  });
+  applyObj();
+  if (moving) tweenRaf = requestAnimationFrame(tweenObj); else { tweenRaf = 0; tweenLast = 0; }
+}
+function updateObjectives(snap) {
+  if (snap || RM) {
+    const T = objTargets();
+    objCur.forEach((c, i) => { c.a = T[i].a; c.o = T[i].o; });
+    applyObj();
+  } else if (!tweenRaf) tweenRaf = requestAnimationFrame(tweenObj);
+}
 
 function updateScope() {
   st.dy = (H_FOCUS - S.h) * PX_UM;
@@ -1575,7 +1400,6 @@ function updateScope() {
   set('#specMark', 'fill', SL().color);
   $('#oilDrop').style.display = S.oil ? '' : 'none';
   $('#slideCrack').style.display = S.broken ? '' : 'none';
-  // luce
   const I = S.light ? S.intensity : 0;
   set('#beam', 'opacity', S.light ? (0.2 + 0.8 * I).toFixed(2) : 0);
   set('#lampGlow', 'opacity', S.light ? (0.3 + 0.7 * I).toFixed(2) : 0);
@@ -1589,54 +1413,41 @@ function updateScope() {
   set('#beamB', 'points', `${300 - hw},${ct} ${300 + hw},${ct} 301.3,${sp} 298.7,${sp}`);
   set('#beamC', 'points', `298.7,${sp} 301.3,${sp} ${300 + o.lens},${tip} ${300 - o.lens},${tip}`);
   $('#beamC').style.display = sp > tip ? '' : 'none';
-  // manopole
   set('#dialRot', 'transform', `rotate(${(-140 + 280 * S.intensity).toFixed(1)} 441 607)`);
   set('#macroRot', 'transform', `rotate(${(S.h * 0.18).toFixed(1)} 424 382)`);
   set('#microRot', 'transform', `rotate(${((S.h * 3.6) % 360).toFixed(1)} 424 458)`);
   set('#condRot', 'transform', `rotate(${(S.cond * 300).toFixed(1)} 336 366)`);
   $('#eyeTxt').textContent = S.eye + '×';
-  // revolver
-  OBJ.forEach((_, i) => {
-    const rel = (i - S.obj + 4) % 4, el = $('#obj' + i);
-    el.style.transform = `rotate(${[0, 30, 0, -30][rel]}deg)`;
-    el.style.opacity = rel === 2 ? 0 : 1;
-    el.style.pointerEvents = rel === 2 ? 'none' : '';
-    el.setAttribute('aria-label', `Obiettivo ${OBJ[i].mag}×`);
-  });
-  // etichette
+  updateObjectives();
   for (const id in lblEls) {
-    const L = lblEls[id], [ax, ay] = LBL[id][2]();
-    const lx = L.side === 'L' ? 157 : 481, ly = L.y - 4.5;
-    L.line.setAttribute('x1', lx); L.line.setAttribute('y1', ly);
+    const L = lblEls[id], [ax, ay] = toScene(ANCH[id]());
+    L.line.setAttribute('x1', L.edge.toFixed(1)); L.line.setAttribute('y1', L.cy);
     L.line.setAttribute('x2', ax.toFixed(1)); L.line.setAttribute('y2', ay.toFixed(1));
     L.dot.setAttribute('cx', ax.toFixed(1)); L.dot.setAttribute('cy', ay.toFixed(1));
-    L.g.classList.toggle('sel', S.sel === id && S.mode !== 'quiz');
+    L.g.classList.toggle('sel', S.sel === id && !Q.on);
   }
-  $$('.part', svg).forEach(el => {
-    el.classList.toggle('sel', S.mode !== 'quiz' && el.dataset.part === S.sel);
-    el.setAttribute('aria-label', S.mode === 'quiz' ? 'Parte del microscopio' : (PART[el.dataset.part].name + (el.dataset.obj ? ' ' + OBJ[el.dataset.obj].mag + '×' : '')));
-  });
-  const showL = $('#optLabels').checked && S.mode !== 'quiz';
-  svg.classList.toggle('show-labels', showL);
-  svg.classList.toggle('quiz', S.mode === 'quiz');
-  svg.classList.toggle('numbers', narrowMQ.matches);
-  $('#legend').hidden = !(narrowMQ.matches && showL);
-  $$('#legend button').forEach(b => b.classList.toggle('sel', S.mode !== 'quiz' && b.dataset.part === S.sel));
+  $$('.part', svg).forEach(el => el.classList.toggle('sel', !Q.on && el.dataset.part === S.sel));
+  svg.classList.toggle('quiz', Q.on);
 }
 
 /* =====================================================================
    Campo visivo
    ===================================================================== */
-const layers = [$('#L0'), $('#L1'), $('#L2')];
-const ctxs = layers.map(c => c.getContext('2d'));
-const stack = $('#stack'), lampbg = $('#lampbg'), field = $('#field');
+const view = $('#view'), vctx = view.getContext('2d');
+const offs = [0, 1, 2].map(() => document.createElement('canvas'));
+const octx = offs.map(c => c.getContext('2d'));
+const tmp = document.createElement('canvas'), tctx = tmp.getContext('2d');
+const CTX_FILTER = (() => {
+  try { vctx.filter = 'blur(2px)'; const ok = vctx.filter === 'blur(2px)'; vctx.filter = 'none'; return ok; } catch (_) { return false; }
+})();
 let lastKey = '';
 function sizeCanvases() {
   D = ocular.clientWidth || 380;
   const px = Math.round(D * DPR());
-  layers.forEach(c => { if (c.width !== px) { c.width = px; c.height = px; } });
+  [view, ...offs].forEach(c => { if (c.width !== px) { c.width = px; c.height = px; } });
   lastKey = '';
 }
+/* disegna ogni livello del preparato nella sua tela di lavoro (solo quando cambia la posizione o l'ingrandimento) */
 function drawLayers(g) {
   const dpr = DPR(), sl = SL();
   const k = g.s * dpr, R = (g.circle / 2 + 36) / g.s;
@@ -1645,8 +1456,8 @@ function drawLayers(g) {
     x0: S.cx - R, x1: S.cx + R, y0: S.cy - R, y1: S.cy + R,
     ex: (D / 2 + g.s * S.cx) * dpr, ey: (D / 2 + g.s * S.cy) * dpr,
   };
-  layers.forEach((c, i) => {
-    const ctx = ctxs[i];
+  offs.forEach((c, i) => {
+    const ctx = octx[i];
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, c.width, c.height);
     const L = S.slideOn && sl.layers[i];
@@ -1661,28 +1472,63 @@ function mixHex(a, b, t) {
   const pa = [1, 3, 5].map(i => parseInt(a.slice(i, i + 2), 16)), pb = [1, 3, 5].map(i => parseInt(b.slice(i, i + 2), 16));
   return `rgb(${pa.map((x, i) => Math.round(lerp(x, pb[i], t))).join(',')})`;
 }
+function drawBlurred(src, b) {
+  if (b < 0.3) { vctx.drawImage(src, 0, 0); return; }
+  if (CTX_FILTER) { vctx.filter = `blur(${b.toFixed(2)}px)`; vctx.drawImage(src, 0, 0); vctx.filter = 'none'; return; }
+  /* browser senza filtri sulla tela: sfocatura approssimata rimpicciolendo e ringrandendo */
+  const W = src.width, w = Math.max(2, Math.round(W * clamp(1 / (1 + b * 0.5), 0.03, 1)));
+  if (tmp.width !== w) { tmp.width = w; tmp.height = w; }
+  tctx.setTransform(1, 0, 0, 1, 0, 0);
+  tctx.clearRect(0, 0, w, w);
+  tctx.imageSmoothingEnabled = true; tctx.imageSmoothingQuality = 'high';
+  tctx.drawImage(src, 0, 0, w, w);
+  vctx.imageSmoothingEnabled = true; vctx.imageSmoothingQuality = 'high';
+  vctx.drawImage(tmp, 0, 0, W, W);
+}
+const CRACKS = [[[6, 31], [27, 38], [41, 34], [55, 47], [71, 43], [95, 58]], [[41, 34], [45, 18], [52, 4]], [[55, 47], [52, 66], [60, 82], [57, 97]], [[27, 38], [22, 55], [9, 63]]];
+function drawCracks(W) {
+  const u = W / 100;
+  vctx.lineJoin = 'round';
+  for (const [col, lw, off] of [['rgba(15,15,15,0.6)', 0.7, 0], ['rgba(255,255,255,0.55)', 0.35, 0.6]]) {
+    vctx.strokeStyle = col; vctx.lineWidth = lw * u;
+    vctx.beginPath();
+    for (const line of CRACKS) line.forEach(([x, y], i) => (i ? vctx.lineTo(x * u, (y + off) * u) : vctx.moveTo(x * u, (y + off) * u)));
+    vctx.stroke();
+  }
+}
+/* compone il campo visivo: luce della lampada, livelli del preparato (assorbono la luce: «multiply»), crepe */
+function composite(g) {
+  const W = view.width, dpr = DPR(), c = W / 2;
+  vctx.setTransform(1, 0, 0, 1, 0, 0);
+  vctx.globalAlpha = 1; vctx.globalCompositeOperation = 'source-over';
+  vctx.clearRect(0, 0, W, W);
+  vctx.save();
+  vctx.beginPath(); vctx.arc(c, c, g.circle / 2 * dpr, 0, TAU); vctx.clip();
+  vctx.fillStyle = mixHex('#f2d49c', '#f7f5ef', clamp(S.intensity * 1.4, 0, 1));
+  vctx.fillRect(0, 0, W, W);
+  if (S.slideOn) {
+    vctx.globalCompositeOperation = 'multiply';
+    SL().layers.forEach((L, i) => {
+      const b = layerBlur(L.z, g);
+      vctx.globalAlpha = 1 / (1 + Math.pow(b / 14, 2));
+      drawBlurred(offs[i], b * dpr);
+    });
+    vctx.globalCompositeOperation = 'source-over'; vctx.globalAlpha = 1;
+    if (S.broken) drawCracks(W);
+  }
+  vctx.restore();
+}
 function updateView() {
-  const g = geom(), sl = SL();
-  const fr = g.circle / 2;
-  field.style.setProperty('--fr', fr.toFixed(1) + 'px');
+  const g = geom(), fr = g.circle / 2;
+  ocular.style.setProperty('--fr', fr.toFixed(1) + 'px');
   const key = [S.slideOn, S.slide, S.cx.toFixed(2), S.cy.toFixed(2), g.s.toFixed(6), D, DPR()].join('|');
   if (key !== lastKey) { lastKey = key; drawLayers(g); }
+  composite(g);
   const ex = exposure();
   let c = 0.8 + 0.75 * (1 - S.iris) + (1 - S.cond) * 0.15;
   if (OBJ[S.obj].oil && !S.oil) c *= 0.85;
-  stack.style.filter = `contrast(${c.toFixed(3)}) brightness(${ex.E.toFixed(3)})`;
-  lampbg.style.setProperty('--lamp', mixHex('#f2d49c', '#f7f5ef', clamp(S.intensity * 1.4, 0, 1)));
-  layers.forEach((cv, i) => {
-    const L = S.slideOn && sl.layers[i];
-    cv.style.display = L ? '' : 'none';
-    if (!L) return;
-    const b = layerBlur(L.z, g);
-    cv.style.filter = b > 0.15 ? `blur(${b.toFixed(2)}px)` : 'none';
-    cv.style.opacity = (1 / (1 + Math.pow(b / 14, 2))).toFixed(3);
-  });
-  field.style.setProperty('--vig', (0.26 + (1 - S.cond) * 0.3).toFixed(2));
-  $('#cracks').toggleAttribute('hidden', !(S.slideOn && S.broken));
-  // barra di scala
+  view.style.filter = `contrast(${c.toFixed(3)}) brightness(${ex.E.toFixed(3)})`;
+  ocular.style.setProperty('--vig', (0.26 + (1 - S.cond) * 0.3).toFixed(2));
   const sb = $('#scalebar');
   sb.hidden = !S.scale;
   if (S.scale) {
@@ -1692,123 +1538,39 @@ function updateView() {
     $('#scaleTxt').textContent = nice >= 1000 ? num(nice / 1000) + ' mm' : num(nice, 0) + ' µm';
     sb.style.top = (D / 2 + fr * 0.62).toFixed(0) + 'px';
   }
-  $('#slideName').textContent = S.slideOn ? sl.name : 'nessun vetrino';
 }
 function updateReadouts() {
   const g = geom(), o = OBJ[S.obj], ex = exposure();
   $('#rTotal').textContent = g.total + '×';
-  $('#rFormula').textContent = `${S.eye}× oculare × ${o.mag}× obiettivo`;
+  $('#rFormula').textContent = `${S.eye}× × ${o.mag}×`;
+  $('#rFormula').title = `${S.eye}× oculare × ${o.mag}× obiettivo`;
   const f = g.fieldUm;
   $('#rField').textContent = f >= 1000 ? `Ø ${num(f / 1000, 1)} mm` : `Ø ${num(Math.round(f / 10) * 10, 0)} µm`;
-  $('#rObj').textContent = `${o.mag}× / ${o.na}${o.oil ? ' olio' : ''}`;
-  $('#rLight').innerHTML = `<span class="pill ${ex.c}">${ex.t}</span>`;
+  const L = $('#rLight');
+  L.className = 'pill ' + ex.c;
+  L.textContent = S.light ? 'luce ' + ex.t : 'luce spenta';
+  $('#slideName').textContent = S.slideOn ? SHORT[S.slide] : 'nessun vetrino';
 }
 
 /* =====================================================================
-   Vista dall'alto (traslatore)
-   ===================================================================== */
-const mini = $('#mini'), mctx = mini.getContext('2d');
-function miniScale() { return Math.min(mini.clientWidth / 60000, mini.clientHeight / 34000); }
-function drawMini() {
-  if (!mini.clientWidth) return;
-  const dpr = DPR(), W = mini.clientWidth, H = mini.clientHeight;
-  if (mini.width !== Math.round(W * dpr)) { mini.width = Math.round(W * dpr); mini.height = Math.round(H * dpr); }
-  const ctx = mctx, m = miniScale();
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.fillStyle = '#2a2f35'; ctx.fillRect(0, 0, W, H);
-  const hole = 6000 * m;
-  ctx.fillStyle = S.light ? `rgba(255,236,170,${(0.25 + 0.6 * S.intensity).toFixed(2)})` : '#15181b';
-  circle(ctx, W / 2, H / 2, hole);
-  if (S.slideOn) {
-    const sl = SL();
-    ctx.save();
-    ctx.translate(W / 2 - S.cx * m, H / 2 - S.cy * m);
-    ctx.scale(m, m);
-    ctx.fillStyle = 'rgba(200,228,240,0.42)'; ctx.fillRect(-37500, -12500, 75000, 25000);
-    ctx.strokeStyle = 'rgba(220,240,250,0.85)'; ctx.lineWidth = 1.2 / m; ctx.strokeRect(-37500, -12500, 75000, 25000);
-    ctx.fillStyle = 'rgba(242,245,247,0.94)'; ctx.fillRect(-37500, -12500, 19000, 25000);
-    ctx.fillStyle = '#2b3138'; ctx.font = `600 ${3600}px "Barlow Condensed", "Arial Narrow", sans-serif`;
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(sl.short, -28000, 0);
-    ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.strokeRect(-11000, -11000, 22000, 22000);
-    sl.overview(ctx, m);
-    if (S.oil) { ctx.fillStyle = 'rgba(240,215,120,0.35)'; circle(ctx, S.oilAt[0], S.oilAt[1], 2600); }
-    if (S.broken) {
-      ctx.strokeStyle = 'rgba(20,20,20,0.85)'; ctx.lineWidth = 1.2 / m;
-      ctx.beginPath(); ctx.moveTo(-20000, -12500); ctx.lineTo(-6000, -2000); ctx.lineTo(4000, 3000); ctx.lineTo(16000, 12500);
-      ctx.moveTo(-6000, -2000); ctx.lineTo(-3000, 12500); ctx.stroke();
-    }
-    ctx.restore();
-    ctx.fillStyle = S.clips ? '#9aa3ab' : '#5a6168';
-    ctx.fillRect(W / 2 - 24000 * m, H / 2 - 13600 * m, 7000 * m, 4200 * m);
-    ctx.fillRect(W / 2 + 17000 * m, H / 2 - 13600 * m, 7000 * m, 4200 * m);
-  } else {
-    ctx.fillStyle = '#cfd6dc'; ctx.font = '600 13px "Barlow Condensed", "Arial Narrow", sans-serif';
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText('nessun vetrino sul tavolino', W / 2, H - 16);
-  }
-  const g = geom(), r = Math.max(2.5, g.fieldUm / 2 * m);
-  ctx.strokeStyle = '#ffd34d'; ctx.lineWidth = 1.6;
-  ctx.beginPath(); ctx.arc(W / 2, H / 2, r, 0, TAU); ctx.stroke();
-  ctx.strokeStyle = 'rgba(255,211,77,0.55)'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(W / 2 - r - 8, H / 2); ctx.lineTo(W / 2 - r - 2, H / 2); ctx.moveTo(W / 2 + r + 2, H / 2); ctx.lineTo(W / 2 + r + 8, H / 2);
-  ctx.moveTo(W / 2, H / 2 - r - 8); ctx.lineTo(W / 2, H / 2 - r - 2); ctx.moveTo(W / 2, H / 2 + r + 2); ctx.lineTo(W / 2, H / 2 + r + 8); ctx.stroke();
-}
-
-/* =====================================================================
-   Console dei comandi
+   Comandi
    ===================================================================== */
 const cInt = $('#cInt'), cIris = $('#cIris'), cCond = $('#cCond');
 function updateControls() {
-  const L = $('#cLight');
-  L.setAttribute('aria-checked', S.light);
+  $('#cLight').setAttribute('aria-checked', S.light);
   $('#cLightTxt').textContent = S.light ? 'Accesa' : 'Spenta';
   cInt.value = Math.round(S.intensity * 100); $('#oInt').textContent = Math.round(S.intensity * 100) + '%';
   cIris.value = Math.round(S.iris * 100); $('#oIris').textContent = Math.round(S.iris * 100) + '% aperto';
   cCond.value = Math.round(S.cond * 100); $('#oCond').textContent = S.cond > 0.92 ? 'in alto' : S.cond < 0.08 ? 'in basso' : Math.round(S.cond * 100) + '%';
   $$('#cEye button').forEach(b => b.setAttribute('aria-checked', +b.dataset.eye === S.eye));
   $$('#cObj button').forEach(b => b.setAttribute('aria-checked', +b.dataset.obj === S.obj));
+  $('#optScale').checked = S.scale;
   $('#cSlide').textContent = S.slideOn ? (S.broken ? 'Togli il vetrino rotto' : 'Togli il vetrino') : 'Appoggia il vetrino';
   $('#cClips').textContent = S.clips ? 'Solleva le pinzette' : 'Abbassa le pinzette';
   $('#cOil').textContent = S.oil || S.dirty40 ? 'Pulisci l’olio' : 'Metti l’olio a immersione';
   $('#cSlideSel').value = S.slide;
   $('#slideDesc').textContent = SL().desc;
-  const pos = (S.h / 1000).toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  $('#kMacro').setAttribute('aria-valuetext', `Tavolino a ${pos} mm`);
-  $('#kMicro').setAttribute('aria-valuetext', `Tavolino a ${pos} mm`);
-  $('#kMacro .k-rot').setAttribute('transform', `rotate(${(S.h * 0.18).toFixed(1)})`);
-  $('#kMicro .k-rot').setAttribute('transform', `rotate(${((S.h * 3.6) % 360).toFixed(1)})`);
 }
-function knobSVG() {
-  let t = '';
-  for (let i = 0; i < 30; i++) { const a = i / 30 * TAU; t += `<line x1="${(Math.cos(a) * 38).toFixed(1)}" y1="${(Math.sin(a) * 38).toFixed(1)}" x2="${(Math.cos(a) * 47).toFixed(1)}" y2="${(Math.sin(a) * 47).toFixed(1)}"/>`; }
-  return `<svg viewBox="-50 -50 100 100" aria-hidden="true"><circle r="48" class="k-out"/><g class="k-rot">${t}<circle cx="0" cy="-41" r="4.5" class="k-dot"/></g><circle r="27" class="k-cap"/></svg>`;
-}
-$('#kMacro').innerHTML = knobSVG();
-$('#kMicro').innerHTML = knobSVG();
-
-function wheelAmount(e) {
-  const dy = e.deltaMode === 1 ? e.deltaY * 33 : e.deltaMode === 2 ? e.deltaY * 400 : e.deltaY;
-  return clamp(-dy / 100, -3, 3);
-}
-function dragKnob(el, perPx, kind) {
-  el.addEventListener('pointerdown', e => {
-    e.preventDefault();
-    el.setPointerCapture(e.pointerId);
-    let last = e.clientY;
-    const move = ev => { const d = last - ev.clientY; last = ev.clientY; if (d) focusBy(d * perPx, kind); };
-    const up = () => { el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up); };
-    el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
-  });
-  el.addEventListener('wheel', e => { e.preventDefault(); focusBy(wheelAmount(e) * (kind === 'macro' ? MACRO : MICRO), kind); }, { passive: false });
-  el.addEventListener('keydown', e => {
-    const k = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1, PageUp: 3, PageDown: -3 }[e.key];
-    if (k) { e.preventDefault(); focusBy(k * (kind === 'macro' ? MACRO : MICRO), kind); }
-  });
-}
-dragKnob($('#kMacro'), 12, 'macro');
-dragKnob($('#kMicro'), 0.35, 'micro');
-
 function holdRepeat(el, fn) {
   let t1 = 0, t2 = 0;
   const stop = () => { clearTimeout(t1); clearInterval(t2); };
@@ -1829,7 +1591,6 @@ $$('#cPad button').forEach(b => holdRepeat(b, () => {
   const [dx, dy] = MV[b.dataset.mv], step = geom().fieldUm * 0.08;
   moveSlide(dx * step, dy * step);
 }));
-
 $('#cLight').addEventListener('click', () => setLight(!S.light));
 cInt.addEventListener('input', () => { S.intensity = cInt.value / 100; invalidate(); });
 cIris.addEventListener('input', () => { S.iris = cIris.value / 100; invalidate(); });
@@ -1837,172 +1598,117 @@ cCond.addEventListener('input', () => { S.cond = cCond.value / 100; invalidate()
 $$('#cEye button').forEach(b => b.addEventListener('click', () => setEye(+b.dataset.eye)));
 $('#cObj').innerHTML = OBJ.map((o, i) => `<button role="radio" data-obj="${i}" aria-checked="false"><i style="--c:${o.color}"></i>${o.mag}×</button>`).join('');
 $$('#cObj button').forEach(b => b.addEventListener('click', () => rotateTo(+b.dataset.obj)));
+$('#optScale').addEventListener('change', e => { S.scale = e.target.checked; invalidate(); });
 $('#cSlideSel').innerHTML = Object.values(SLIDES).map(s => `<option value="${s.id}">${s.name}</option>`).join('');
 $('#cSlideSel').addEventListener('change', e => { if (!setSlideType(e.target.value)) e.target.value = S.slide; });
 $('#cSlide').addEventListener('click', () => (S.slideOn ? removeSlide() : placeSlide()));
 $('#cClips').addEventListener('click', toggleClips);
 $('#cOil').addEventListener('click', toggleOil);
 
-/* trascinamento del vetrino nella vista dall'alto */
-mini.addEventListener('pointerdown', e => {
-  e.preventDefault();
-  mini.setPointerCapture(e.pointerId);
-  let lx = e.clientX, ly = e.clientY;
-  const move = ev => {
-    const m = miniScale(), dx = ev.clientX - lx, dy = ev.clientY - ly;
-    lx = ev.clientX; ly = ev.clientY;
-    if (dx || dy) moveSlide(dx / m, dy / m);
-  };
-  const up = () => { mini.removeEventListener('pointermove', move); mini.removeEventListener('pointerup', up); mini.removeEventListener('pointercancel', up); };
-  mini.addEventListener('pointermove', move); mini.addEventListener('pointerup', up); mini.addEventListener('pointercancel', up);
-});
-
 /* =====================================================================
-   Interazione con il disegno
+   Pannello (dal basso sul telefono, a lato sugli schermi larghi)
    ===================================================================== */
-const tip = $('#tip'), scopeCard = $('#scopeCard');
-let dragInfo = null;
-function partAt(target) { return target && target.closest ? target.closest('[data-part]') : null; }
-svg.addEventListener('pointermove', e => {
-  const p = partAt(e.target);
-  if (!p || S.mode === 'quiz' || e.pointerType === 'touch') { tip.hidden = true; return; }
-  const r = scopeCard.getBoundingClientRect();
-  let name = PART[p.dataset.part].name;
-  if (p.dataset.obj) name = `Obiettivo ${OBJ[p.dataset.obj].mag}×`;
-  tip.textContent = name;
-  tip.style.left = (e.clientX - r.left) + 'px';
-  tip.style.top = (e.clientY - r.top) + 'px';
-  tip.hidden = false;
-});
-svg.addEventListener('pointerleave', () => { tip.hidden = true; });
-
-const DRAG = {
-  macro: d => focusBy(d * 12, 'macro'),
-  micro: d => focusBy(d * 0.35, 'micro'),
-  intensita: d => { S.intensity = clamp(S.intensity + d / 160, 0, 1); invalidate(); },
-  viteCond: d => { S.cond = clamp(S.cond + d / 120, 0, 1); invalidate(); },
-  diaframma: (d, dx) => { S.iris = clamp(S.iris + dx / 60 + d / 120, 0.05, 1); invalidate(); },
-};
-svg.addEventListener('pointerdown', e => {
-  const p = partAt(e.target);
-  if (!p || S.mode !== 'usa' || !DRAG[p.dataset.part]) return;
-  e.preventDefault();
-  dragInfo = { id: p.dataset.part, x: e.clientX, y: e.clientY, moved: 0, cap: false };
-});
-svg.addEventListener('pointermove', e => {
-  if (!dragInfo) return;
-  const dy = dragInfo.y - e.clientY, dx = dragInfo.x - e.clientX;
-  dragInfo.x = e.clientX; dragInfo.y = e.clientY;
-  dragInfo.moved += Math.abs(dx) + Math.abs(dy);
-  if (dragInfo.moved > 4) {
-    if (!dragInfo.cap) { dragInfo.cap = true; try { svg.setPointerCapture(e.pointerId); } catch (_) { /* puntatore già rilasciato */ } }
-    DRAG[dragInfo.id](dy, dx);
+const sheet = $('#sheet'), panelHome = $('#panels'), ctlSlot = $('#ctlSlot');
+const wideMQ = window.matchMedia ? matchMedia('(min-width: 860px)') : { matches: false };
+const PANELS = { luce: $('#pn-luce'), mag: $('#pn-mag'), fuoco: $('#pn-fuoco'), vetrino: $('#pn-vetrino') };
+let curPanel = null;
+function placePanel(key, rows) {
+  const p = key ? PANELS[key] : null;
+  if (curPanel && curPanel !== p) panelHome.append(curPanel);
+  curPanel = p;
+  if (p) {
+    if (p.parentNode !== ctlSlot) ctlSlot.append(p);
+    $$('[data-row]', p).forEach(r => r.classList.toggle('hl', (rows || []).includes(r.dataset.row)));
   }
-});
-const endDrag = () => { setTimeout(() => { dragInfo = null; }, 0); };
-svg.addEventListener('pointerup', endDrag);
-svg.addEventListener('pointercancel', endDrag);
-svg.addEventListener('wheel', e => {
-  const p = partAt(e.target);
-  if (!p || S.mode !== 'usa') return;
-  const a = wheelAmount(e), id = p.dataset.part;
-  const fn = {
-    macro: () => focusBy(a * MACRO, 'macro'),
-    micro: () => focusBy(a * MICRO, 'micro'),
-    intensita: () => { S.intensity = clamp(S.intensity + a * 0.05, 0, 1); invalidate(); },
-    viteCond: () => { S.cond = clamp(S.cond + a * 0.08, 0, 1); invalidate(); },
-    diaframma: () => { S.iris = clamp(S.iris + a * 0.05, 0.05, 1); invalidate(); },
-    traslatore: () => { const st2 = geom().fieldUm * 0.06 * a; if (e.shiftKey) moveSlide(st2, 0); else moveSlide(0, -st2); },
-  }[id];
-  if (fn) { e.preventDefault(); fn(); }
-}, { passive: false });
-
-svg.addEventListener('click', e => {
-  const p = partAt(e.target);
-  if (!p) return;
-  if (dragInfo && dragInfo.moved > 4) return;
-  const id = p.dataset.part;
-  if (S.mode === 'quiz') { quizAnswer(id, p); return; }
-  if (S.mode === 'esplora') { selectPart(id); return; }
-  if (p.classList.contains('lbl')) { S.sel = id; say('info', `${PART[id].name}: ${PART[id].what}`); invalidate(); return; }
-  usePart(id, p, e);
-});
-svg.addEventListener('keydown', e => {
-  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('part')) {
-    e.preventDefault();
-    e.target.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-  }
-});
-function svgPoint(e) {
-  const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
-  const m = svg.getScreenCTM();
-  return m ? pt.matrixTransform(m.inverse()) : { x: 0, y: 0 };
+  ctlSlot.hidden = !p;
 }
-function usePart(id, el, e) {
-  S.sel = id;
-  const P = PART[id];
-  switch (id) {
-    case 'interruttore': setLight(!S.light); break;
-    case 'oculare': setEye({ 10: 15, 15: 5, 5: 10 }[S.eye]); break;
-    case 'obiettivi': {
-      const i = +el.dataset.obj;
-      if (i === S.obj) say('info', `L’obiettivo ${OBJ[i].mag}× è già in posizione. Tocca un altro obiettivo o il revolver per cambiarlo.`);
-      else rotateTo(i);
-      break;
-    }
-    case 'revolver': rotateTo((S.obj + 1) % 4); break;
-    case 'pinzette': toggleClips(); break;
-    case 'vetrino': say('info', `${SL().name}. ${SL().desc}`); break;
-    case 'macro': case 'micro': case 'viteCond': {
-      const c = { macro: 382, micro: 458, viteCond: 366 + st.dy }[id];
-      const up = svgPoint(e).y < c ? 1 : -1;
-      if (id === 'viteCond') { S.cond = clamp(S.cond + up * 0.1, 0, 1); say('info', `Condensatore ${up > 0 ? 'alzato' : 'abbassato'}.`); invalidate(); }
-      else focusBy(up * (id === 'macro' ? MACRO : MICRO), id);
-      break;
-    }
-    case 'intensita': say('info', 'Regolatore della luce: trascinalo in su o in giù oppure usa la rotellina.'); break;
-    case 'diaframma': say('info', 'Diaframma a iride: trascina la levetta o usa la rotellina per aprirlo e chiuderlo.'); break;
-    case 'traslatore': say('info', 'Traslatore: usa le frecce qui a destra, la rotellina sulle manopole o trascina il vetrino nella vista dall’alto.'); break;
-    default: say('info', `${P.name}: ${P.what}`);
+const isWide = () => wideMQ.matches;
+function sheetOpen() { return isWide() || sheet.classList.contains('open'); }
+function showSheet() {
+  toast.hidden = true;
+  if (!isWide()) {
+    sheet.classList.add('open');
+    document.body.classList.add('sheet-open');
+    if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' });
   }
+  sheet.scrollTop = 0;
+  $('#titleBtn').setAttribute('aria-expanded', 'true');
+  requestAnimationFrame(updateSheetVars);
+}
+function openPart(id) {
+  const P = PART[id];
+  if (!P) return;
+  S.sel = id;
+  const cat = $('#shCat');
+  cat.textContent = CAT[P.cat];
+  cat.className = 'eyebrow cat-' + P.cat;
+  $('#shName').textContent = P.name;
+  $('#shWhat').textContent = P.what;
+  $('#shHow').textContent = P.how;
+  $('#shNote').textContent = P.note || '';
+  $('#shNote').hidden = !P.note;
+  $('#shHowBox').open = isWide();
+  placePanel(P.panel, P.rows);
+  $('#shPart').hidden = false; $('#shGuide').hidden = true;
+  $('#shPrev').hidden = $('#shNext').hidden = false;
+  $('#shClose').hidden = false;
+  $('#shClose').setAttribute('aria-label', isWide() ? 'Torna alla guida' : 'Chiudi');
+  showSheet();
   invalidate();
 }
-
-/* =====================================================================
-   Conosci le parti
-   ===================================================================== */
-function selectPart(id) {
-  S.sel = id;
-  const P = PART[id];
-  $('#infoCat').textContent = CAT[P.cat];
-  $('#infoCat').className = 'cat ' + P.cat;
-  $('#infoName').textContent = P.name;
-  const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  $('#infoBody').innerHTML = `<h4>A cosa serve</h4><p>${esc(P.what)}</p><h4>Come si usa</h4><p>${esc(P.how)}</p>${P.note ? `<h4>Da sapere</h4><p>${esc(P.note)}</p>` : ''}`;
-  $('#infoTry').hidden = !P.ctl;
-  $$('#partGroups button').forEach(b => b.classList.toggle('sel', b.dataset.part === id));
-  say('info', `${P.name}: ${P.what}`);
+function openGuide(show = true) {
+  S.sel = null;
+  const cat = $('#shCat');
+  cat.textContent = 'Guida'; cat.className = 'eyebrow';
+  $('#shName').textContent = 'Il microscopio ottico';
+  placePanel(null);
+  $('#shPart').hidden = true; $('#shGuide').hidden = false;
+  $('#shPrev').hidden = $('#shNext').hidden = true;
+  $('#shClose').hidden = isWide();
+  $('#shClose').setAttribute('aria-label', 'Chiudi');
+  if (show) showSheet();
   invalidate();
 }
+function closeSheet() {
+  if (isWide()) { openGuide(false); return; }
+  sheet.classList.remove('open');
+  document.body.classList.remove('sheet-open');
+  S.sel = null;
+  $('#titleBtn').setAttribute('aria-expanded', 'false');
+  updateSheetVars();
+  invalidate();
+}
+function stepPart(d) {
+  const i = NAV.indexOf(S.sel);
+  openPart(NAV[(i + d + NAV.length) % NAV.length]);
+}
+function updateSheetVars() {
+  const root = document.documentElement.style;
+  const open = !isWide() && sheet.classList.contains('open');
+  root.setProperty('--sheet-h', open ? sheet.offsetHeight + 'px' : '0px');
+  const oc = ocular.getBoundingClientRect();
+  const ocBottom = oc.bottom + window.scrollY;
+  root.setProperty('--sheet-max', Math.max(260, Math.min(window.innerHeight * 0.7, window.innerHeight - ocBottom - 10)) + 'px');
+  root.setProperty('--top-h', $('#top').offsetHeight + 'px');
+}
+$('#titleBtn').addEventListener('click', () => {
+  if (!isWide() && sheet.classList.contains('open') && $('#shPart').hidden) closeSheet();
+  else openGuide();
+});
+$('#shClose').addEventListener('click', closeSheet);
+$('#shPrev').addEventListener('click', () => stepPart(-1));
+$('#shNext').addEventListener('click', () => stepPart(1));
 (function buildGroups() {
   const order = ['ottica', 'illuminazione', 'meccanica', 'accessorio'];
   $('#partGroups').innerHTML = order.map(c => `<div><h4>${CAT[c]}</h4><div class="chips">${PARTS.filter(p => p.cat === c).map(p => `<button data-part="${p.id}">${p.name}</button>`).join('')}</div></div>`).join('');
-  $$('#partGroups button').forEach(b => b.addEventListener('click', () => selectPart(b.dataset.part)));
+  $$('#partGroups button').forEach(b => b.addEventListener('click', () => openPart(b.dataset.part)));
 })();
-$('#legend').addEventListener('click', e => {
-  const b = e.target.closest('button[data-part]');
-  if (!b) return;
-  if (S.mode === 'esplora') selectPart(b.dataset.part);
-  else { const P = PART[b.dataset.part]; S.sel = P.id; say('info', `${P.name}: ${P.what}`); invalidate(); }
-});
-$('#infoTry').addEventListener('click', () => {
-  const P = PART[S.sel];
-  setMode('usa');
-  const el = $('#' + P.ctl);
-  if (el) {
-    el.scrollIntoView({ behavior: RM ? 'auto' : 'smooth', block: 'center' });
-    el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
-  }
+if (wideMQ.addEventListener) wideMQ.addEventListener('change', () => {
+  sheet.classList.remove('open');
+  document.body.classList.remove('sheet-open');
+  if (isWide()) { if (S.sel) openPart(S.sel); else openGuide(false); }
+  else { S.sel = null; openGuide(false); }
+  updateSheetVars();
 });
 
 /* =====================================================================
@@ -2033,136 +1739,157 @@ function procErr(k) { if (PROC.on && PROC.i < STEPS.length) PROC.errors[k] = (PR
 function procStart() {
   Object.assign(S, { light: false, intensity: 0.2, iris: 1, cond: 1, eye: 10, obj: 1, h: 1700, slideOn: false, clips: true, oil: false, dirty40: false, broken: false, moved: false, busy: false });
   PROC.on = true; PROC.i = 0; PROC.errors = {};
-  say('info', 'Procedura iniziata: il microscopio è spento, con l’obiettivo 10× in posizione. Segui i passaggi.');
+  say('info', 'Esercizio iniziato: il microscopio è spento, con l’obiettivo 10× in posizione. Segui i passaggi scritti in alto.');
   invalidate();
 }
-function procStop() { PROC.on = false; say('info', 'Procedura chiusa. Puoi continuare a usare il microscopio liberamente.'); invalidate(); }
+function procStop() { PROC.on = false; say('info', 'Esercizio chiuso. Puoi continuare a usare il microscopio liberamente.'); invalidate(); }
 function checkProc() {
   if (!PROC.on) return;
   let adv = false;
   while (PROC.i < STEPS.length && STEPS[PROC.i].ok()) { PROC.i++; adv = true; }
   if (adv) {
     if (PROC.i < STEPS.length) say('ok', `Fatto! Passo ${PROC.i + 1}: ${STEPS[PROC.i].t()}`);
-    else if (Object.keys(PROC.errors).length) say('warn', 'Procedura completata, ma con qualche errore: leggi l’elenco nel riquadro della procedura.');
-    else say('ok', 'Procedura completata senza errori: hai usato il microscopio nell’ordine giusto.');
+    else if (Object.keys(PROC.errors).length) say('warn', 'Esercizio completato, ma con qualche errore: li trovi nella guida (tocca il titolo).');
+    else say('ok', 'Esercizio completato senza errori: hai usato il microscopio nell’ordine giusto.');
   }
 }
-function renderProc() {
-  $('#procIntro').hidden = PROC.on;
-  $('#procRun').hidden = !PROC.on;
-  if (!PROC.on) return;
+function renderGuideProc() {
   const n = STEPS.length, i = PROC.i;
-  $('#procTot').textContent = n;
-  $('#procN').textContent = Math.min(i + 1, n);
-  $('#procBar').style.width = (i / n * 100).toFixed(1) + '%';
-  $('#procNow').textContent = i < n ? STEPS[i].t() : '';
-  $('#procNow').hidden = i >= n;
+  const html = STEPS.map((s, k) => `<li class="${PROC.on ? (k < i ? 'done' : k === i ? 'cur' : '') : ''}">${s.t()}</li>`).join('');
+  const list = $('#procList');
+  if (list.innerHTML !== html) list.innerHTML = html;
   const errs = Object.entries(PROC.errors);
   const nErr = errs.reduce((a, [, c]) => a + c, 0);
-  const done = $('#procDone');
-  done.hidden = i < n;
-  if (i >= n) done.textContent = nErr ? `Procedura completata, con ${nErr} ${nErr === 1 ? 'errore' : 'errori'}. Rileggi qui sotto cosa evitare e riprova.` : 'Procedura completata senza errori. Ottimo lavoro!';
-  const html = STEPS.map((s, k) => `<li class="${k < i ? 'done' : k === i ? 'cur' : ''}">${s.t()}</li>`).join('');
-  if ($('#procList').innerHTML !== html) $('#procList').innerHTML = html;
-  $('#procErr').innerHTML = nErr ? `<b>Errori: ${nErr}</b><ul>${errs.map(([k, c]) => `<li>${ERRTXT[k]}${c > 1 ? ` (${c} volte)` : ''}</li>`).join('')}</ul>` : '';
+  $('#procErr').innerHTML = PROC.on && nErr ? `<b>Errori: ${nErr}</b><ul>${errs.map(([k, c]) => `<li>${ERRTXT[k]}${c > 1 ? ` (${c} volte)` : ''}</li>`).join('')}</ul>` : '';
+  $('#procStart').textContent = PROC.on ? 'Ricomincia da zero' : 'Esercitati da zero';
+  if (n && i > n) PROC.i = n;
 }
-$('#procStart').addEventListener('click', procStart);
-$('#procStop').addEventListener('click', procStop);
+$('#procStart').addEventListener('click', () => {
+  if (Q.on) quizExit();
+  procStart();
+  if (!isWide()) closeSheet();
+});
 
 /* =====================================================================
    Quiz
    ===================================================================== */
-const Q = { list: [], i: 0, score: 0, answered: false, results: [] };
+const Q = { on: false, list: [], i: 0, score: 0, answered: false, results: [], done: false };
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function clearQuizMarks() { $$('.q-ok, .q-bad', svg).forEach(el => el.classList.remove('q-ok', 'q-bad')); }
+function markPart(id, cls) { $$(`.part[data-part="${id}"]`, svg).forEach(el => el.classList.add(cls)); }
 function quizStart() {
+  if (PROC.on) PROC.on = false;
   const ids = shuffle(PARTS.filter(p => p.id !== 'vetrino').map(p => p.id)).slice(0, 10);
   Q.list = ids.map((id, k) => ({ id, kind: k % 2 ? 'f' : 'n' }));
-  Q.i = 0; Q.score = 0; Q.answered = false; Q.results = [];
-  $('#quizCard').hidden = false; $('#quizEnd').hidden = true;
-  renderQuiz();
-}
-function clearQuizMarks() { $$('.q-ok, .q-bad', svg).forEach(el => el.classList.remove('q-ok', 'q-bad')); }
-function renderQuiz() {
+  Q.on = true; Q.i = 0; Q.score = 0; Q.answered = false; Q.results = []; Q.done = false;
+  S.sel = null;
+  if (!isWide()) closeSheet(); else openGuide(false);
   clearQuizMarks();
-  const q = Q.list[Q.i];
-  $('#qN').textContent = Q.i + 1; $('#qTot').textContent = Q.list.length;
-  $('#qScore').textContent = Q.score;
-  $('#qBar').style.width = (Q.i / Q.list.length * 100) + '%';
-  $('#qKind').textContent = q.kind === 'n' ? 'Tocca sul disegno la parte che si chiama:' : 'Tocca sul disegno la parte che:';
-  $('#qPrompt').textContent = q.kind === 'n' ? PART[q.id].name : PART[q.id].q;
-  $('#qFb').textContent = ''; $('#qFb').className = 'quiz-fb';
-  $('#qNext').hidden = true; $('#qSkip').hidden = false;
-  Q.answered = false;
-  say('info', 'Quiz: rispondi toccando una parte del disegno.');
+  if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' });
+  invalidate();
 }
-function markPart(id, cls) { $$(`.part[data-part="${id}"]`, svg).forEach(el => el.classList.add(cls)); }
+function quizExit() { Q.on = false; clearQuizMarks(); invalidate(); }
 function quizAnswer(id) {
-  if (Q.answered || S.mode !== 'quiz') return;
+  if (!Q.on || Q.answered || Q.done) return;
   const q = Q.list[Q.i], ok = id === q.id;
   Q.answered = true;
   Q.results.push({ id: q.id, ok });
-  if (ok) {
-    Q.score++;
-    markPart(id, 'q-ok');
-    $('#qFb').textContent = q.kind === 'n' ? 'Giusto!' : `Giusto! È «${PART[q.id].name}».`;
-    $('#qFb').className = 'quiz-fb ok';
-  } else {
-    markPart(id, 'q-bad'); markPart(q.id, 'q-ok');
-    $('#qFb').textContent = `No, hai toccato «${PART[id].name}». La risposta giusta, evidenziata in verde, è «${PART[q.id].name}».`;
-    $('#qFb').className = 'quiz-fb bad';
-  }
-  $('#qScore').textContent = Q.score;
-  $('#qNext').hidden = false; $('#qSkip').hidden = true;
-  $('#qNext').textContent = Q.i + 1 < Q.list.length ? 'Avanti' : 'Vedi il risultato';
-  $('#qNext').focus({ preventScroll: true });
+  if (ok) { Q.score++; markPart(id, 'q-ok'); Q.fb = { ok: true, t: q.kind === 'n' ? 'Giusto!' : `Giusto! È «${PART[q.id].name}».` }; }
+  else { markPart(id, 'q-bad'); markPart(q.id, 'q-ok'); Q.fb = { ok: false, t: `No, hai toccato «${PART[id].name}». In verde la risposta giusta: «${PART[q.id].name}».` }; }
+  invalidate();
 }
-function quizNext() {
-  if (Q.i + 1 < Q.list.length) { Q.i++; renderQuiz(); return; }
-  clearQuizMarks();
-  $('#quizCard').hidden = true; $('#quizEnd').hidden = false;
-  const n = Q.list.length;
-  $('#qFinal').textContent = `${Q.score} / ${n}`;
-  $('#qMsg').textContent = Q.score === n ? 'Perfetto: conosci tutte le parti del microscopio.' : Q.score >= n * 0.7 ? 'Bene! Ripassa le parti che hai sbagliato.' : 'Ripassa le parti nella sezione «Conosci le parti» e riprova.';
-  $('#qReview').innerHTML = Q.results.map(r => `<li class="${r.ok ? 'ok' : 'bad'}">${r.ok ? '✓' : '✗'} ${PART[r.id].name}</li>`).join('');
-}
-$('#qNext').addEventListener('click', quizNext);
-$('#qSkip').addEventListener('click', () => {
-  if (Q.answered) return;
+function quizSkip() {
+  if (!Q.on || Q.answered || Q.done) return;
   const q = Q.list[Q.i];
   Q.answered = true; Q.results.push({ id: q.id, ok: false });
   markPart(q.id, 'q-ok');
-  $('#qFb').textContent = `La risposta è «${PART[q.id].name}»: la vedi evidenziata in verde.`;
-  $('#qFb').className = 'quiz-fb bad';
-  $('#qNext').hidden = false; $('#qSkip').hidden = true;
-  $('#qNext').textContent = Q.i + 1 < Q.list.length ? 'Avanti' : 'Vedi il risultato';
-});
-$('#qAgain').addEventListener('click', quizStart);
-
-/* =====================================================================
-   Modalità
-   ===================================================================== */
-function setMode(m) {
-  if (S.mode === m) return;
-  S.mode = m;
-  document.body.classList.toggle('mode-usa', m === 'usa');
-  $$('.modes button').forEach(b => b.setAttribute('aria-selected', b.dataset.mode === m));
-  ['esplora', 'usa', 'quiz'].forEach(k => { $('#pane-' + k).hidden = k !== m; });
-  tip.hidden = true;
-  clearQuizMarks();
-  if (m === 'quiz') { S.sel = null; quizStart(); }
-  if (m === 'usa') say('info', 'Usa i comandi della console oppure agisci sulle parti del disegno: tocca l’interruttore, il revolver, gli obiettivi, l’oculare; trascina o usa la rotellina sulle viti.');
-  if (m === 'esplora') say('info', S.sel ? `${PART[S.sel].name}: ${PART[S.sel].what}` : 'Tocca una parte del microscopio per scoprirne nome e funzione.');
-  $('#scopeHint').textContent = { esplora: 'Tocca una parte per saperne di più', usa: 'Le parti del disegno funzionano davvero', quiz: 'Nomi nascosti durante il quiz' }[m];
+  Q.fb = { ok: false, t: `È «${PART[q.id].name}»: la vedi evidenziata in verde.` };
   invalidate();
 }
-$$('.modes button').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
-$('#optLabels').addEventListener('change', invalidate);
-$('#optScale').addEventListener('change', e => { S.scale = e.target.checked; invalidate(); });
+function quizNext() {
+  if (Q.done) { quizStart(); return; }
+  clearQuizMarks();
+  if (Q.i + 1 < Q.list.length) { Q.i++; Q.answered = false; Q.fb = null; }
+  else Q.done = true;
+  invalidate();
+}
+$('#quizStartBtn').addEventListener('click', quizStart);
+$('#bnNext').addEventListener('click', quizNext);
+$('#bnSkip').addEventListener('click', quizSkip);
+$('#bnClose').addEventListener('click', () => {
+  if (Q.on) quizExit();
+  else if (PROC.on) procStop();
+});
 
-document.addEventListener('keydown', e => {
-  if (S.mode !== 'usa' || e.ctrlKey || e.metaKey || e.altKey) return;
+function renderBanner() {
+  const bn = $('#banner'), fb = $('#bnFb'), acts = $('#bnActions');
+  if (Q.on) {
+    bn.hidden = false;
+    const n = Q.list.length;
+    if (Q.done) {
+      const msg = Q.score === n ? 'Perfetto: conosci tutte le parti.' : Q.score >= n * 0.7 ? 'Bene! Ripassa le parti sbagliate.' : 'Ripassa le parti nella guida e riprova.';
+      $('#bnText').innerHTML = `<small>Quiz completato</small>Hai risposto bene a ${Q.score} domande su ${n}. ${msg}`;
+      $('#bnBar').style.width = '100%';
+      const wrong = Q.results.filter(r => !r.ok).map(r => PART[r.id].name);
+      fb.hidden = !wrong.length; fb.className = 'bn-fb bad';
+      fb.textContent = wrong.length ? 'Da ripassare: ' + wrong.join(', ') + '.' : '';
+      acts.hidden = false; $('#bnNext').textContent = 'Rifai il quiz'; $('#bnSkip').hidden = true;
+    } else {
+      const q = Q.list[Q.i], P = PART[q.id];
+      $('#bnText').innerHTML = '';
+      const sm = document.createElement('small');
+      sm.textContent = `Quiz · domanda ${Q.i + 1} di ${n} · punti ${Q.score}`;
+      $('#bnText').append(sm, document.createTextNode(q.kind === 'n' ? `Tocca sul disegno: ${P.name}` : `Tocca la parte che: ${P.q.charAt(0).toLowerCase() + P.q.slice(1)}`));
+      $('#bnBar').style.width = (Q.i / n * 100) + '%';
+      fb.hidden = !Q.answered;
+      if (Q.answered && Q.fb) { fb.textContent = Q.fb.t; fb.className = 'bn-fb ' + (Q.fb.ok ? 'ok' : 'bad'); }
+      acts.hidden = false;
+      $('#bnNext').hidden = !Q.answered; $('#bnSkip').hidden = Q.answered;
+      $('#bnNext').textContent = Q.i + 1 < n ? 'Avanti' : 'Vedi il risultato';
+    }
+    $('#bnClose').setAttribute('aria-label', 'Esci dal quiz');
+  } else if (PROC.on) {
+    bn.hidden = false;
+    const n = STEPS.length, i = PROC.i;
+    const nErr = Object.values(PROC.errors).reduce((a, c) => a + c, 0);
+    $('#bnText').innerHTML = '';
+    const sm = document.createElement('small');
+    sm.textContent = i < n ? `Esercizio · passo ${i + 1} di ${n}${nErr ? ` · errori ${nErr}` : ''}` : 'Esercizio completato';
+    $('#bnText').append(sm, document.createTextNode(i < n ? STEPS[i].t() : (nErr ? `Hai finito con ${nErr} ${nErr === 1 ? 'errore' : 'errori'}: li trovi nella guida (tocca il titolo).` : 'Hai finito senza errori. Ottimo lavoro!')));
+    $('#bnBar').style.width = (i / n * 100).toFixed(1) + '%';
+    fb.hidden = true; acts.hidden = true;
+    $('#bnClose').setAttribute('aria-label', 'Esci dall’esercizio');
+  } else bn.hidden = true;
+  $('#bnProg').hidden = bn.hidden;
+}
+
+/* =====================================================================
+   Tocchi sul disegno e tastiera
+   ===================================================================== */
+svg.addEventListener('click', e => {
+  const p = e.target.closest ? e.target.closest('[data-part]') : null;
+  if (!p) return;
+  const id = p.dataset.part;
+  if (Q.on) { if (p.classList.contains('part')) quizAnswer(id); return; }
+  openPart(id);
+});
+$$('.part', svg).forEach(el => {
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('role', 'button');
+  el.setAttribute('aria-label', PART[el.dataset.part].name);
+});
+svg.addEventListener('keydown', e => {
   const t = e.target;
-  if (t && (t.matches('input, select, textarea, [role="slider"]'))) return;
+  if ((e.key === 'Enter' || e.key === ' ') && t.classList && (t.classList.contains('part') || t.classList.contains('lbl'))) {
+    e.preventDefault();
+    t.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !isWide() && sheet.classList.contains('open')) { closeSheet(); return; }
+  if (Q.on || e.ctrlKey || e.metaKey || e.altKey) return;
+  const t = e.target;
+  if (t && t.matches && t.matches('input, select, textarea, button')) return;
   const step = geom().fieldUm * 0.08;
   const act = {
     ArrowUp: () => moveSlide(0, -step), ArrowDown: () => moveSlide(0, step),
@@ -2187,15 +1914,22 @@ function renderAll() {
   updateView();
   updateReadouts();
   updateControls();
-  drawMini();
-  renderProc();
+  renderBanner();
+  renderGuideProc();
 }
-const ro = new ResizeObserver(() => { sizeCanvases(); invalidate(); });
+const ro = new ResizeObserver(() => { sizeCanvases(); updateSheetVars(); invalidate(); });
 ro.observe(ocular);
-ro.observe(mini);
+ro.observe(sheet);
+ro.observe($('#top'));
+window.addEventListener('resize', updateSheetVars);
 sizeCanvases();
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(invalidate);
+updateObjectives(true);
+openGuide(false);
+fitLabels();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitLabels);
 renderAll();
+updateSheetVars();
+if (!isWide()) setTimeout(() => say('info', 'Tocca un nome sul disegno per sapere a cosa serve quella parte e per usarla. Il titolo in alto apre la guida.'), 400);
 })();
 </script>
 </body>
