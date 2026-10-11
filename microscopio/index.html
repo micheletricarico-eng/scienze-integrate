@@ -75,7 +75,7 @@ h2,h3{text-wrap:balance}
 .banner{max-width:1000px;margin:6px auto 0;padding:8px 10px;border-radius:10px;background:var(--panel);border:1px solid var(--line)}
 .bn-row{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
 .bn-row .iconbtn{flex:none}
-@media (max-height:760px){.bn-text{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}.bn-text.full{display:block}}
+@media (max-width:420px){.bn-text{font-size:.86rem}}
 .bn-text{font-size:.92rem;font-weight:700;line-height:1.3}
 .bn-text small{display:block;font:600 .68rem/1.3 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .bn-fb{margin-top:4px;font-size:.88rem;font-weight:700}
@@ -93,7 +93,9 @@ h2,h3{text-wrap:balance}
 .ro-l{left:0}
 .ro-r{right:0;justify-items:end;text-align:right}
 .ro b{font:600 .86rem/1.15 var(--f-display);letter-spacing:.01em}
-.pill{display:inline-block;margin-top:2px;padding:1px 7px;border-radius:999px;font:700 .72rem/1.5 var(--f-body);background:var(--panel-2);color:var(--muted);white-space:nowrap}
+.pill{display:inline-block;max-width:100%;margin-top:1px;padding:1px 7px;border-radius:999px;font:700 .72rem/1.35 var(--f-body);background:var(--panel-2);color:var(--muted)}
+.ro .eyebrow+b,.ro .eyebrow+.pill{margin-top:0}
+.ro .gap-top{margin-top:4px}
 .pill.ok{background:var(--ok-soft);color:var(--ok)}
 .pill.warn{background:var(--warn-soft);color:var(--warn)}
 .pill.bad{background:var(--bad-soft);color:var(--bad)}
@@ -170,20 +172,23 @@ h2,h3{text-wrap:balance}
 .sh-grip{width:42px;height:5px;border-radius:99px;background:var(--line);margin:4px auto 8px}
 .sh-head{position:sticky;top:-4px;z-index:2;background:var(--panel);padding:4px 128px 8px 0;margin-top:-4px;touch-action:none}
 .sh-nav{position:absolute;right:0;top:21px;display:flex;gap:6px}
-.sh-body{position:relative}
-/* gli avvisi si sovrappongono alla spiegazione: non spostano i comandi sotto il dito */
-.sh-status{position:absolute;z-index:3;left:-4px;right:-4px;top:0;display:flex;gap:8px;align-items:flex-start;padding:8px 11px;border-radius:10px;background:var(--accent-soft);box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:.86rem;line-height:1.35;cursor:pointer}
+.sh-body{position:relative;display:flex;flex-direction:column}
+/* gli avvisi stanno appesi sotto la testata (che resta ferma in alto): sempre visibili, non spostano i comandi */
+.sh-status{position:absolute;z-index:3;left:-4px;right:-4px;top:calc(100% - 2px);display:flex;gap:8px;align-items:flex-start;padding:8px 11px;border-radius:10px;background:var(--accent-soft);box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:.86rem;line-height:1.35;cursor:pointer}
 .sh-status span{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .sh-status i{flex:none;width:8px;height:8px;border-radius:50%;margin-top:.42em;background:var(--accent)}
 .sh-status.ok{background:var(--ok-soft)} .sh-status.ok i{background:var(--ok)}
 .sh-status.warn{background:var(--warn-soft)} .sh-status.warn i{background:var(--warn)}
 .sh-status.bad{background:var(--bad-soft)} .sh-status.bad i{background:var(--bad)}
 .sh-titles{min-width:0}
-.sh-titles h2{font:700 1.5rem/1.08 var(--f-display);letter-spacing:.01em;margin-top:2px}
+.sh-titles h2{font:700 clamp(1.2rem,5.4vw,1.5rem)/1.08 var(--f-display);letter-spacing:.01em;margin-top:2px}
 .iconbtn{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel-2);font-size:1.15rem;line-height:1;padding:0}
 .iconbtn:hover{border-color:var(--accent)}
 .cat-ottica{color:var(--accent)} .cat-illuminazione{color:var(--warn)}
-.what{font-size:1rem;min-height:4.3em}
+.what{font-size:1rem}
+/* durante l’esercizio i comandi vengono prima della spiegazione */
+body.proc-on #shPart{display:flex;flex-direction:column}
+body.proc-on #shPart .ctl-slot{order:-1;margin-top:0;margin-bottom:12px}
 .ctl-slot{margin-top:12px;padding:12px;border-radius:10px;background:var(--panel-2);display:grid;gap:10px}
 .how{margin-top:12px}
 .how summary{cursor:pointer;font-weight:700;color:var(--accent);font-size:.93rem}
@@ -214,6 +219,10 @@ h2,h3{text-wrap:balance}
 .panel{display:flex;flex-direction:column;gap:12px}
 .crow{display:grid;gap:4px;padding:6px 8px;margin:0 -8px;border-radius:8px;transition:background .2s}
 .crow.hl{order:-1}
+#magOil{order:-2}
+.gapbar{position:relative;height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.gapbar i{position:absolute;left:0;top:0;bottom:0;width:50%;border-radius:99px;background:var(--ok);transition:width .15s}
+.gapbar.warn i{background:var(--warn)} .gapbar.bad i{background:var(--bad)}
 .crow.hl{background:var(--eosin-soft);box-shadow:inset 3px 0 0 var(--eosin)}
 .lab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700;font-size:.9rem}
 .lab small{display:block;font-weight:400;font-size:.78rem;color:var(--muted)}
@@ -272,9 +281,16 @@ html:not(.js-ready) .title-btn{pointer-events:none}
   .scene-hint{grid-column:1}
   .sheet,.sheet.open.mode-part,.sheet.open.mode-guide{position:sticky;top:calc(var(--top-h,64px) + 12px);grid-column:2;grid-row:1 / span 2;height:auto;max-height:calc(100vh - var(--top-h,64px) - 24px);transform:none;visibility:visible;transition:none;border:1px solid var(--line);border-radius:var(--r);box-shadow:none;padding:10px 18px 18px}
   .sh-grip{display:none}
-  .sh-head{touch-action:auto}
-  .sh-nav{top:8px}
+  .sh-head{touch-action:auto;top:-10px;margin-top:-10px;padding-top:10px}
+  .sh-nav{top:14px}
   .toast{left:auto;right:24px;transform:none;width:360px}
+}
+/* telefono in orizzontale: niente frase sotto il disegno (allargherebbe la colonna) e banner nel pannello */
+@media (orientation:landscape) and (max-height:560px) and (min-width:600px){
+  .layout{grid-template-columns:minmax(0,auto) minmax(260px,380px);gap:16px}
+  .scene-hint{display:none}
+  .sheet .banner{position:sticky;top:-10px;z-index:4;margin:-10px -18px 8px;border-radius:0;border-width:0 0 1px}
+  .layout.quiz .scene{width:min(540px,calc((100vh - var(--top-h,64px) - 24px) / 1.08));min-width:0}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -286,12 +302,12 @@ html:not(.js-ready) .title-btn{pointer-events:none}
       <span class="tb-text"><span class="eyebrow">Scienze integrate</span><span class="tb-h">Il microscopio ottico</span></span>
       <span class="tb-i" aria-hidden="true">i</span>
     </button>
-    <div class="top-mag js-only" aria-live="polite"><span class="eyebrow">ingrandimento</span><b id="rTotal">40×</b><span id="rFormula">10× × 4×</span></div>
+    <div class="top-mag js-only"><span class="eyebrow">ingrandimento</span><b id="rTotal">40×</b><span id="rFormula">10× × 4×</span></div>
   </div>
   <div class="banner js-only" id="banner" hidden>
-    <div class="bn-row"><p class="bn-text" id="bnText"></p><button class="iconbtn" id="bnClose" aria-label="Esci">✕</button></div>
+    <div class="bn-row"><p class="bn-text" id="bnText" aria-live="polite"></p><button class="iconbtn" id="bnClose" aria-label="Esci">✕</button></div>
     <div class="progress" id="bnProg"><i id="bnBar"></i></div>
-    <p class="bn-fb" id="bnFb" hidden></p>
+    <p class="bn-fb" id="bnFb" role="status" hidden></p>
     <div class="bn-actions" id="bnActions" hidden><button class="btn primary sm" id="bnNext">Avanti</button><button class="btn sm" id="bnSkip">Non lo so</button></div>
   </div>
 </header>
@@ -472,7 +488,7 @@ html:not(.js-ready) .title-btn{pointer-events:none}
       <div class="scalebar" id="scalebar" hidden><span id="scaleLine"></span><b id="scaleTxt"></b></div>
     </div></div>
     <div class="ro ro-l js-only"><span class="eyebrow">Nell’oculare</span><b id="slideName">Lettera «e»</b></div>
-    <div class="ro ro-r js-only"><span class="eyebrow">Campo visivo</span><b id="rField">Ø 4,5 mm</b><span class="pill ok" id="rLight">luce buona</span></div>
+    <div class="ro ro-r js-only"><span class="eyebrow">Campo visivo</span><b id="rField">Ø 4,5 mm</b><span class="eyebrow gap-top">Luce</span><span class="pill ok" id="rLight">buona</span></div>
   </div>
   <p class="scene-hint js-only" id="sceneHint">Tocca un nome sul disegno: si apre la spiegazione con il comando per usare quella parte.</p>
 
@@ -485,9 +501,9 @@ html:not(.js-ready) .title-btn{pointer-events:none}
         <button class="iconbtn" id="shNext" aria-label="Parte successiva">›</button>
         <button class="iconbtn" id="shClose" aria-label="Chiudi">✕</button>
       </div>
+      <p class="sh-status" id="shStatus" role="status" aria-live="polite" hidden><i></i><span id="shStatusTxt"></span></p>
     </div>
     <div class="sh-body">
-    <p class="sh-status" id="shStatus" role="status" aria-live="polite" hidden><i></i><span id="shStatusTxt"></span></p>
     <div id="shPart" hidden>
       <p class="what" id="shWhat"></p>
       <div class="ctl-slot" id="ctlSlot" hidden></div>
@@ -534,11 +550,12 @@ html:not(.js-ready) .title-btn{pointer-events:none}
   <div class="panel" id="pn-fuoco">
     <div class="crow inline" data-row="macro"><span class="lab"><span>Vite macrometrica<small>grandi spostamenti</small></span></span><div class="fbtns"><button class="hold" data-f="macro" data-d="-1" aria-label="Abbassa il tavolino con la vite macrometrica">▼ giù</button><button class="hold" data-f="macro" data-d="1" aria-label="Alza il tavolino con la vite macrometrica">▲ su</button></div></div>
     <div class="crow inline" data-row="micro"><span class="lab"><span>Vite micrometrica<small>pochi micrometri</small></span></span><div class="fbtns"><button class="hold" data-f="micro" data-d="-1" aria-label="Abbassa il tavolino con la vite micrometrica">▼ giù</button><button class="hold" data-f="micro" data-d="1" aria-label="Alza il tavolino con la vite micrometrica">▲ su</button></div></div>
-    <p class="small">Tieni premuto per muovere il tavolino in continuo e guarda l’oculare.</p>
+    <div class="crow" data-row="gap"><span class="lab">Vista di lato: obiettivo – vetrino <span class="val" id="oGap" aria-hidden="true"></span></span><div class="gapbar" id="gapBar" role="img" aria-label="Distanza tra obiettivo e vetrino"><i></i></div></div>
+    <p class="small">Tieni premuto per muovere il tavolino in continuo. Quando alzi il tavolino con la macrometrica guarda il microscopio di lato (qui sopra la distanza), non nell’oculare.</p>
   </div>
   <div class="panel" id="pn-vetrino">
+    <div class="btnrow crow" data-row="slidebtns"><button class="btn" id="cSlide">Togli il vetrino</button><button class="btn" id="cClips">Solleva le pinzette</button><button class="btn" id="cOil">Metti l’olio a immersione</button></div>
     <label class="crow" data-row="vetrino" for="cSlideSel"><span class="lab">Preparato</span><select id="cSlideSel"></select><span class="small" id="slideDesc"></span></label>
-    <div class="btnrow crow" data-row="pinzette"><button class="btn" id="cSlide">Togli il vetrino</button><button class="btn" id="cClips">Solleva le pinzette</button><button class="btn" id="cOil">Metti l’olio a immersione</button></div>
     <div class="crow inline" data-row="traslatore"><span class="lab"><span>Traslatore<small>sposta il vetrino; nell’oculare l’immagine va al contrario</small></span></span>
       <div class="pad" id="cPad" role="group" aria-label="Traslatore">
         <button data-mv="up" aria-label="Sposta il vetrino lontano da te">▲</button>
@@ -556,7 +573,7 @@ html:not(.js-ready) .title-btn{pointer-events:none}
     <p class="small">Per usare il simulatore apri questo file con un browser come Chrome o Safari: l’anteprima di alcune app non lo fa funzionare. Qui sotto trovi comunque i nomi e le spiegazioni delle parti.</p>
     <h2 class="eyebrow">Parte ottica</h2>
     <details><summary>Oculare</summary><p>È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.</p><p>Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente.</p><p class="small">La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.</p></details>
-    <details><summary>Obiettivi</summary><p>Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.</p><p>Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione tra lente e vetrino.</p><p class="small">Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Il 100× ha anche un anello nero: è «a immersione» e si usa solo con l’olio; alla fine si puliscono obiettivo e vetrino con la cartina per lenti. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.</p></details>
+    <details><summary>Obiettivi</summary><p>Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.</p><p>Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione: si mette a fuoco con il 40×, si gira il revolver a metà tra 40× e 100×, si mette la goccia sul vetrino e si porta il 100× nella goccia.</p><p class="small">Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Il 100× ha anche un anello nero: è «a immersione» e si usa solo con l’olio; alla fine si puliscono obiettivo e vetrino con la cartina per lenti. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.</p></details>
     <h2 class="eyebrow">Sistema di illuminazione</h2>
     <details><summary>Condensatore</summary><p>Sono lenti sotto il tavolino che raccolgono la luce della lampada e la concentrano sul preparato.</p><p>Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.</p></details>
     <details><summary>Diaframma a iride</summary><p>È un’apertura regolabile dentro il condensatore, mossa da una levetta: decide quanta luce arriva al preparato.</p><p>Chiudendolo aumentano contrasto e profondità di campo, ma l’immagine si scurisce e, se lo chiudi troppo, perde i dettagli più fini. Aprendolo diventa luminosa ma «slavata». Regola la luminosità con l’intensità della luce e usa il diaframma per il contrasto.</p></details>
@@ -571,14 +588,14 @@ html:not(.js-ready) .title-btn{pointer-events:none}
     <details><summary>Tavolino portaoggetti</summary><p>È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce.</p><p>Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.</p></details>
     <details><summary>Braccio</summary><p>Regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco. Insieme alla base forma lo stativo, la struttura che sostiene il microscopio.</p><p>Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.</p></details>
     <details><summary>Traslatore</summary><p>È il carrello con due manopole che sposta il vetrino avanti, indietro, a destra e a sinistra.</p><p>Serve a portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.</p></details>
-    <details><summary>Vite macrometrica</summary><p>È la manopola grande: alza e abbassa il tavolino a grandi passi.</p><p>Serve per la prima messa a fuoco con il 4× e il 10×. Guardando il microscopio di lato, alza il tavolino fin quasi a toccare l’obiettivo; poi guarda nell’oculare e abbassalo piano finché compare l’immagine. Con il 40× e il 100× non usarla per alzare il tavolino: rischi di rompere il vetrino e l’obiettivo.</p></details>
+    <details><summary>Vite macrometrica</summary><p>È la manopola grande: alza e abbassa il tavolino a grandi passi. Mentre alzi il tavolino guarda il microscopio di lato, non nell’oculare.</p><p>Serve per la prima messa a fuoco con il 4× e il 10×. Guardando il microscopio di lato, alza il tavolino fin quasi a toccare l’obiettivo; poi guarda nell’oculare e abbassalo piano finché compare l’immagine. Con il 40× e il 100× non usarla per alzare il tavolino: rischi di rompere il vetrino e l’obiettivo.</p></details>
     <details><summary>Vite micrometrica</summary><p>È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.</p><p>Serve a rendere l’immagine nitida e a osservare piani diversi del preparato. È l’unica da usare con il 40× e il 100×.</p><p class="small">In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola sullo stesso asse della macrometrica.</p></details>
     <details><summary>Base (piede)</summary><p>È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.</p><p>Tieni il microscopio su un piano stabile, lontano dal bordo del banco.</p></details>
     <h2 class="eyebrow">Accessorio</h2>
     <details><summary>Vetrino</summary><p>È la lastrina di vetro (76 × 26 mm) su cui si mette il preparato, coperto da un vetrino coprioggetto sottilissimo.</p><p>Tienilo per i bordi e centra il preparato sopra il foro del tavolino. Nel simulatore puoi scegliere tra quattro preparati.</p></details>
   </section>
 
-<script type="application/json" id="partsData">[{"id":"oculare","name":"Oculare","cat":"ottica","panel":"mag","rows":["oculare"],"what":"È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.","how":"Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente.","note":"La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.","q":"la lente in cui guardi."},{"id":"tubo","name":"Tubo ottico","cat":"meccanica","panel":null,"rows":[],"what":"Collega l’oculare al revolver e tiene le lenti alla distanza giusta. In alto finisce nella testata, il blocco che porta l’oculare.","how":"Nei microscopi moderni è inclinato, così si osserva stando seduti comodi. Nella testata c’è un prisma che devia la luce verso l’oculare.","q":"la parte che collega l’oculare al revolver."},{"id":"revolver","name":"Revolver portaobiettivi","cat":"meccanica","panel":"mag","rows":["obiettivi"],"what":"È il disco girevole su cui sono avvitati gli obiettivi: ruotandolo porti in posizione l’obiettivo che vuoi usare.","how":"Giralo afferrando la ghiera zigrinata, mai gli obiettivi. Uno scatto ti dice che l’obiettivo è allineato. Prima di ruotarlo controlla che il tavolino non sia troppo alto.","q":"il disco girevole che serve a cambiare obiettivo."},{"id":"obiettivi","name":"Obiettivi","cat":"ottica","panel":"mag","rows":["obiettivi"],"what":"Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.","how":"Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione tra lente e vetrino.","note":"Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Il 100× ha anche un anello nero: è «a immersione» e si usa solo con l’olio; alla fine si puliscono obiettivo e vetrino con la cartina per lenti. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.","q":"le lenti più vicine al preparato, con gli anelli colorati."},{"id":"pinzette","name":"Pinzette fermavetrino","cat":"meccanica","panel":"vetrino","rows":["pinzette"],"what":"Sono due mollette che tengono fermo il vetrino sul tavolino.","how":"Sollevale, infila il vetrino sotto e riabbassale con delicatezza. Il vetrino va fissato prima di spostarlo con il traslatore.","q":"le mollette che tengono fermo il vetrino."},{"id":"tavolino","name":"Tavolino portaoggetti","cat":"meccanica","panel":"fuoco","rows":["macro","micro"],"what":"È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce.","how":"Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.","q":"il piano con un foro al centro su cui si appoggia il vetrino."},{"id":"condensatore","name":"Condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"Sono lenti sotto il tavolino che raccolgono la luce della lampada e la concentrano sul preparato.","how":"Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.","q":"le lenti sotto il tavolino che concentrano la luce sul preparato."},{"id":"diaframma","name":"Diaframma a iride","cat":"illuminazione","panel":"luce","rows":["diaframma"],"what":"È un’apertura regolabile dentro il condensatore, mossa da una levetta: decide quanta luce arriva al preparato.","how":"Chiudendolo aumentano contrasto e profondità di campo, ma l’immagine si scurisce e, se lo chiudi troppo, perde i dettagli più fini. Aprendolo diventa luminosa ma «slavata». Regola la luminosità con l’intensità della luce e usa il diaframma per il contrasto.","q":"l’apertura regolabile che controlla luce e contrasto."},{"id":"viteCond","name":"Vite del condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"È la manopola che alza e abbassa il condensatore.","how":"Porta il condensatore in alto per avere più luce e un’immagine più nitida.","q":"la manopola che alza o abbassa il condensatore."},{"id":"lampada","name":"Sorgente luminosa","cat":"illuminazione","panel":"luce","rows":["interruttore","intensita"],"what":"È la lampada, oggi quasi sempre a LED, montata nella base: manda la luce dal basso attraverso il preparato.","how":"Il preparato deve essere sottile e trasparente, perché la luce lo deve attraversare. Nei microscopi più semplici al posto della lampada c’è uno specchio.","q":"la parte che produce la luce che attraversa il preparato."},{"id":"interruttore","name":"Interruttore","cat":"illuminazione","panel":"luce","rows":["interruttore"],"what":"Accende e spegne la lampada.","how":"A fine lavoro abbassa l’intensità, spegni e copri il microscopio con la sua custodia.","q":"il comando che accende e spegne la lampada."},{"id":"braccio","name":"Braccio","cat":"meccanica","panel":null,"rows":[],"what":"Regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco. Insieme alla base forma lo stativo, la struttura che sostiene il microscopio.","how":"Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.","q":"la parte da cui si afferra il microscopio per trasportarlo."},{"id":"vetrino","name":"Vetrino","cat":"accessorio","panel":"vetrino","rows":["vetrino"],"what":"È la lastrina di vetro (76 × 26 mm) su cui si mette il preparato, coperto da un vetrino coprioggetto sottilissimo.","how":"Tienilo per i bordi e centra il preparato sopra il foro del tavolino. Qui puoi scegliere tra quattro preparati.","q":"la lastrina di vetro su cui si mette il preparato."},{"id":"traslatore","name":"Traslatore","cat":"meccanica","panel":"vetrino","rows":["traslatore"],"what":"È il carrello con due manopole che sposta il vetrino avanti, indietro, a destra e a sinistra.","how":"Serve a portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.","q":"il carrello che sposta il vetrino avanti, indietro, a destra e a sinistra."},{"id":"macro","name":"Vite macrometrica","cat":"meccanica","panel":"fuoco","rows":["macro"],"what":"È la manopola grande: alza e abbassa il tavolino a grandi passi.","how":"Serve per la prima messa a fuoco con il 4× e il 10×. Guardando il microscopio di lato, alza il tavolino fin quasi a toccare l’obiettivo; poi guarda nell’oculare e abbassalo piano finché compare l’immagine. Con il 40× e il 100× non usarla per alzare il tavolino: rischi di rompere il vetrino e l’obiettivo.","q":"la manopola grande per la messa a fuoco rapida."},{"id":"micro","name":"Vite micrometrica","cat":"meccanica","panel":"fuoco","rows":["micro"],"what":"È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.","how":"Serve a rendere l’immagine nitida e a osservare piani diversi del preparato. È l’unica da usare con il 40× e il 100×.","note":"In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola sullo stesso asse della macrometrica.","q":"la manopola piccola per la messa a fuoco fine."},{"id":"intensita","name":"Regolatore dell’intensità luminosa","cat":"illuminazione","panel":"luce","rows":["intensita"],"what":"È la manopola che rende la luce della lampada più forte o più debole.","how":"Accendi sempre con l’intensità bassa e poi aumentala piano. Con gli obiettivi più forti serve più luce.","q":"la manopola che rende la lampada più forte o più debole."},{"id":"base","name":"Base (piede)","cat":"meccanica","panel":null,"rows":[],"what":"È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.","how":"Tieni il microscopio su un piano stabile, lontano dal bordo del banco.","q":"la parte pesante che dà stabilità e contiene la lampada."}]</script>
+<script type="application/json" id="partsData">[{"id":"oculare","name":"Oculare","cat":"ottica","panel":"mag","rows":["oculare"],"what":"È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.","how":"Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente.","note":"La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.","q":"la lente in cui guardi."},{"id":"tubo","name":"Tubo ottico","cat":"meccanica","panel":null,"rows":[],"what":"Collega l’oculare al revolver e tiene le lenti alla distanza giusta. In alto finisce nella testata, il blocco che porta l’oculare.","how":"Nei microscopi moderni è inclinato, così si osserva stando seduti comodi. Nella testata c’è un prisma che devia la luce verso l’oculare.","q":"la parte che collega l’oculare al revolver."},{"id":"revolver","name":"Revolver portaobiettivi","cat":"meccanica","panel":"mag","rows":["obiettivi"],"what":"È il disco girevole su cui sono avvitati gli obiettivi: ruotandolo porti in posizione l’obiettivo che vuoi usare.","how":"Giralo afferrando la ghiera zigrinata, mai gli obiettivi. Uno scatto ti dice che l’obiettivo è allineato. Prima di ruotarlo controlla che il tavolino non sia troppo alto.","q":"il disco girevole che serve a cambiare obiettivo."},{"id":"obiettivi","name":"Obiettivi","cat":"ottica","panel":"mag","rows":["obiettivi"],"what":"Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.","how":"Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione: si mette a fuoco con il 40×, si gira il revolver a metà tra 40× e 100×, si mette la goccia sul vetrino e si porta il 100× nella goccia.","note":"Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Il 100× ha anche un anello nero: è «a immersione» e si usa solo con l’olio; alla fine si puliscono obiettivo e vetrino con la cartina per lenti. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.","q":"le lenti più vicine al preparato, con gli anelli colorati."},{"id":"pinzette","name":"Pinzette fermavetrino","cat":"meccanica","panel":"vetrino","rows":["slidebtns"],"what":"Sono due mollette che tengono fermo il vetrino sul tavolino.","how":"Sollevale, infila il vetrino sotto e riabbassale con delicatezza. Il vetrino va fissato prima di spostarlo con il traslatore.","q":"le mollette che tengono fermo il vetrino."},{"id":"tavolino","name":"Tavolino portaoggetti","cat":"meccanica","panel":"fuoco","rows":["macro","micro","gap"],"what":"È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce.","how":"Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.","q":"il piano con un foro al centro su cui si appoggia il vetrino."},{"id":"condensatore","name":"Condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"Sono lenti sotto il tavolino che raccolgono la luce della lampada e la concentrano sul preparato.","how":"Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.","q":"le lenti sotto il tavolino che concentrano la luce sul preparato."},{"id":"diaframma","name":"Diaframma a iride","cat":"illuminazione","panel":"luce","rows":["diaframma"],"what":"È un’apertura regolabile dentro il condensatore, mossa da una levetta: decide quanta luce arriva al preparato.","how":"Chiudendolo aumentano contrasto e profondità di campo, ma l’immagine si scurisce e, se lo chiudi troppo, perde i dettagli più fini. Aprendolo diventa luminosa ma «slavata». Regola la luminosità con l’intensità della luce e usa il diaframma per il contrasto.","q":"l’apertura regolabile che controlla luce e contrasto."},{"id":"viteCond","name":"Vite del condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"È la manopola che alza e abbassa il condensatore.","how":"Porta il condensatore in alto per avere più luce e un’immagine più nitida.","q":"la manopola che alza o abbassa il condensatore."},{"id":"lampada","name":"Sorgente luminosa","cat":"illuminazione","panel":"luce","rows":["interruttore","intensita"],"what":"È la lampada, oggi quasi sempre a LED, montata nella base: manda la luce dal basso attraverso il preparato.","how":"Il preparato deve essere sottile e trasparente, perché la luce lo deve attraversare. Nei microscopi più semplici al posto della lampada c’è uno specchio.","q":"la parte che produce la luce che attraversa il preparato."},{"id":"interruttore","name":"Interruttore","cat":"illuminazione","panel":"luce","rows":["interruttore"],"what":"Accende e spegne la lampada.","how":"A fine lavoro abbassa l’intensità, spegni e copri il microscopio con la sua custodia.","q":"il comando che accende e spegne la lampada."},{"id":"braccio","name":"Braccio","cat":"meccanica","panel":null,"rows":[],"what":"Regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco. Insieme alla base forma lo stativo, la struttura che sostiene il microscopio.","how":"Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.","q":"la parte da cui si afferra il microscopio per trasportarlo."},{"id":"vetrino","name":"Vetrino","cat":"accessorio","panel":"vetrino","rows":["vetrino","slidebtns"],"what":"È la lastrina di vetro (76 × 26 mm) su cui si mette il preparato, coperto da un vetrino coprioggetto sottilissimo.","how":"Tienilo per i bordi e centra il preparato sopra il foro del tavolino. Qui puoi scegliere tra quattro preparati.","q":"la lastrina di vetro su cui si mette il preparato."},{"id":"traslatore","name":"Traslatore","cat":"meccanica","panel":"vetrino","rows":["traslatore"],"what":"È il carrello con due manopole che sposta il vetrino avanti, indietro, a destra e a sinistra.","how":"Serve a portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.","q":"il carrello che sposta il vetrino avanti, indietro, a destra e a sinistra."},{"id":"macro","name":"Vite macrometrica","cat":"meccanica","panel":"fuoco","rows":["macro","gap"],"what":"È la manopola grande: alza e abbassa il tavolino a grandi passi. Mentre alzi il tavolino guarda il microscopio di lato, non nell’oculare.","how":"Serve per la prima messa a fuoco con il 4× e il 10×. Guardando il microscopio di lato, alza il tavolino fin quasi a toccare l’obiettivo; poi guarda nell’oculare e abbassalo piano finché compare l’immagine. Con il 40× e il 100× non usarla per alzare il tavolino: rischi di rompere il vetrino e l’obiettivo.","q":"la manopola grande per la messa a fuoco rapida."},{"id":"micro","name":"Vite micrometrica","cat":"meccanica","panel":"fuoco","rows":["micro"],"what":"È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.","how":"Serve a rendere l’immagine nitida e a osservare piani diversi del preparato. È l’unica da usare con il 40× e il 100×.","note":"In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola sullo stesso asse della macrometrica.","q":"la manopola piccola per la messa a fuoco fine."},{"id":"intensita","name":"Regolatore dell’intensità luminosa","cat":"illuminazione","panel":"luce","rows":["intensita"],"what":"È la manopola che rende la luce della lampada più forte o più debole.","how":"Accendi sempre con l’intensità bassa e poi aumentala piano. Con gli obiettivi più forti serve più luce.","q":"la manopola che rende la lampada più forte o più debole."},{"id":"base","name":"Base (piede)","cat":"meccanica","panel":null,"rows":[],"what":"È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.","how":"Tieni il microscopio su un piano stabile, lontano dal bordo del banco.","q":"la parte pesante che dà stabilità e contiene la lampada."}]</script>
 <script>
 (() => {
 'use strict';
@@ -695,7 +712,7 @@ const MACRO = 100, MICRO = 2.5;
 function fibers(ctx, v, seed, rgb, a0, a1) {
   const T = 400;
   ctx.lineCap = 'round';
-  eachTile(v, T, 1600, (i, j) => {
+  eachTile(v, T, 900, (i, j) => {
     const R = rng(hash3(i, j, seed));
     for (let n = 0; n < 4; n++) {
       const x = (i + R()) * T, y = (j + R()) * T, th = R() * Math.PI, L = 300 + R() * 1200;
@@ -954,6 +971,15 @@ const SANGUE = (() => {
     }
   }
   const T = 50;
+  let dotCache = null;
+  function dotTile() {
+    if (dotCache) return dotCache;
+    const c = document.createElement('canvas'); c.width = c.height = 64;
+    const g = c.getContext('2d'), R = rng(91);
+    g.fillStyle = 'rgba(190,70,88,0.6)';
+    for (let n = 0; n < 760; n++) g.fillRect(Math.floor(R() * 64), Math.floor(R() * 64), 1, 1);
+    return (dotCache = c);
+  }
   return {
     id: 'sangue', name: 'Striscio di sangue umano', short: 'sangue', color: '#c95a68',
     desc: 'Una goccia di sangue strisciata sul vetrino e colorata. Tanti globuli rossi senza nucleo, pochi globuli bianchi con il nucleo viola e piastrine minuscole.',
@@ -966,18 +992,19 @@ const SANGUE = (() => {
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.fillStyle = mode === 'sparse' ? 'rgba(190,70,88,0.55)' : 'rgba(196,80,96,0.5)';
       if (mode === 'sparse') {
-        /* ingrandimento basso: le cellule sono puntini; tessere grandi e solo i puntini visibili */
+        /* ingrandimento basso: le cellule sono puntini; si usa una trama di puntini, più fitta dove lo striscio è spesso */
+        const pat = ctx.createPattern(dotTile(), 'repeat');
+        if (pat.setTransform && window.DOMMatrix) pat.setTransform(new DOMMatrix([1, 0, 0, 1, v.ex % 64, v.ey % 64]));
+        ctx.fillStyle = pat;
         const T2 = 150;
         eachTile(v, T2, 10, (i, j) => {
           const d = dens((i + 0.5) * T2, (j + 0.5) * T2);
           if (d <= 0) return;
-          const R = rng(hash3(i, j, 58)), n = Math.round(d * 33);
-          const z = Math.max(1, 7.6 * v.k);
-          for (let q = 0; q < n; q++) {
-            const x = (i + R()) * T2, y = (j + R()) * T2;
-            ctx.fillRect(v.ex - x * v.k - z / 2, v.ey - y * v.k - z / 2, z, z);
-          }
+          ctx.globalAlpha = clamp(d / 1.3, 0.12, 1);
+          const X0 = v.ex - (i + 1) * T2 * v.k, Y0 = v.ey - (j + 1) * T2 * v.k, w = T2 * v.k;
+          ctx.fillRect(Math.floor(X0), Math.floor(Y0), Math.ceil(w) + 1, Math.ceil(w) + 1);
         });
+        ctx.globalAlpha = 1;
       } else eachTile(v, T, 10, (i, j) => {
         const d = dens((i + 0.5) * T, (j + 0.5) * T);
         if (d <= 0) return;
@@ -1188,18 +1215,10 @@ const wideMQ = window.matchMedia ? matchMedia(SIDE_Q) : { matches: false };
 const isWide = () => wideMQ.matches;
 const toast = $('#toast'), toastTxt = $('#toastTxt');
 const shStatus = $('#shStatus'), shStatusTxt = $('#shStatusTxt');
-let toastTimer = 0, statusTimer = 0, pendTimer = 0, sevUntil = 0, pendMsg = null;
-/* gli avvisi compaiono dentro il pannello quando è aperto (sopra la spiegazione, senza spostare i comandi),
-   altrimenti in basso. Un avviso importante resta almeno 3 secondi: i messaggi normali aspettano il loro turno. */
+let toastTimer = 0, statusTimer = 0;
+/* gli avvisi compaiono sotto la testata del pannello quando è aperto, altrimenti in basso */
 function say(kind, msg) {
-  const k = kind || 'info', now = performance.now();
-  if (k === 'info' && now < sevUntil) {
-    pendMsg = msg;
-    clearTimeout(pendTimer);
-    pendTimer = setTimeout(() => { const m = pendMsg; pendMsg = null; if (m) say('info', m); }, sevUntil - now + 30);
-    return;
-  }
-  if (k === 'warn' || k === 'bad') { sevUntil = now + 3000; pendMsg = null; clearTimeout(pendTimer); }
+  const k = kind || 'info';
   const ms = k === 'bad' ? 8000 : k === 'warn' ? 6500 : 4500;
   const inSheet = isWide() || $('#sheet').classList.contains('open');
   clearTimeout(toastTimer); clearTimeout(statusTimer);
@@ -1284,6 +1303,7 @@ function setEye(e) {
 function setObj(i, passing) {
   const prev = S.obj;
   S.obj = i;
+  if (prev !== i) PROC.micro = false;
   const o = OBJ[i];
   if (S.h > contactH(i)) {
     S.h = contactH(i);
@@ -1297,7 +1317,7 @@ function setObj(i, passing) {
   } else if (passing) {
     /* obiettivo di passaggio mentre il revolver gira: nessun messaggio */
   } else if (o.oil && !S.oil && S.slideOn) {
-    say('warn', 'Obiettivo 100× in posizione. Senza olio a immersione l’immagine è scura e sfocata: metti una goccia d’olio (pulsante qui sotto).');
+    say('warn', 'Senza olio il 100× dà un’immagine scura e sfocata: metti una goccia d’olio a immersione con il pulsante «Metti l’olio». In laboratorio si gira il revolver a metà tra 40× e 100×, si mette la goccia e si porta il 100× nella goccia.');
   } else if (prev !== i) {
     const g = geom();
     let m = `Obiettivo ${o.mag}× (anello ${o.ring}): ingrandimento totale ${g.total}×.`;
@@ -1365,7 +1385,7 @@ function toggleOil() {
     if (!S.slideOn) { say('warn', 'Metti prima un vetrino sul tavolino.'); return; }
     if (S.broken) { say('warn', 'Il vetrino è rotto: sostituiscilo.'); return; }
     S.oil = true; S.oilAt = [S.cx, S.cy];
-    say('info', S.obj === 3 ? 'Goccia d’olio a immersione sul vetrino: ora la lente del 100× è immersa nell’olio.' : 'Goccia d’olio a immersione sul vetrino. Ora porta il 100× nella goccia: gli altri obiettivi non devono toccarla.');
+    say('ok', S.obj === 3 ? 'Goccia d’olio a immersione sul vetrino: ora la lente del 100× è immersa nell’olio.' : 'Goccia d’olio a immersione sul vetrino. Ora porta il 100× nella goccia: gli altri obiettivi non devono toccarla.');
   }
   invalidate();
 }
@@ -1502,6 +1522,7 @@ function updateScope() {
     /* fuori dal quiz si naviga con i nomi; nel quiz con le parti, che non devono svelare la risposta */
     quizShown = Q.on;
     svg.classList.toggle('quiz', Q.on);
+    $('#labels').setAttribute('aria-hidden', Q.on ? 'true' : 'false');
     $('#scene').classList.toggle('quiz', Q.on);
     $('.layout').classList.toggle('quiz', Q.on);
     $$('.part', svg).forEach((el, k) => {
@@ -1649,6 +1670,11 @@ function updateReadouts() {
   const L = $('#rLight');
   setAttr(L, 'class', 'pill ' + ex.c);
   setText(L, S.light ? ex.t : 'spenta');
+  const gap = Math.max(0, contactH() - S.h), gb = $('#gapBar');
+  setText($('#oGap'), S.slideOn ? (gap >= 1000 ? num(gap / 1000, 1) + ' mm' : Math.round(gap) + ' µm') : 'nessun vetrino');
+  gb.firstElementChild.style.width = (100 * clamp(gap / 3200, 0.02, 1)).toFixed(1) + '%';
+  setAttr(gb, 'class', 'gapbar' + (gap < 150 ? ' bad' : gap < 500 ? ' warn' : ''));
+  setAttr(gb, 'aria-label', `Distanza tra obiettivo e vetrino: ${$('#oGap').textContent}`);
   setText($('#slideName'), S.slideOn ? SHORT[S.slide] : 'nessun vetrino');
   const state = !S.light ? 'buio, lampada spenta' : !S.slideOn ? 'campo luminoso senza vetrino' : (sharp() < 1 ? 'immagine a fuoco' : 'immagine sfocata') + ', luce ' + ex.t;
   setAttr(ocular, 'aria-label', `Nell’oculare: ${S.slideOn ? SHORT[S.slide] : 'nessun vetrino'}, ${g.total}×, ${state}`);
@@ -1671,6 +1697,7 @@ function updateControls() {
   setText($('#cClips'), S.clips ? 'Solleva le pinzette' : 'Abbassa le pinzette');
   setText($('#cOil'), S.oil || S.dirty40 ? 'Pulisci l’olio' : 'Metti l’olio a immersione');
   $('#magOil').hidden = !(S.obj === 3 && S.slideOn && !S.oil && !S.broken);
+  document.body.classList.toggle('proc-on', PROC.on && !Q.on);
   if ($('#cSlideSel').value !== S.slide) $('#cSlideSel').value = S.slide;
   setText($('#slideDesc'), SL().desc);
 }
@@ -1737,6 +1764,7 @@ function placePanel(key, rows) {
   ctlSlot.hidden = !p;
 }
 function showSheet(mode) {
+  const wasOpen = sheet.classList.contains('open');
   toast.hidden = true;
   sheet.classList.toggle('mode-part', mode === 'part');
   sheet.classList.toggle('mode-guide', mode === 'guide');
@@ -1751,7 +1779,8 @@ function showSheet(mode) {
   }
   sheet.scrollTop = 0;
   setAttr($('#titleBtn'), 'aria-expanded', 'true');
-  requestAnimationFrame(updateSheetVars);
+  if (!wasOpen) updateSheetVars(true);
+  requestAnimationFrame(() => updateSheetVars(!wasOpen));
 }
 function openPart(id, from) {
   const P = PART[id];
@@ -1793,7 +1822,13 @@ function openGuide(show = true, from) {
 }
 function closeSheet() {
   stopHolds();
-  if (isWide()) { openGuide(false); return; }
+  const closingSel = S.sel;
+  if (isWide()) {
+    const back = document.activeElement === $('#shClose');
+    openGuide(false);
+    if (back) $('#shName').focus({ preventScroll: true });
+    return;
+  }
   sheet.classList.remove('open', 'mode-part', 'mode-guide');
   sheet.style.transform = '';
   document.body.classList.remove('sheet-open');
@@ -1801,7 +1836,11 @@ function closeSheet() {
   setAttr($('#titleBtn'), 'aria-expanded', 'false');
   if (!shStatus.hidden) { shStatus.hidden = true; }
   updateSheetVars();
-  if (opener && opener.isConnected) opener.focus({ preventScroll: true });
+  if (opener) {
+    const vis = el => el && el.isConnected && el.getClientRects().length > 0;
+    const target = vis(opener) ? opener : (closingSel && lblEls[closingSel] ? lblEls[closingSel].g : $('#titleBtn'));
+    target.focus({ preventScroll: true });
+  }
   opener = null;
   invalidate();
 }
@@ -1809,14 +1848,18 @@ function stepPart(d) {
   const i = NAV.indexOf(S.sel);
   openPart(NAV[(i + d + NAV.length) % NAV.length]);
 }
-function updateSheetVars() {
+let lastVH = 0;
+function updateSheetVars(force) {
   const root = document.documentElement.style;
   const open = !isWide() && sheet.classList.contains('open');
   root.setProperty('--sheet-h', open ? sheet.offsetHeight + 'px' : '0px');
   const top = $('#top').offsetHeight;
   root.setProperty('--top-h', top + 'px');
   const oc = ocular.getBoundingClientRect();
-  if (oc.height) {
+  /* a pannello aperto l'altezza resta ferma, salvo rotazione o ridimensionamento della finestra */
+  const resized = window.innerHeight !== lastVH;
+  lastVH = window.innerHeight;
+  if (oc.height && (force === true || !open || resized)) {
     const ocBottom = oc.bottom + window.scrollY;
     root.setProperty('--sheet-max', Math.max(220, Math.min(window.innerHeight * 0.72, window.innerHeight - ocBottom - 10)) + 'px');
   }
@@ -1857,6 +1900,15 @@ const endDrag = () => {
 };
 shHead.addEventListener('pointerup', endDrag);
 shHead.addEventListener('pointercancel', endDrag);
+/* telefono in orizzontale: il banner va in cima al pannello laterale, così il disegno ha tutta l’altezza */
+const LAND_MQ = window.matchMedia ? matchMedia('(orientation: landscape) and (max-height: 560px) and (min-width: 600px)') : { matches: false };
+function placeBanner() {
+  const bn = $('#banner');
+  if (LAND_MQ.matches) { if (bn.parentNode !== sheet) sheet.prepend(bn); }
+  else if (bn.parentNode !== $('#top')) $('#top').append(bn);
+}
+placeBanner();
+if (LAND_MQ.addEventListener) LAND_MQ.addEventListener('change', () => { placeBanner(); updateSheetVars(true); });
 if (wideMQ.addEventListener) wideMQ.addEventListener('change', () => {
   sheet.classList.remove('open', 'mode-part', 'mode-guide');
   document.body.classList.remove('sheet-open');
@@ -1877,13 +1929,13 @@ const STEPS = [
   { t: () => 'Abbassa il tavolino con la vite macrometrica, per fare spazio al vetrino.', ok: () => S.h <= H_LOW },
   { t: () => 'Appoggia il vetrino sul tavolino, con il preparato sopra il foro.', ok: () => S.slideOn },
   { t: () => 'Fissa il vetrino abbassando le pinzette.', ok: () => S.slideOn && S.clips },
-  { t: () => 'Guardando di lato, alza il tavolino con la macrometrica fin quasi a toccare l’obiettivo. Poi guarda nell’oculare e abbassalo piano finché compare l’immagine.', ok: () => S.slideOn && S.obj === 0 && PROC.peak >= H_FOCUS + 300 && S.h < PROC.peak - 40 && sharp() < 3 },
+  { t: () => 'Guardando di lato, alza il tavolino con la macrometrica fin quasi all’obiettivo. Poi, guardando nell’oculare, riabbassalo piano finché compare l’immagine.', ok: () => S.slideOn && S.obj === 0 && PROC.peak >= H_FOCUS + 300 && S.h < PROC.peak - 40 && sharp() < 3 },
   { t: () => 'Rendi l’immagine nitida con la vite micrometrica.', ok: () => S.slideOn && S.obj === 0 && PROC.micro && sharp() < 0.45 },
-  { t: () => 'Regola intensità e diaframma: immagine luminosa ma non abbagliante, con un buon contrasto (diaframma non tutto aperto).', ok: () => exposure().k === 'ok' && S.iris >= 0.2 && S.iris <= 0.85 },
+  { t: () => 'Regola intensità e diaframma: immagine luminosa ma non abbagliante (luce «buona») e diaframma aperto tra il 20% e l’85%.', ok: () => exposure().k === 'ok' && S.iris >= 0.2 && S.iris <= 0.85 },
   { t: () => `Con il traslatore porta al centro del campo visivo ${SL().targetText}.`, ok: () => S.moved && onTarget() },
   { t: () => 'Passa all’obiettivo 10× e correggi il fuoco solo con la vite micrometrica.', ok: () => S.slideOn && S.obj === 1 && PROC.micro && sharp() < 0.8 },
   { t: () => 'Passa all’obiettivo 40×: metti a fuoco solo con la micrometrica e aumenta un po’ la luce.', ok: () => S.slideOn && S.obj === 2 && sharp() < 0.8 && exposure().k === 'ok' },
-  { t: () => 'Per finire: torna al 4×, abbassa il tavolino, togli il vetrino, abbassa l’intensità e spegni la luce.', ok: () => S.obj === 0 && S.h <= H_LOW && !S.slideOn && !S.light && S.intensity <= 0.3 },
+  { t: () => 'Per finire: torna al 4×, abbassa il tavolino, togli il vetrino, porta l’intensità sotto il 30% e spegni la luce.', ok: () => S.obj === 0 && S.h <= H_LOW && !S.slideOn && !S.light && S.intensity <= 0.3 },
 ];
 const ERRTXT = {
   macro: 'Hai alzato il tavolino con la vite macrometrica con un obiettivo forte (40× o 100×).',
@@ -1905,7 +1957,9 @@ function procStop() {
 }
 function procResume() { PROC.on = true; say('info', 'Esercizio ripreso: il passo da fare è scritto in alto.'); invalidate(); }
 function checkProc() {
-  if (!PROC.on || Q.on) return;
+  if (!PROC.on || Q.on || S.busy) return;
+  if (PROC.i === 6 && S.slideOn && S.obj === 0 && PROC.peak < H_FOCUS + 300 && sharp() < 1.2)
+    sayOnce('step7', 9000, 'warn', 'L’immagine è a fuoco, ma la regola è un’altra: prima alza il tavolino guardando di lato fin quasi all’obiettivo (guarda la «vista di lato» nel pannello Vite macrometrica), poi riabbassalo piano guardando nell’oculare.');
   let adv = false;
   while (PROC.i < STEPS.length && STEPS[PROC.i].ok()) { PROC.i++; adv = true; PROC.micro = false; PROC.peak = S.h; }
   if (adv) {
@@ -1955,27 +2009,35 @@ const QC = {
   tavolino: () => [[250, 306 + st.dy], [352, 306 + st.dy]],
   traslatore: () => [[374, 334 + st.dy]],
   condensatore: () => [[300, 327 + st.dy + st.c]],
-  diaframma: () => [[st.lever, 342 + st.dy + st.c], [300, 343 + st.dy + st.c]],
+  diaframma: () => [[st.lever, 342 + st.dy + st.c], [300, 342 + st.dy + st.c]],
   viteCond: () => [[336, 366 + st.dy]],
   lampada: () => [[300, 565]], interruttore: () => [[203, 608]], intensita: () => [[441, 607]],
   macro: () => [[424, 382]], micro: () => [[424, 458]],
   braccio: () => [[418, 240], [424, 300], [424, 532]],
   base: () => [[245, 622], [370, 624]],
 };
+const SMALL = ['pinzette', 'diaframma', 'viteCond', 'interruttore', 'intensita', 'traslatore'];
+/* il punto vero del dito: il click dei telefoni viene «aggiustato» verso l’elemento cliccabile più vicino */
+let lastDown = null;
+svg.addEventListener('pointerdown', e => { lastDown = { x: e.clientX, y: e.clientY, t: e.timeStamp }; });
 function quizPick(e) {
+  const fx = lastDown && e.timeStamp - lastDown.t < 1500 ? lastDown.x : e.clientX;
+  const fy = lastDown && e.timeStamp - lastDown.t < 1500 ? lastDown.y : e.clientY;
+  lastDown = null;
   const m = $('#drawing').getScreenCTM();
-  if (m) {
-    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
-    const q = pt.matrixTransform(m.inverse());
-    let best = null, bd = 46;
-    for (const id in QC) for (const [x, y] of QC[id]()) {
-      const d = Math.hypot(q.x - x, q.y - y);
-      if (d < bd) { bd = d; best = id; }
-    }
-    if (best) return best;
-  }
-  const p = e.target.closest ? e.target.closest('.part') : null;
-  return p && p.dataset.part !== 'vetrino' ? p.dataset.part : null;
+  let q = null;
+  if (m) { const pt = svg.createSVGPoint(); pt.x = fx; pt.y = fy; q = pt.matrixTransform(m.inverse()); }
+  const nearest = (ids, max) => {
+    let best = null, bd = max;
+    for (const id of ids) for (const [x, y] of QC[id]()) { const d = Math.hypot(q.x - x, q.y - y); if (d < bd) { bd = d; best = id; } }
+    return best;
+  };
+  /* 1) le parti piccole valgono anche se il dito le sfiora; 2) poi conta la parte sotto il dito; 3) infine la più vicina */
+  if (q) { const s1 = nearest(SMALL.filter(id => id !== 'diaframma'), 16) || (Math.hypot(q.x - st.lever, q.y - (342 + st.dy + st.c)) < 16 ? 'diaframma' : null); if (s1) return s1; }
+  const hit = document.elementFromPoint(fx, fy);
+  const p = hit && hit.closest ? hit.closest('#scope .part') : null;
+  if (p && p.dataset.part !== 'vetrino') return p.dataset.part;
+  return q ? nearest(Object.keys(QC), 46) : null;
 }
 function quizStart() {
   const ids = shuffle(PARTS.filter(p => p.id !== 'vetrino').map(p => p.id)).slice(0, 10);
@@ -2104,7 +2166,9 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !isWide() && sheet.classList.contains('open')) { closeSheet(); return; }
   if (Q.on || e.ctrlKey || e.metaKey || e.altKey) return;
   const t = e.target;
-  if (t && t.matches && t.matches('input, select, textarea')) return;
+  if (t && t.matches && t.matches('select, textarea, input[type="text"]')) return;
+  const nav = /^(Arrow|Page)/.test(e.key);
+  if (nav && t && t.closest && (t.closest('#sheet, #banner, #panels') || t.matches('input'))) return;
   const step = geom().fieldUm * 0.08;
   const act = {
     ArrowUp: () => moveSlide(0, -step), ArrowDown: () => moveSlide(0, step),
