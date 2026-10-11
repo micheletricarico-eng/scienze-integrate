@@ -64,15 +64,18 @@ h2,h3{text-wrap:balance}
 .title-btn{display:flex;align-items:center;gap:10px;min-width:0;border:0;background:none;padding:4px 0;text-align:left;color:inherit;border-radius:8px}
 .tb-text{display:grid;min-width:0}
 .eyebrow{font:600 .7rem/1.2 var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.tb-h{font:700 clamp(1.2rem,5.6vw,1.6rem)/1.05 var(--f-display);letter-spacing:.005em;white-space:nowrap}
+.tb-h{font:700 clamp(1.05rem,4.8vw,1.6rem)/1.05 var(--f-display);letter-spacing:.005em;white-space:nowrap}
 .tb-i{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:700 .95rem/1 Georgia,"Times New Roman",serif;font-style:italic}
-.title-btn:hover .tb-h{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
-.top-mag{flex:none;display:grid;justify-items:end;text-align:right}
+@media (hover:hover){.title-btn:hover .tb-h{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}}
+.top-mag{flex:0 1 auto;min-width:0;display:grid;justify-items:end;text-align:right}
 .top-mag b{font:700 1.75rem/1 var(--f-display);font-variant-numeric:tabular-nums}
-.top-mag span{font:500 .7rem/1.3 var(--f-mono);color:var(--muted);white-space:nowrap}
+#rFormula{font:500 .7rem/1.3 var(--f-mono);color:var(--muted);white-space:nowrap}
+@media (max-width:380px){.top-mag .eyebrow{display:none}}
 
 .banner{max-width:1000px;margin:6px auto 0;padding:8px 10px;border-radius:10px;background:var(--panel);border:1px solid var(--line)}
 .bn-row{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.bn-row .iconbtn{flex:none}
+@media (max-height:760px){.bn-text{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}.bn-text.full{display:block}}
 .bn-text{font-size:.92rem;font-weight:700;line-height:1.3}
 .bn-text small{display:block;font:600 .68rem/1.3 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .bn-fb{margin-top:4px;font-size:.88rem;font-weight:700}
@@ -86,11 +89,11 @@ h2,h3{text-wrap:balance}
 .scene{position:relative;width:100%;max-width:520px}
 #scope{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .scene-hint{font-size:.84rem;color:var(--muted);text-align:center;max-width:46ch}
-.ro{position:absolute;top:0;width:21%;display:grid;gap:2px;font-size:.78rem;line-height:1.2;pointer-events:none}
+.ro{position:absolute;top:0;width:19%;display:grid;gap:2px;font-size:.78rem;line-height:1.2;pointer-events:none}
 .ro-l{left:0}
 .ro-r{right:0;justify-items:end;text-align:right}
 .ro b{font:600 .86rem/1.15 var(--f-display);letter-spacing:.01em}
-.pill{display:inline-block;margin-top:2px;padding:1px 7px;border-radius:999px;font:700 .72rem/1.5 var(--f-body);background:var(--panel-2);color:var(--muted)}
+.pill{display:inline-block;margin-top:2px;padding:1px 7px;border-radius:999px;font:700 .72rem/1.5 var(--f-body);background:var(--panel-2);color:var(--muted);white-space:nowrap}
 .pill.ok{background:var(--ok-soft);color:var(--ok)}
 .pill.warn{background:var(--warn-soft);color:var(--warn)}
 .pill.bad{background:var(--bad-soft);color:var(--bad)}
@@ -140,10 +143,16 @@ h2,h3{text-wrap:balance}
 #scope .lbl.sel .ld{stroke:var(--eosin);stroke-width:1.5}
 #scope .lbl.sel .la{fill:var(--eosin)}
 #scope.quiz .lbl{display:none}
+#scope.quiz #slideG{pointer-events:none}
+/* nel quiz il cerchio dell’oculare non serve: il disegno sale e sta tutto nello schermo */
+.scene.quiz{overflow:hidden}
+.scene.quiz #scope{margin-top:-61%}
+.scene.quiz .ocular-wrap,.scene.quiz .ro,.scene.quiz .link-dash{display:none!important}
+.layout.quiz .scene-hint{display:none}
 
 /* ---------- oculare ---------- */
 .ocular-wrap{position:absolute;left:21.154%;top:2%;width:57.692%;aspect-ratio:1/1;border-radius:50%;background:var(--oc0);box-shadow:0 0 0 6px var(--oc1),0 0 0 8px var(--oc2),0 10px 24px rgba(0,0,0,.25)}
-.ocular{position:absolute;inset:0;border-radius:50%;background:var(--oc0);touch-action:none}
+.ocular{position:absolute;inset:0;border-radius:50%;background:var(--oc0)}
 /* il preparato è composto in un'unica tela già ritagliata a cerchio: niente ritagli né fusioni affidati al CSS */
 .view{position:absolute;inset:0;width:100%;height:100%;display:block;transition:filter .12s linear}
 .vig{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,0) calc(var(--fr,46%) * .5),rgba(0,0,0,var(--vig,.3)) calc(var(--fr,46%) - .5px),rgba(0,0,0,0) var(--fr,46%))}
@@ -154,20 +163,27 @@ h2,h3{text-wrap:balance}
 /* ---------- pannello ---------- */
 .sheet{position:fixed;z-index:40;left:0;right:0;bottom:0;max-height:var(--sheet-max,58vh);overflow-y:auto;overscroll-behavior:contain;background:var(--panel);border-top:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:0 -12px 32px rgba(0,0,0,.2);padding:4px 16px calc(16px + env(safe-area-inset-bottom,0px));transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s linear .25s}
 .sheet.open{transform:none;visibility:visible;transition:transform .25s ease}
-.sh-grip{width:42px;height:5px;border-radius:99px;background:var(--line);margin:6px auto 8px}
-.sh-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:8px 10px;position:sticky;top:-4px;background:var(--panel);padding:4px 0 8px;z-index:1}
-.sh-status{flex:1 1 100%;display:flex;gap:8px;align-items:flex-start;padding:7px 10px;border-radius:9px;background:var(--accent-soft);font-size:.86rem;line-height:1.35;cursor:pointer}
+/* altezza fissa sul telefono: i pulsanti ‹ › ✕ restano sempre nello stesso punto */
+.sheet.open.mode-part{height:var(--sheet-max,58vh)}
+.sheet.open.mode-guide{height:min(88vh,calc(100vh - var(--top-h,64px) - 8px));max-height:none}
+.sheet.dragging{transition:none}
+.sh-grip{width:42px;height:5px;border-radius:99px;background:var(--line);margin:4px auto 8px}
+.sh-head{position:sticky;top:-4px;z-index:2;background:var(--panel);padding:4px 128px 8px 0;margin-top:-4px;touch-action:none}
+.sh-nav{position:absolute;right:0;top:21px;display:flex;gap:6px}
+.sh-body{position:relative}
+/* gli avvisi si sovrappongono alla spiegazione: non spostano i comandi sotto il dito */
+.sh-status{position:absolute;z-index:3;left:-4px;right:-4px;top:0;display:flex;gap:8px;align-items:flex-start;padding:8px 11px;border-radius:10px;background:var(--accent-soft);box-shadow:0 6px 18px rgba(0,0,0,.18);font-size:.86rem;line-height:1.35;cursor:pointer}
+.sh-status span{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .sh-status i{flex:none;width:8px;height:8px;border-radius:50%;margin-top:.42em;background:var(--accent)}
 .sh-status.ok{background:var(--ok-soft)} .sh-status.ok i{background:var(--ok)}
 .sh-status.warn{background:var(--warn-soft)} .sh-status.warn i{background:var(--warn)}
 .sh-status.bad{background:var(--bad-soft)} .sh-status.bad i{background:var(--bad)}
 .sh-titles{min-width:0}
 .sh-titles h2{font:700 1.5rem/1.08 var(--f-display);letter-spacing:.01em;margin-top:2px}
-.sh-nav{display:flex;gap:6px;flex:none}
 .iconbtn{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel-2);font-size:1.15rem;line-height:1;padding:0}
 .iconbtn:hover{border-color:var(--accent)}
 .cat-ottica{color:var(--accent)} .cat-illuminazione{color:var(--warn)}
-.what{font-size:1rem}
+.what{font-size:1rem;min-height:4.3em}
 .ctl-slot{margin-top:12px;padding:12px;border-radius:10px;background:var(--panel-2);display:grid;gap:10px}
 .how{margin-top:12px}
 .how summary{cursor:pointer;font-weight:700;color:var(--accent);font-size:.93rem}
@@ -195,11 +211,13 @@ h2,h3{text-wrap:balance}
 .small{font-size:.84rem;color:var(--muted)}
 
 /* comandi */
-.crow{display:grid;gap:4px;padding:6px 8px;margin:-6px -8px;border-radius:8px;transition:background .2s}
+.panel{display:flex;flex-direction:column;gap:12px}
+.crow{display:grid;gap:4px;padding:6px 8px;margin:0 -8px;border-radius:8px;transition:background .2s}
+.crow.hl{order:-1}
 .crow.hl{background:var(--eosin-soft);box-shadow:inset 3px 0 0 var(--eosin)}
 .lab{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700;font-size:.9rem}
 .lab small{display:block;font-weight:400;font-size:.78rem;color:var(--muted)}
-output{font:500 .8rem var(--f-mono);color:var(--muted)}
+.val{font:500 .8rem var(--f-mono);color:var(--muted);font-weight:500}
 input[type=range]{display:block;width:100%;height:30px;margin:0;accent-color:var(--accent)}
 .ends{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:-6px}
 .inline{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -233,19 +251,30 @@ select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line
 
 /* senza JavaScript */
 .nojs{max-width:640px;margin:0 auto;padding:0 16px 24px;display:grid;gap:8px}
+html:not(.js-ready) .js-only{display:none!important}
+html.js-ready .nojs{display:none}
+html:not(.js-ready) .scene{overflow:hidden}
+html:not(.js-ready) #scope{margin-top:-61%}
+html:not(.js-ready) .tb-i{display:none}
+html:not(.js-ready) .title-btn{pointer-events:none}
+.kbd-hint{display:none}
+@media (hover:hover) and (pointer:fine){.kbd-hint{display:block}}
 .nojs details{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
 .nojs summary{font-weight:700;cursor:pointer}
 .nojs p{margin-top:6px}
 
 /* schermi larghi: pannello accanto alla tavola */
-@media (min-width:860px){
+/* schermi larghi e telefono in orizzontale: pannello accanto alla tavola */
+@media (min-width:860px), (orientation:landscape) and (max-height:560px) and (min-width:600px){
   .top{padding-inline:24px}
-  .layout{grid-template-columns:auto 380px;justify-content:center;align-items:start;gap:28px;padding:16px 24px 32px}
-  .scene{width:min(540px,calc((100vh - var(--top-h,64px) - 56px) * 400 / 700));min-width:340px}
+  .layout{grid-template-columns:auto minmax(0,380px);justify-content:center;align-items:start;gap:24px;padding:12px 20px 28px}
+  .scene{width:min(540px,calc((100vh - var(--top-h,64px) - 56px) * 400 / 700));min-width:min(340px,42vw)}
   .scene-hint{grid-column:1}
-  .sheet{position:sticky;top:calc(var(--top-h,64px) + 16px);grid-column:2;grid-row:1 / span 2;max-height:calc(100vh - var(--top-h,64px) - 32px);transform:none;visibility:visible;transition:none;border:1px solid var(--line);border-radius:var(--r);box-shadow:none;padding:6px 18px 18px}
+  .sheet,.sheet.open.mode-part,.sheet.open.mode-guide{position:sticky;top:calc(var(--top-h,64px) + 12px);grid-column:2;grid-row:1 / span 2;height:auto;max-height:calc(100vh - var(--top-h,64px) - 24px);transform:none;visibility:visible;transition:none;border:1px solid var(--line);border-radius:var(--r);box-shadow:none;padding:10px 18px 18px}
   .sh-grip{display:none}
-  .toast{left:auto;right:24px;transform:none;width:380px}
+  .sh-head{touch-action:auto}
+  .sh-nav{top:8px}
+  .toast{left:auto;right:24px;transform:none;width:360px}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -363,8 +392,8 @@ select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line
         <rect x="232.4" y="295.9" width="24" height="2.8" class="frost"/>
         <rect id="specMark" x="289" y="294.7" width="22" height="1" fill="#333"/>
         <rect x="284" y="294.1" width="32" height="1.3" class="glass"/>
-        <path id="oilDrop" d="M290 294.2 Q300 287.6 310 294.2 Z" class="oil"/>
-        <path id="slideCrack" d="M262 295.6 L268 298.9 M300 294.2 l-6 4.7 m6 -4.7 l5 4.8 M336 295.6 l4 3.3" class="crackline"/>
+        <path id="oilDrop" d="M290 294.2 Q300 287.6 310 294.2 Z" class="oil" style="display:none"/>
+        <path id="slideCrack" d="M262 295.6 L268 298.9 M300 294.2 l-6 4.7 m6 -4.7 l5 4.8 M336 295.6 l4 3.3" class="crackline" style="display:none"/>
         </g>
         <g class="part" data-part="pinzette">
         <g id="clipL">
@@ -416,24 +445,24 @@ select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line
         </g>
       </g>
       <g id="labels">
-        <g class="lbl" data-part="oculare" data-side="L" data-cy="284" data-edge="89" tabindex="0" role="button" aria-label="Oculare"><line class="ld" x1="89" y1="284" x2="125.8" y2="290.4"/><circle class="la" cx="125.8" cy="290.4" r="1.8"/><rect class="lh" x="30.2" y="270" width="62.8" height="28"/><rect class="lb" x="34.2" y="274.2" width="54.8" height="19.5" rx="5"/><text x="84" y="288.3" text-anchor="end">Oculare</text></g>
-        <g class="lbl" data-part="tubo" data-side="L" data-cy="318" data-edge="89" tabindex="0" role="button" aria-label="Tubo ottico"><line class="ld" x1="89" y1="318" x2="152.6" y2="321.2"/><circle class="la" cx="152.6" cy="321.2" r="1.8"/><rect class="lh" x="4.6" y="304" width="88.4" height="28"/><rect class="lb" x="8.6" y="308.2" width="80.4" height="19.5" rx="5"/><text x="84" y="322.3" text-anchor="end">Tubo ottico</text></g>
-        <g class="lbl" data-part="revolver" data-side="L" data-cy="362" data-edge="89" tabindex="0" role="button" aria-label="Revolver portaobiettivi"><line class="ld" x1="89" y1="362" x2="159.7" y2="380.7"/><circle class="la" cx="159.7" cy="380.7" r="1.8"/><rect class="lh" x="23.8" y="348" width="69.2" height="28"/><rect class="lb" x="27.8" y="352.2" width="61.2" height="19.5" rx="5"/><text x="84" y="366.3" text-anchor="end">Revolver</text></g>
-        <g class="lbl" data-part="obiettivi" data-side="L" data-cy="398" data-edge="89" tabindex="0" role="button" aria-label="Obiettivi"><line class="ld" x1="89" y1="398" x2="179.5" y2="404.8"/><circle class="la" cx="179.5" cy="404.8" r="1.8"/><rect class="lh" x="17.4" y="384" width="75.6" height="28"/><rect class="lb" x="21.4" y="388.2" width="67.6" height="19.5" rx="5"/><text x="84" y="402.3" text-anchor="end">Obiettivi</text></g>
-        <g class="lbl" data-part="pinzette" data-side="L" data-cy="432" data-edge="89" tabindex="0" role="button" aria-label="Pinzette fermavetrino"><line class="ld" x1="89" y1="432" x2="132.2" y2="448.5"/><circle class="la" cx="132.2" cy="448.5" r="1.8"/><rect class="lh" x="23.8" y="418" width="69.2" height="28"/><rect class="lb" x="27.8" y="422.2" width="61.2" height="19.5" rx="5"/><text x="84" y="436.3" text-anchor="end">Pinzette</text></g>
-        <g class="lbl" data-part="tavolino" data-side="L" data-cy="460" data-edge="89" tabindex="0" role="button" aria-label="Tavolino portaoggetti"><line class="ld" x1="89" y1="460" x2="127" y2="456.8"/><circle class="la" cx="127" cy="456.8" r="1.8"/><rect class="lh" x="23.8" y="446" width="69.2" height="28"/><rect class="lb" x="27.8" y="450.2" width="61.2" height="19.5" rx="5"/><text x="84" y="464.3" text-anchor="end">Tavolino</text></g>
-        <g class="lbl" data-part="condensatore" data-side="L" data-cy="490" data-edge="89" tabindex="0" role="button" aria-label="Condensatore"><line class="ld" x1="89" y1="490" x2="176.3" y2="472.2"/><circle class="la" cx="176.3" cy="472.2" r="1.8"/><rect class="lh" x="-1.8" y="476" width="94.8" height="28"/><rect class="lb" x="2.2" y="480.2" width="86.8" height="19.5" rx="5"/><text x="84" y="494.3" text-anchor="end">Condensatore</text></g>
-        <g class="lbl" data-part="diaframma" data-side="L" data-cy="524" data-edge="89" tabindex="0" role="button" aria-label="Diaframma a iride"><line class="ld" x1="89" y1="524" x2="158.3" y2="479.9"/><circle class="la" cx="158.3" cy="479.9" r="1.8"/><rect class="lh" x="17.4" y="503.5" width="75.6" height="41"/><rect class="lb" x="21.4" y="507.5" width="67.6" height="33" rx="5"/><text x="84" y="521.4" text-anchor="end"><tspan x="84" y="521.4">Diaframma</tspan><tspan x="84" y="534.9">a iride</tspan></text></g>
-        <g class="lbl" data-part="viteCond" data-side="L" data-cy="562" data-edge="89" tabindex="0" role="button" aria-label="Vite del condensatore"><line class="ld" x1="89" y1="562" x2="204.5" y2="495.2"/><circle class="la" cx="204.5" cy="495.2" r="1.8"/><rect class="lh" x="-1.8" y="541.5" width="94.8" height="41"/><rect class="lb" x="2.2" y="545.5" width="86.8" height="33" rx="5"/><text x="84" y="559.4" text-anchor="end"><tspan x="84" y="559.4">Vite del</tspan><tspan x="84" y="572.9">condensatore</tspan></text></g>
-        <g class="lbl" data-part="lampada" data-side="L" data-cy="608" data-edge="89" tabindex="0" role="button" aria-label="Sorgente luminosa"><line class="ld" x1="89" y1="608" x2="173.8" y2="623.2"/><circle class="la" cx="173.8" cy="623.2" r="1.8"/><rect class="lh" x="23.8" y="587.5" width="69.2" height="41"/><rect class="lb" x="27.8" y="591.5" width="61.2" height="33" rx="5"/><text x="84" y="605.4" text-anchor="end"><tspan x="84" y="605.4">Sorgente</tspan><tspan x="84" y="618.9">luminosa</tspan></text></g>
-        <g class="lbl" data-part="interruttore" data-side="L" data-cy="660" data-edge="89" tabindex="0" role="button" aria-label="Interruttore"><line class="ld" x1="89" y1="660" x2="116.2" y2="650.1"/><circle class="la" cx="116.2" cy="650.1" r="1.8"/><rect class="lh" x="-1.8" y="646" width="94.8" height="28"/><rect class="lb" x="2.2" y="650.2" width="86.8" height="19.5" rx="5"/><text x="84" y="664.3" text-anchor="end">Interruttore</text></g>
-        <g class="lbl" data-part="braccio" data-side="R" data-cy="400" data-edge="311" tabindex="0" role="button" aria-label="Braccio (stativo)"><line class="ld" x1="311" y1="400" x2="277.4" y2="428.7"/><circle class="la" cx="277.4" cy="428.7" r="1.8"/><rect class="lh" x="307" y="386" width="62.8" height="28"/><rect class="lb" x="311" y="390.2" width="54.8" height="19.5" rx="5"/><text x="316" y="404.3" text-anchor="start">Braccio</text></g>
-        <g class="lbl" data-part="vetrino" data-side="R" data-cy="432" data-edge="311" tabindex="0" role="button" aria-label="Vetrino"><line class="ld" x1="311" y1="432" x2="229.4" y2="451.1"/><circle class="la" cx="229.4" cy="451.1" r="1.8"/><rect class="lh" x="307" y="418" width="62.8" height="28"/><rect class="lb" x="311" y="422.2" width="54.8" height="19.5" rx="5"/><text x="316" y="436.3" text-anchor="start">Vetrino</text></g>
-        <g class="lbl" data-part="traslatore" data-side="R" data-cy="466" data-edge="311" tabindex="0" role="button" aria-label="Traslatore"><line class="ld" x1="311" y1="466" x2="243.5" y2="478"/><circle class="la" cx="243.5" cy="478" r="1.8"/><rect class="lh" x="307" y="452" width="82" height="28"/><rect class="lb" x="311" y="456.2" width="74" height="19.5" rx="5"/><text x="316" y="470.3" text-anchor="start">Traslatore</text></g>
-        <g class="lbl" data-part="macro" data-side="R" data-cy="514" data-edge="311" tabindex="0" role="button" aria-label="Vite macrometrica"><line class="ld" x1="311" y1="514" x2="286.4" y2="505.5"/><circle class="la" cx="286.4" cy="505.5" r="1.8"/><rect class="lh" x="307" y="493.5" width="94.8" height="41"/><rect class="lb" x="311" y="497.5" width="86.8" height="33" rx="5"/><text x="316" y="511.4" text-anchor="start"><tspan x="316" y="511.4">Vite</tspan><tspan x="316" y="524.9">macrometrica</tspan></text></g>
-        <g class="lbl" data-part="micro" data-side="R" data-cy="570" data-edge="311" tabindex="0" role="button" aria-label="Vite micrometrica"><line class="ld" x1="311" y1="570" x2="277.4" y2="554.1"/><circle class="la" cx="277.4" cy="554.1" r="1.8"/><rect class="lh" x="307" y="549.5" width="94.8" height="41"/><rect class="lb" x="311" y="553.5" width="86.8" height="33" rx="5"/><text x="316" y="567.4" text-anchor="start"><tspan x="316" y="567.4">Vite</tspan><tspan x="316" y="580.9">micrometrica</tspan></text></g>
-        <g class="lbl" data-part="intensita" data-side="R" data-cy="626" data-edge="311" tabindex="0" role="button" aria-label="Regolatore dell’intensità luminosa"><line class="ld" x1="311" y1="626" x2="287" y2="649.5"/><circle class="la" cx="287" cy="649.5" r="1.8"/><rect class="lh" x="307" y="605.5" width="82" height="41"/><rect class="lb" x="311" y="609.5" width="74" height="33" rx="5"/><text x="316" y="623.4" text-anchor="start"><tspan x="316" y="623.4">Regolatore</tspan><tspan x="316" y="636.9">della luce</tspan></text></g>
-        <g class="lbl" data-part="base" data-side="R" data-cy="676" data-edge="311" tabindex="0" role="button" aria-label="Base (piede)"><line class="ld" x1="311" y1="676" x2="293.4" y2="662.9"/><circle class="la" cx="293.4" cy="662.9" r="1.8"/><rect class="lh" x="307" y="662" width="43.6" height="28"/><rect class="lb" x="311" y="666.2" width="35.6" height="19.5" rx="5"/><text x="316" y="680.3" text-anchor="start">Base</text></g>
+        <g class="lbl" data-part="oculare" data-side="L" data-cy="284" data-edge="89" aria-label="Oculare"><line class="ld" x1="89" y1="284" x2="125.8" y2="290.4"/><circle class="la" cx="125.8" cy="290.4" r="1.8"/><rect class="lh" x="24.6" y="270" width="68.4" height="28"/><rect class="lb" x="28.6" y="274.2" width="60.4" height="19.5" rx="5"/><text x="84" y="288.3" text-anchor="end">Oculare</text></g>
+        <g class="lbl" data-part="tubo" data-side="L" data-cy="318" data-edge="89" aria-label="Tubo ottico"><line class="ld" x1="89" y1="318" x2="152.6" y2="321.2"/><circle class="la" cx="152.6" cy="321.2" r="1.8"/><rect class="lh" x="-4.2" y="304" width="97.2" height="28"/><rect class="lb" x="-0.2" y="308.2" width="89.2" height="19.5" rx="5"/><text x="84" y="322.3" text-anchor="end">Tubo ottico</text></g>
+        <g class="lbl" data-part="revolver" data-side="L" data-cy="362" data-edge="89" aria-label="Revolver portaobiettivi"><line class="ld" x1="89" y1="362" x2="159.7" y2="380.7"/><circle class="la" cx="159.7" cy="380.7" r="1.8"/><rect class="lh" x="17.4" y="348" width="75.6" height="28"/><rect class="lb" x="21.4" y="352.2" width="67.6" height="19.5" rx="5"/><text x="84" y="366.3" text-anchor="end">Revolver</text></g>
+        <g class="lbl" data-part="obiettivi" data-side="L" data-cy="398" data-edge="89" aria-label="Obiettivi"><line class="ld" x1="89" y1="398" x2="179.5" y2="404.8"/><circle class="la" cx="179.5" cy="404.8" r="1.8"/><rect class="lh" x="10.2" y="384" width="82.8" height="28"/><rect class="lb" x="14.2" y="388.2" width="74.8" height="19.5" rx="5"/><text x="84" y="402.3" text-anchor="end">Obiettivi</text></g>
+        <g class="lbl" data-part="pinzette" data-side="L" data-cy="432" data-edge="89" aria-label="Pinzette fermavetrino"><line class="ld" x1="89" y1="432" x2="132.2" y2="448.5"/><circle class="la" cx="132.2" cy="448.5" r="1.8"/><rect class="lh" x="17.4" y="418" width="75.6" height="28"/><rect class="lb" x="21.4" y="422.2" width="67.6" height="19.5" rx="5"/><text x="84" y="436.3" text-anchor="end">Pinzette</text></g>
+        <g class="lbl" data-part="tavolino" data-side="L" data-cy="460" data-edge="89" aria-label="Tavolino portaoggetti"><line class="ld" x1="89" y1="460" x2="127" y2="456.8"/><circle class="la" cx="127" cy="456.8" r="1.8"/><rect class="lh" x="17.4" y="446" width="75.6" height="28"/><rect class="lb" x="21.4" y="450.2" width="67.6" height="19.5" rx="5"/><text x="84" y="464.3" text-anchor="end">Tavolino</text></g>
+        <g class="lbl" data-part="condensatore" data-side="L" data-cy="490" data-edge="89" aria-label="Condensatore"><line class="ld" x1="89" y1="490" x2="176.3" y2="472.2"/><circle class="la" cx="176.3" cy="472.2" r="1.8"/><rect class="lh" x="-11.4" y="476" width="104.4" height="28"/><rect class="lb" x="-7.4" y="480.2" width="96.4" height="19.5" rx="5"/><text x="84" y="494.3" text-anchor="end">Condensatore</text></g>
+        <g class="lbl" data-part="diaframma" data-side="L" data-cy="524" data-edge="89" aria-label="Diaframma a iride"><line class="ld" x1="89" y1="524" x2="158.3" y2="479.9"/><circle class="la" cx="158.3" cy="479.9" r="1.8"/><rect class="lh" x="10.2" y="503.5" width="82.8" height="41"/><rect class="lb" x="14.2" y="507.5" width="74.8" height="33" rx="5"/><text x="84" y="521.4" text-anchor="end"><tspan x="84" y="521.4">Diaframma</tspan><tspan x="84" y="534.9">a iride</tspan></text></g>
+        <g class="lbl" data-part="viteCond" data-side="L" data-cy="562" data-edge="89" aria-label="Vite del condensatore"><line class="ld" x1="89" y1="562" x2="204.5" y2="495.2"/><circle class="la" cx="204.5" cy="495.2" r="1.8"/><rect class="lh" x="-11.4" y="541.5" width="104.4" height="41"/><rect class="lb" x="-7.4" y="545.5" width="96.4" height="33" rx="5"/><text x="84" y="559.4" text-anchor="end"><tspan x="84" y="559.4">Vite del</tspan><tspan x="84" y="572.9">condensatore</tspan></text></g>
+        <g class="lbl" data-part="lampada" data-side="L" data-cy="608" data-edge="89" aria-label="Sorgente luminosa"><line class="ld" x1="89" y1="608" x2="173.8" y2="623.2"/><circle class="la" cx="173.8" cy="623.2" r="1.8"/><rect class="lh" x="17.4" y="587.5" width="75.6" height="41"/><rect class="lb" x="21.4" y="591.5" width="67.6" height="33" rx="5"/><text x="84" y="605.4" text-anchor="end"><tspan x="84" y="605.4">Sorgente</tspan><tspan x="84" y="618.9">luminosa</tspan></text></g>
+        <g class="lbl" data-part="interruttore" data-side="L" data-cy="660" data-edge="89" aria-label="Interruttore"><line class="ld" x1="89" y1="660" x2="116.2" y2="650.1"/><circle class="la" cx="116.2" cy="650.1" r="1.8"/><rect class="lh" x="-11.4" y="646" width="104.4" height="28"/><rect class="lb" x="-7.4" y="650.2" width="96.4" height="19.5" rx="5"/><text x="84" y="664.3" text-anchor="end">Interruttore</text></g>
+        <g class="lbl" data-part="braccio" data-side="R" data-cy="400" data-edge="311" aria-label="Braccio"><line class="ld" x1="311" y1="400" x2="277.4" y2="428.7"/><circle class="la" cx="277.4" cy="428.7" r="1.8"/><rect class="lh" x="307" y="386" width="68.4" height="28"/><rect class="lb" x="311" y="390.2" width="60.4" height="19.5" rx="5"/><text x="316" y="404.3" text-anchor="start">Braccio</text></g>
+        <g class="lbl" data-part="vetrino" data-side="R" data-cy="432" data-edge="311" aria-label="Vetrino"><line class="ld" x1="311" y1="432" x2="229.4" y2="451.1"/><circle class="la" cx="229.4" cy="451.1" r="1.8"/><rect class="lh" x="307" y="418" width="68.4" height="28"/><rect class="lb" x="311" y="422.2" width="60.4" height="19.5" rx="5"/><text x="316" y="436.3" text-anchor="start">Vetrino</text></g>
+        <g class="lbl" data-part="traslatore" data-side="R" data-cy="466" data-edge="311" aria-label="Traslatore"><line class="ld" x1="311" y1="466" x2="243.5" y2="478"/><circle class="la" cx="243.5" cy="478" r="1.8"/><rect class="lh" x="307" y="452" width="90" height="28"/><rect class="lb" x="311" y="456.2" width="82" height="19.5" rx="5"/><text x="316" y="470.3" text-anchor="start">Traslatore</text></g>
+        <g class="lbl" data-part="macro" data-side="R" data-cy="514" data-edge="311" aria-label="Vite macrometrica"><line class="ld" x1="311" y1="514" x2="286.4" y2="505.5"/><circle class="la" cx="286.4" cy="505.5" r="1.8"/><rect class="lh" x="307" y="493.5" width="104.4" height="41"/><rect class="lb" x="311" y="497.5" width="96.4" height="33" rx="5"/><text x="316" y="511.4" text-anchor="start"><tspan x="316" y="511.4">Vite</tspan><tspan x="316" y="524.9">macrometrica</tspan></text></g>
+        <g class="lbl" data-part="micro" data-side="R" data-cy="570" data-edge="311" aria-label="Vite micrometrica"><line class="ld" x1="311" y1="570" x2="277.4" y2="554.1"/><circle class="la" cx="277.4" cy="554.1" r="1.8"/><rect class="lh" x="307" y="549.5" width="104.4" height="41"/><rect class="lb" x="311" y="553.5" width="96.4" height="33" rx="5"/><text x="316" y="567.4" text-anchor="start"><tspan x="316" y="567.4">Vite</tspan><tspan x="316" y="580.9">micrometrica</tspan></text></g>
+        <g class="lbl" data-part="intensita" data-side="R" data-cy="626" data-edge="311" aria-label="Regolatore dell’intensità luminosa"><line class="ld" x1="311" y1="626" x2="287" y2="649.5"/><circle class="la" cx="287" cy="649.5" r="1.8"/><rect class="lh" x="307" y="605.5" width="90" height="41"/><rect class="lb" x="311" y="609.5" width="82" height="33" rx="5"/><text x="316" y="623.4" text-anchor="start"><tspan x="316" y="623.4">Regolatore</tspan><tspan x="316" y="636.9">della luce</tspan></text></g>
+        <g class="lbl" data-part="base" data-side="R" data-cy="676" data-edge="311" aria-label="Base (piede)"><line class="ld" x1="311" y1="676" x2="293.4" y2="662.9"/><circle class="la" cx="293.4" cy="662.9" r="1.8"/><rect class="lh" x="307" y="662" width="46.8" height="28"/><rect class="lb" x="311" y="666.2" width="38.8" height="19.5" rx="5"/><text x="316" y="680.3" text-anchor="start">Base</text></g>
       </g>
     </svg>
 
@@ -445,34 +474,39 @@ select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line
     <div class="ro ro-l js-only"><span class="eyebrow">Nell’oculare</span><b id="slideName">Lettera «e»</b></div>
     <div class="ro ro-r js-only"><span class="eyebrow">Campo visivo</span><b id="rField">Ø 4,5 mm</b><span class="pill ok" id="rLight">luce buona</span></div>
   </div>
-  <p class="scene-hint js-only">Tocca un nome sul disegno: si apre la spiegazione con il comando per usare quella parte.</p>
+  <p class="scene-hint js-only" id="sceneHint">Tocca un nome sul disegno: si apre la spiegazione con il comando per usare quella parte.</p>
 
   <aside class="sheet js-only" id="sheet" aria-labelledby="shName">
-    <div class="sh-grip" aria-hidden="true"></div>
-    <div class="sh-head">
-      <div class="sh-titles"><p class="eyebrow" id="shCat">Guida</p><h2 id="shName">Il microscopio ottico</h2></div>
+    <div class="sh-head" id="shHead">
+      <div class="sh-grip" aria-hidden="true"></div>
+      <div class="sh-titles"><p class="eyebrow" id="shCat">Guida</p><h2 id="shName" tabindex="-1">Il microscopio ottico</h2></div>
       <div class="sh-nav">
         <button class="iconbtn" id="shPrev" aria-label="Parte precedente">‹</button>
         <button class="iconbtn" id="shNext" aria-label="Parte successiva">›</button>
         <button class="iconbtn" id="shClose" aria-label="Chiudi">✕</button>
       </div>
-      <p class="sh-status" id="shStatus" role="status" aria-live="polite" hidden><i></i><span id="shStatusTxt"></span></p>
     </div>
+    <div class="sh-body">
+    <p class="sh-status" id="shStatus" role="status" aria-live="polite" hidden><i></i><span id="shStatusTxt"></span></p>
     <div id="shPart" hidden>
       <p class="what" id="shWhat"></p>
       <div class="ctl-slot" id="ctlSlot" hidden></div>
       <details class="how" id="shHowBox"><summary>Come si usa</summary><p id="shHow"></p><p class="note" id="shNote"></p></details>
     </div>
     <div class="sh-guide" id="shGuide">
-      <p>Il microscopio ottico usa la luce e due sistemi di lenti, l’<b>obiettivo</b> e l’<b>oculare</b>, per ingrandire ciò che è troppo piccolo per l’occhio nudo.</p>
+      <p>Il microscopio ottico usa la luce e due sistemi di lenti, l’<b>obiettivo</b> e l’<b>oculare</b>, per ingrandire ciò che è troppo piccolo per essere visto a occhio nudo.</p>
       <p class="formula">ingrandimento totale = oculare × obiettivo<br>esempio: 10× × 40× = 400×</p>
       <p>Tocca un nome sul disegno: si apre la spiegazione con il comando per usare quella parte. Il cerchio in alto mostra cosa vedi nell’oculare.</p>
+      <div class="btnrow"><button class="btn primary" id="procStart">Esercitati da zero</button><button class="btn primary" id="procResume" hidden>Riprendi l’esercizio</button><button class="btn" id="quizStartBtn">Quiz: trova le parti</button></div>
+      <div class="proc-err" id="procErr"></div>
       <h3>Le parti</h3>
       <div class="groups" id="partGroups"></div>
       <h3>Come si usa, passo per passo</h3>
       <ol class="steps" id="procList"></ol>
-      <div class="proc-err" id="procErr"></div>
-      <div class="btnrow"><button class="btn primary" id="procStart">Esercitati da zero</button><button class="btn" id="quizStartBtn">Quiz: trova le parti</button></div>
+      <h3>Campo visivo</h3>
+      <p>È il diametro della zona del vetrino che vedi nell’oculare. Si calcola dividendo il numero di campo dell’oculare per l’ingrandimento dell’obiettivo: con l’oculare 10× (numero di campo 18 mm) e l’obiettivo 4× è 18 : 4 = 4,5 mm. Più ingrandisci, più il campo visivo è piccolo.</p>
+      <p class="small kbd-hint">Dalla tastiera: frecce = traslatore · PagSu e PagGiù = vite macrometrica · + e − = vite micrometrica · L = luce · R = revolver.</p>
+    </div>
     </div>
   </aside>
 </main>
@@ -480,10 +514,10 @@ select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line
 <!-- comandi: vengono spostati nel pannello della parte scelta -->
 <div id="panels" hidden>
   <div class="panel" id="pn-luce">
-    <div class="crow inline" data-row="interruttore"><span class="lab">Interruttore</span><button class="switch" id="cLight" role="switch" aria-checked="true"><span class="sw"></span><span id="cLightTxt">Accesa</span></button></div>
-    <label class="crow" data-row="intensita" for="cInt"><span class="lab">Intensità della luce <output id="oInt" for="cInt">55%</output></span><input type="range" id="cInt" min="0" max="100" value="55"></label>
-    <label class="crow" data-row="diaframma" for="cIris"><span class="lab">Diaframma a iride <output id="oIris" for="cIris">55% aperto</output></span><input type="range" id="cIris" min="5" max="100" value="55"><span class="ends"><span>chiuso</span><span>aperto</span></span></label>
-    <label class="crow" data-row="condensatore" for="cCond"><span class="lab">Altezza del condensatore <output id="oCond" for="cCond">in alto</output></span><input type="range" id="cCond" min="0" max="100" value="100"><span class="ends"><span>basso</span><span>alto</span></span></label>
+    <div class="crow inline" data-row="interruttore"><span class="lab">Interruttore</span><button class="switch" id="cLight" role="switch" aria-checked="true" aria-label="Lampada"><span class="sw"></span><span id="cLightTxt">Accesa</span></button></div>
+    <label class="crow" data-row="intensita" for="cInt"><span class="lab">Intensità della luce <span class="val" id="oInt" aria-hidden="true">55%</span></span><input type="range" id="cInt" min="0" max="100" value="55"></label>
+    <label class="crow" data-row="diaframma" for="cIris"><span class="lab">Diaframma a iride <span class="val" id="oIris" aria-hidden="true">55% aperto</span></span><input type="range" id="cIris" min="5" max="100" value="55"><span class="ends" aria-hidden="true"><span>chiuso</span><span>aperto</span></span></label>
+    <label class="crow" data-row="condensatore" for="cCond"><span class="lab">Altezza del condensatore <span class="val" id="oCond" aria-hidden="true">in alto</span></span><input type="range" id="cCond" min="0" max="100" value="100"><span class="ends" aria-hidden="true"><span>basso</span><span>alto</span></span></label>
   </div>
   <div class="panel" id="pn-mag">
     <div class="crow" data-row="oculare"><span class="lab">Oculare</span>
@@ -494,6 +528,7 @@ select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line
       </div>
     </div>
     <div class="crow" data-row="obiettivi"><span class="lab">Obiettivo (ruota il revolver)</span><div class="seg" id="cObj" role="radiogroup" aria-label="Obiettivo"></div></div>
+    <div class="crow inline" data-row="olio" id="magOil" hidden><span class="lab"><span>Olio a immersione<small>serve al 100×</small></span></span><button class="btn" id="cOil2">Metti l’olio</button></div>
     <label class="check" for="optScale"><input type="checkbox" id="optScale"> Mostra la barra di scala nell’oculare</label>
   </div>
   <div class="panel" id="pn-fuoco">
@@ -505,7 +540,7 @@ select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line
     <label class="crow" data-row="vetrino" for="cSlideSel"><span class="lab">Preparato</span><select id="cSlideSel"></select><span class="small" id="slideDesc"></span></label>
     <div class="btnrow crow" data-row="pinzette"><button class="btn" id="cSlide">Togli il vetrino</button><button class="btn" id="cClips">Solleva le pinzette</button><button class="btn" id="cOil">Metti l’olio a immersione</button></div>
     <div class="crow inline" data-row="traslatore"><span class="lab"><span>Traslatore<small>sposta il vetrino; nell’oculare l’immagine va al contrario</small></span></span>
-      <div class="pad" id="cPad" aria-label="Traslatore">
+      <div class="pad" id="cPad" role="group" aria-label="Traslatore">
         <button data-mv="up" aria-label="Sposta il vetrino lontano da te">▲</button>
         <button data-mv="left" aria-label="Sposta il vetrino a sinistra">◀</button>
         <button data-mv="right" aria-label="Sposta il vetrino a destra">▶</button>
@@ -517,36 +552,33 @@ select{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--line
 
 <div class="toast js-only" id="toast" role="status" aria-live="polite" hidden><i></i><p id="toastTxt"></p></div>
 
-<noscript>
-  <style>.js-only{display:none!important}</style>
-  <section class="nojs">
-    <p class="small">Per usare il simulatore apri questo file con un browser come Chrome o Safari. Qui sotto trovi comunque i nomi e le spiegazioni delle parti.</p>
+<section class="nojs">
+    <p class="small">Per usare il simulatore apri questo file con un browser come Chrome o Safari: l’anteprima di alcune app non lo fa funzionare. Qui sotto trovi comunque i nomi e le spiegazioni delle parti.</p>
     <h2 class="eyebrow">Parte ottica</h2>
     <details><summary>Oculare</summary><p>È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.</p><p>Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente.</p><p class="small">La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.</p></details>
-    <details><summary>Obiettivi</summary><p>Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.</p><p>Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione.</p><p class="small">Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.</p></details>
+    <details><summary>Obiettivi</summary><p>Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.</p><p>Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione tra lente e vetrino.</p><p class="small">Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Il 100× ha anche un anello nero: è «a immersione» e si usa solo con l’olio; alla fine si puliscono obiettivo e vetrino con la cartina per lenti. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.</p></details>
     <h2 class="eyebrow">Sistema di illuminazione</h2>
     <details><summary>Condensatore</summary><p>Sono lenti sotto il tavolino che raccolgono la luce della lampada e la concentrano sul preparato.</p><p>Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.</p></details>
-    <details><summary>Diaframma a iride</summary><p>È un’apertura regolabile dentro il condensatore, mossa da una levetta: decide quanta luce arriva al preparato.</p><p>Chiudendolo aumentano contrasto e profondità di campo, ma l’immagine si scurisce. Aprendolo diventa luminosa ma «slavata». Cerca il giusto mezzo.</p></details>
+    <details><summary>Diaframma a iride</summary><p>È un’apertura regolabile dentro il condensatore, mossa da una levetta: decide quanta luce arriva al preparato.</p><p>Chiudendolo aumentano contrasto e profondità di campo, ma l’immagine si scurisce e, se lo chiudi troppo, perde i dettagli più fini. Aprendolo diventa luminosa ma «slavata». Regola la luminosità con l’intensità della luce e usa il diaframma per il contrasto.</p></details>
     <details><summary>Vite del condensatore</summary><p>È la manopola che alza e abbassa il condensatore.</p><p>Porta il condensatore in alto per avere più luce e un’immagine più nitida.</p></details>
     <details><summary>Sorgente luminosa</summary><p>È la lampada, oggi quasi sempre a LED, montata nella base: manda la luce dal basso attraverso il preparato.</p><p>Il preparato deve essere sottile e trasparente, perché la luce lo deve attraversare. Nei microscopi più semplici al posto della lampada c’è uno specchio.</p></details>
     <details><summary>Interruttore</summary><p>Accende e spegne la lampada.</p><p>A fine lavoro abbassa l’intensità, spegni e copri il microscopio con la sua custodia.</p></details>
     <details><summary>Regolatore dell’intensità luminosa</summary><p>È la manopola che rende la luce della lampada più forte o più debole.</p><p>Accendi sempre con l’intensità bassa e poi aumentala piano. Con gli obiettivi più forti serve più luce.</p></details>
     <h2 class="eyebrow">Parte meccanica</h2>
-    <details><summary>Tubo ottico</summary><p>Collega l’oculare al revolver e tiene le lenti alla distanza giusta.</p><p>Nei microscopi moderni è inclinato, così si osserva stando seduti comodi. Nella testata c’è un prisma che devia la luce verso l’oculare.</p></details>
+    <details><summary>Tubo ottico</summary><p>Collega l’oculare al revolver e tiene le lenti alla distanza giusta. In alto finisce nella testata, il blocco che porta l’oculare.</p><p>Nei microscopi moderni è inclinato, così si osserva stando seduti comodi. Nella testata c’è un prisma che devia la luce verso l’oculare.</p></details>
     <details><summary>Revolver portaobiettivi</summary><p>È il disco girevole su cui sono avvitati gli obiettivi: ruotandolo porti in posizione l’obiettivo che vuoi usare.</p><p>Giralo afferrando la ghiera zigrinata, mai gli obiettivi. Uno scatto ti dice che l’obiettivo è allineato. Prima di ruotarlo controlla che il tavolino non sia troppo alto.</p></details>
     <details><summary>Pinzette fermavetrino</summary><p>Sono due mollette che tengono fermo il vetrino sul tavolino.</p><p>Sollevale, infila il vetrino sotto e riabbassale con delicatezza. Il vetrino va fissato prima di spostarlo con il traslatore.</p></details>
     <details><summary>Tavolino portaoggetti</summary><p>È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce.</p><p>Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.</p></details>
-    <details><summary>Braccio (stativo)</summary><p>È la struttura che regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco.</p><p>Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.</p></details>
+    <details><summary>Braccio</summary><p>Regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco. Insieme alla base forma lo stativo, la struttura che sostiene il microscopio.</p><p>Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.</p></details>
     <details><summary>Traslatore</summary><p>È il carrello con due manopole che sposta il vetrino avanti, indietro, a destra e a sinistra.</p><p>Serve a portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.</p></details>
-    <details><summary>Vite macrometrica</summary><p>È la manopola grande: alza e abbassa il tavolino a grandi passi.</p><p>Serve per la prima messa a fuoco con il 4× e il 10×. Con il 40× e il 100× non va usata: rischi di rompere il vetrino e l’obiettivo.</p></details>
+    <details><summary>Vite macrometrica</summary><p>È la manopola grande: alza e abbassa il tavolino a grandi passi.</p><p>Serve per la prima messa a fuoco con il 4× e il 10×. Guardando il microscopio di lato, alza il tavolino fin quasi a toccare l’obiettivo; poi guarda nell’oculare e abbassalo piano finché compare l’immagine. Con il 40× e il 100× non usarla per alzare il tavolino: rischi di rompere il vetrino e l’obiettivo.</p></details>
     <details><summary>Vite micrometrica</summary><p>È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.</p><p>Serve a rendere l’immagine nitida e a osservare piani diversi del preparato. È l’unica da usare con il 40× e il 100×.</p><p class="small">In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola sullo stesso asse della macrometrica.</p></details>
     <details><summary>Base (piede)</summary><p>È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.</p><p>Tieni il microscopio su un piano stabile, lontano dal bordo del banco.</p></details>
     <h2 class="eyebrow">Accessorio</h2>
-    <details><summary>Vetrino</summary><p>È la lastrina di vetro (76 × 26 mm) su cui si mette il preparato, coperto da un vetrino coprioggetto sottilissimo.</p><p>Tienilo per i bordi e centra il preparato sopra il foro del tavolino. Qui puoi scegliere tra quattro preparati.</p></details>
+    <details><summary>Vetrino</summary><p>È la lastrina di vetro (76 × 26 mm) su cui si mette il preparato, coperto da un vetrino coprioggetto sottilissimo.</p><p>Tienilo per i bordi e centra il preparato sopra il foro del tavolino. Nel simulatore puoi scegliere tra quattro preparati.</p></details>
   </section>
-</noscript>
 
-<script type="application/json" id="partsData">[{"id":"oculare","name":"Oculare","cat":"ottica","panel":"mag","rows":["oculare"],"what":"È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.","how":"Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente.","note":"La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.","q":"È la lente in cui guardi."},{"id":"tubo","name":"Tubo ottico","cat":"meccanica","panel":null,"rows":[],"what":"Collega l’oculare al revolver e tiene le lenti alla distanza giusta.","how":"Nei microscopi moderni è inclinato, così si osserva stando seduti comodi. Nella testata c’è un prisma che devia la luce verso l’oculare.","q":"Collega l’oculare al revolver."},{"id":"revolver","name":"Revolver portaobiettivi","cat":"meccanica","panel":"mag","rows":["obiettivi"],"what":"È il disco girevole su cui sono avvitati gli obiettivi: ruotandolo porti in posizione l’obiettivo che vuoi usare.","how":"Giralo afferrando la ghiera zigrinata, mai gli obiettivi. Uno scatto ti dice che l’obiettivo è allineato. Prima di ruotarlo controlla che il tavolino non sia troppo alto.","q":"Disco girevole che serve a cambiare obiettivo."},{"id":"obiettivi","name":"Obiettivi","cat":"ottica","panel":"mag","rows":["obiettivi"],"what":"Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.","how":"Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione.","note":"Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.","q":"Le lenti più vicine al preparato, con anelli colorati."},{"id":"pinzette","name":"Pinzette fermavetrino","cat":"meccanica","panel":"vetrino","rows":["pinzette"],"what":"Sono due mollette che tengono fermo il vetrino sul tavolino.","how":"Sollevale, infila il vetrino sotto e riabbassale con delicatezza. Il vetrino va fissato prima di spostarlo con il traslatore.","q":"Tengono fermo il vetrino sul tavolino."},{"id":"tavolino","name":"Tavolino portaoggetti","cat":"meccanica","panel":"fuoco","rows":["macro","micro"],"what":"È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce.","how":"Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.","q":"Piano con un foro al centro su cui si appoggia il vetrino."},{"id":"condensatore","name":"Condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"Sono lenti sotto il tavolino che raccolgono la luce della lampada e la concentrano sul preparato.","how":"Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.","q":"Lenti sotto il tavolino che concentrano la luce."},{"id":"diaframma","name":"Diaframma a iride","cat":"illuminazione","panel":"luce","rows":["diaframma"],"what":"È un’apertura regolabile dentro il condensatore, mossa da una levetta: decide quanta luce arriva al preparato.","how":"Chiudendolo aumentano contrasto e profondità di campo, ma l’immagine si scurisce. Aprendolo diventa luminosa ma «slavata». Cerca il giusto mezzo.","q":"Apertura regolabile che controlla luce e contrasto."},{"id":"viteCond","name":"Vite del condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"È la manopola che alza e abbassa il condensatore.","how":"Porta il condensatore in alto per avere più luce e un’immagine più nitida.","q":"Manopola che alza o abbassa il condensatore."},{"id":"lampada","name":"Sorgente luminosa","cat":"illuminazione","panel":"luce","rows":["interruttore","intensita"],"what":"È la lampada, oggi quasi sempre a LED, montata nella base: manda la luce dal basso attraverso il preparato.","how":"Il preparato deve essere sottile e trasparente, perché la luce lo deve attraversare. Nei microscopi più semplici al posto della lampada c’è uno specchio.","q":"Produce la luce che attraversa il preparato."},{"id":"interruttore","name":"Interruttore","cat":"illuminazione","panel":"luce","rows":["interruttore"],"what":"Accende e spegne la lampada.","how":"A fine lavoro abbassa l’intensità, spegni e copri il microscopio con la sua custodia.","q":"Accende e spegne la lampada."},{"id":"braccio","name":"Braccio (stativo)","cat":"meccanica","panel":null,"rows":[],"what":"È la struttura che regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco.","how":"Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.","q":"Da qui si afferra il microscopio per trasportarlo."},{"id":"vetrino","name":"Vetrino","cat":"accessorio","panel":"vetrino","rows":["vetrino"],"what":"È la lastrina di vetro (76 × 26 mm) su cui si mette il preparato, coperto da un vetrino coprioggetto sottilissimo.","how":"Tienilo per i bordi e centra il preparato sopra il foro del tavolino. Qui puoi scegliere tra quattro preparati.","q":"Lastrina di vetro su cui si mette il preparato."},{"id":"traslatore","name":"Traslatore","cat":"meccanica","panel":"vetrino","rows":["traslatore"],"what":"È il carrello con due manopole che sposta il vetrino avanti, indietro, a destra e a sinistra.","how":"Serve a portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.","q":"Sposta il vetrino avanti, indietro, a destra e a sinistra."},{"id":"macro","name":"Vite macrometrica","cat":"meccanica","panel":"fuoco","rows":["macro"],"what":"È la manopola grande: alza e abbassa il tavolino a grandi passi.","how":"Serve per la prima messa a fuoco con il 4× e il 10×. Con il 40× e il 100× non va usata: rischi di rompere il vetrino e l’obiettivo.","q":"Manopola grande per la messa a fuoco rapida."},{"id":"micro","name":"Vite micrometrica","cat":"meccanica","panel":"fuoco","rows":["micro"],"what":"È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.","how":"Serve a rendere l’immagine nitida e a osservare piani diversi del preparato. È l’unica da usare con il 40× e il 100×.","note":"In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola sullo stesso asse della macrometrica.","q":"Manopola piccola per la messa a fuoco fine."},{"id":"intensita","name":"Regolatore dell’intensità luminosa","cat":"illuminazione","panel":"luce","rows":["intensita"],"what":"È la manopola che rende la luce della lampada più forte o più debole.","how":"Accendi sempre con l’intensità bassa e poi aumentala piano. Con gli obiettivi più forti serve più luce.","q":"Manopola che rende la lampada più forte o più debole."},{"id":"base","name":"Base (piede)","cat":"meccanica","panel":null,"rows":[],"what":"È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.","how":"Tieni il microscopio su un piano stabile, lontano dal bordo del banco.","q":"Parte pesante che dà stabilità e contiene la lampada."}]</script>
+<script type="application/json" id="partsData">[{"id":"oculare","name":"Oculare","cat":"ottica","panel":"mag","rows":["oculare"],"what":"È la lente in cui guardi. Ingrandisce ancora l’immagine già ingrandita dall’obiettivo.","how":"Sull’oculare è inciso il suo ingrandimento, di solito 10×. Si può sfilare e sostituire con un oculare da 5× o da 15×. Avvicina l’occhio senza toccare la lente.","note":"La scritta WF 10×/18 indica l’ingrandimento (10×) e il numero di campo (18 mm), da cui dipende quanto è largo il campo visivo.","q":"la lente in cui guardi."},{"id":"tubo","name":"Tubo ottico","cat":"meccanica","panel":null,"rows":[],"what":"Collega l’oculare al revolver e tiene le lenti alla distanza giusta. In alto finisce nella testata, il blocco che porta l’oculare.","how":"Nei microscopi moderni è inclinato, così si osserva stando seduti comodi. Nella testata c’è un prisma che devia la luce verso l’oculare.","q":"la parte che collega l’oculare al revolver."},{"id":"revolver","name":"Revolver portaobiettivi","cat":"meccanica","panel":"mag","rows":["obiettivi"],"what":"È il disco girevole su cui sono avvitati gli obiettivi: ruotandolo porti in posizione l’obiettivo che vuoi usare.","how":"Giralo afferrando la ghiera zigrinata, mai gli obiettivi. Uno scatto ti dice che l’obiettivo è allineato. Prima di ruotarlo controlla che il tavolino non sia troppo alto.","q":"il disco girevole che serve a cambiare obiettivo."},{"id":"obiettivi","name":"Obiettivi","cat":"ottica","panel":"mag","rows":["obiettivi"],"what":"Sono le lenti vicine al preparato: formano la prima immagine ingrandita, che è capovolta.","how":"Ogni obiettivo ha un anello colorato: 4× rosso, 10× giallo, 40× azzurro, 100× bianco. Più l’ingrandimento è alto, più l’obiettivo è lungo e più arriva vicino al vetrino. Il 100× funziona solo con una goccia di olio a immersione tra lente e vetrino.","note":"Su ogni obiettivo sono incisi ingrandimento e apertura numerica, per esempio 40/0,65. Il 100× ha anche un anello nero: è «a immersione» e si usa solo con l’olio; alla fine si puliscono obiettivo e vetrino con la cartina per lenti. Gli obiettivi sono parfocali: cambiandoli l’immagine resta quasi a fuoco.","q":"le lenti più vicine al preparato, con gli anelli colorati."},{"id":"pinzette","name":"Pinzette fermavetrino","cat":"meccanica","panel":"vetrino","rows":["pinzette"],"what":"Sono due mollette che tengono fermo il vetrino sul tavolino.","how":"Sollevale, infila il vetrino sotto e riabbassale con delicatezza. Il vetrino va fissato prima di spostarlo con il traslatore.","q":"le mollette che tengono fermo il vetrino."},{"id":"tavolino","name":"Tavolino portaoggetti","cat":"meccanica","panel":"fuoco","rows":["macro","micro"],"what":"È il piano su cui appoggi il vetrino. Al centro ha un foro da cui passa la luce.","how":"Si alza e si abbassa con le viti macrometrica e micrometrica. Tienilo pulito e asciutto.","q":"il piano con un foro al centro su cui si appoggia il vetrino."},{"id":"condensatore","name":"Condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"Sono lenti sotto il tavolino che raccolgono la luce della lampada e la concentrano sul preparato.","how":"Di solito si tiene in alto, vicino al vetrino. Se lo abbassi l’immagine diventa più scura e meno definita.","q":"le lenti sotto il tavolino che concentrano la luce sul preparato."},{"id":"diaframma","name":"Diaframma a iride","cat":"illuminazione","panel":"luce","rows":["diaframma"],"what":"È un’apertura regolabile dentro il condensatore, mossa da una levetta: decide quanta luce arriva al preparato.","how":"Chiudendolo aumentano contrasto e profondità di campo, ma l’immagine si scurisce e, se lo chiudi troppo, perde i dettagli più fini. Aprendolo diventa luminosa ma «slavata». Regola la luminosità con l’intensità della luce e usa il diaframma per il contrasto.","q":"l’apertura regolabile che controlla luce e contrasto."},{"id":"viteCond","name":"Vite del condensatore","cat":"illuminazione","panel":"luce","rows":["condensatore"],"what":"È la manopola che alza e abbassa il condensatore.","how":"Porta il condensatore in alto per avere più luce e un’immagine più nitida.","q":"la manopola che alza o abbassa il condensatore."},{"id":"lampada","name":"Sorgente luminosa","cat":"illuminazione","panel":"luce","rows":["interruttore","intensita"],"what":"È la lampada, oggi quasi sempre a LED, montata nella base: manda la luce dal basso attraverso il preparato.","how":"Il preparato deve essere sottile e trasparente, perché la luce lo deve attraversare. Nei microscopi più semplici al posto della lampada c’è uno specchio.","q":"la parte che produce la luce che attraversa il preparato."},{"id":"interruttore","name":"Interruttore","cat":"illuminazione","panel":"luce","rows":["interruttore"],"what":"Accende e spegne la lampada.","how":"A fine lavoro abbassa l’intensità, spegni e copri il microscopio con la sua custodia.","q":"il comando che accende e spegne la lampada."},{"id":"braccio","name":"Braccio","cat":"meccanica","panel":null,"rows":[],"what":"Regge testata, revolver e tavolino e contiene i meccanismi della messa a fuoco. Insieme alla base forma lo stativo, la struttura che sostiene il microscopio.","how":"Per trasportare il microscopio afferralo per il braccio con una mano e sostieni la base con l’altra.","q":"la parte da cui si afferra il microscopio per trasportarlo."},{"id":"vetrino","name":"Vetrino","cat":"accessorio","panel":"vetrino","rows":["vetrino"],"what":"È la lastrina di vetro (76 × 26 mm) su cui si mette il preparato, coperto da un vetrino coprioggetto sottilissimo.","how":"Tienilo per i bordi e centra il preparato sopra il foro del tavolino. Qui puoi scegliere tra quattro preparati.","q":"la lastrina di vetro su cui si mette il preparato."},{"id":"traslatore","name":"Traslatore","cat":"meccanica","panel":"vetrino","rows":["traslatore"],"what":"È il carrello con due manopole che sposta il vetrino avanti, indietro, a destra e a sinistra.","how":"Serve a portare al centro ciò che vuoi osservare. Nell’oculare l’immagine si sposta nel verso opposto, perché è capovolta.","q":"il carrello che sposta il vetrino avanti, indietro, a destra e a sinistra."},{"id":"macro","name":"Vite macrometrica","cat":"meccanica","panel":"fuoco","rows":["macro"],"what":"È la manopola grande: alza e abbassa il tavolino a grandi passi.","how":"Serve per la prima messa a fuoco con il 4× e il 10×. Guardando il microscopio di lato, alza il tavolino fin quasi a toccare l’obiettivo; poi guarda nell’oculare e abbassalo piano finché compare l’immagine. Con il 40× e il 100× non usarla per alzare il tavolino: rischi di rompere il vetrino e l’obiettivo.","q":"la manopola grande per la messa a fuoco rapida."},{"id":"micro","name":"Vite micrometrica","cat":"meccanica","panel":"fuoco","rows":["micro"],"what":"È la manopola piccola: sposta il tavolino di pochi micrometri, cioè millesimi di millimetro.","how":"Serve a rendere l’immagine nitida e a osservare piani diversi del preparato. È l’unica da usare con il 40× e il 100×.","note":"In molti microscopi le due viti sono coassiali: la micrometrica è la manopola più piccola sullo stesso asse della macrometrica.","q":"la manopola piccola per la messa a fuoco fine."},{"id":"intensita","name":"Regolatore dell’intensità luminosa","cat":"illuminazione","panel":"luce","rows":["intensita"],"what":"È la manopola che rende la luce della lampada più forte o più debole.","how":"Accendi sempre con l’intensità bassa e poi aumentala piano. Con gli obiettivi più forti serve più luce.","q":"la manopola che rende la lampada più forte o più debole."},{"id":"base","name":"Base (piede)","cat":"meccanica","panel":null,"rows":[],"what":"È la parte pesante appoggiata sul banco: rende stabile il microscopio e contiene la lampada.","how":"Tieni il microscopio su un piano stabile, lontano dal bordo del banco.","q":"la parte pesante che dà stabilità e contiene la lampada."}]</script>
 <script>
 (() => {
 'use strict';
@@ -933,17 +965,29 @@ const SANGUE = (() => {
       const sp = sprite(3.8 * v.k);
       ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.fillStyle = mode === 'sparse' ? 'rgba(190,70,88,0.55)' : 'rgba(196,80,96,0.5)';
-      eachTile(v, T, 10, (i, j) => {
+      if (mode === 'sparse') {
+        /* ingrandimento basso: le cellule sono puntini; tessere grandi e solo i puntini visibili */
+        const T2 = 150;
+        eachTile(v, T2, 10, (i, j) => {
+          const d = dens((i + 0.5) * T2, (j + 0.5) * T2);
+          if (d <= 0) return;
+          const R = rng(hash3(i, j, 58)), n = Math.round(d * 33);
+          const z = Math.max(1, 7.6 * v.k);
+          for (let q = 0; q < n; q++) {
+            const x = (i + R()) * T2, y = (j + R()) * T2;
+            ctx.fillRect(v.ex - x * v.k - z / 2, v.ey - y * v.k - z / 2, z, z);
+          }
+        });
+      } else eachTile(v, T, 10, (i, j) => {
         const d = dens((i + 0.5) * T, (j + 0.5) * T);
         if (d <= 0) return;
         const R = rng(hash3(i, j, 55));
         const n = Math.round(d * 22 + (R() - 0.5) * 5);
         for (let q = 0; q < n; q++) {
           const x = (i + R()) * T, y = (j + R()) * T, sc = 0.92 + R() * 0.16;
-          if (mode === 'sparse' && q % 6) continue;
           if (outside(v, x, y, 5)) continue;
           const X = v.ex - x * v.k, Y = v.ey - y * v.k;
-          if (mode === 'sparse' || sp.size < 5) {
+          if (sp.size < 5) {
             const z = Math.max(1, 7.6 * v.k * sc);
             ctx.fillRect(X - z / 2, Y - z / 2, z, z);
           } else {
@@ -1138,21 +1182,33 @@ const contactH = (i = S.obj) => H_FOCUS + OBJ[i].off + OBJ[i].wd + (S.slideOn ? 
 /* =====================================================================
    Messaggi
    ===================================================================== */
+/* schermi larghi e telefono in orizzontale: pannello accanto alla tavola */
+const SIDE_Q = '(min-width: 860px), (orientation: landscape) and (max-height: 560px) and (min-width: 600px)';
+const wideMQ = window.matchMedia ? matchMedia(SIDE_Q) : { matches: false };
+const isWide = () => wideMQ.matches;
 const toast = $('#toast'), toastTxt = $('#toastTxt');
-let toastTimer = 0;
 const shStatus = $('#shStatus'), shStatusTxt = $('#shStatusTxt');
-let statusTimer = 0;
-/* gli avvisi compaiono dentro il pannello quando è aperto (così non coprono l’oculare), altrimenti in basso */
+let toastTimer = 0, statusTimer = 0, pendTimer = 0, sevUntil = 0, pendMsg = null;
+/* gli avvisi compaiono dentro il pannello quando è aperto (sopra la spiegazione, senza spostare i comandi),
+   altrimenti in basso. Un avviso importante resta almeno 3 secondi: i messaggi normali aspettano il loro turno. */
 function say(kind, msg) {
-  const k = kind || 'info', ms = k === 'bad' ? 8000 : k === 'warn' ? 6500 : 4500;
-  const inSheet = window.matchMedia('(min-width: 860px)').matches || $('#sheet').classList.contains('open');
+  const k = kind || 'info', now = performance.now();
+  if (k === 'info' && now < sevUntil) {
+    pendMsg = msg;
+    clearTimeout(pendTimer);
+    pendTimer = setTimeout(() => { const m = pendMsg; pendMsg = null; if (m) say('info', m); }, sevUntil - now + 30);
+    return;
+  }
+  if (k === 'warn' || k === 'bad') { sevUntil = now + 3000; pendMsg = null; clearTimeout(pendTimer); }
+  const ms = k === 'bad' ? 8000 : k === 'warn' ? 6500 : 4500;
+  const inSheet = isWide() || $('#sheet').classList.contains('open');
   clearTimeout(toastTimer); clearTimeout(statusTimer);
   if (inSheet) {
     toast.hidden = true;
     shStatus.className = 'sh-status ' + k;
     shStatusTxt.textContent = msg;
     shStatus.hidden = false;
-    statusTimer = setTimeout(() => { shStatus.hidden = true; }, ms + 2000);
+    statusTimer = setTimeout(() => { shStatus.hidden = true; }, ms);
   } else {
     shStatus.hidden = true;
     toast.className = 'toast js-only ' + k;
@@ -1183,7 +1239,7 @@ function collide() {
   } else if (S.slideOn) {
     sayOnce('broken', 2500, 'bad', 'Il vetrino è rotto: abbassa il tavolino e toglilo.');
   } else {
-    sayOnce('stage', 2500, 'warn', 'L’obiettivo ha toccato il tavolino. Abbassalo con la vite macrometrica.');
+    sayOnce('stage', 2500, 'warn', 'L’obiettivo ha toccato il tavolino: abbassa il tavolino con la vite macrometrica.');
   }
 }
 function setH(nh) {
@@ -1194,12 +1250,15 @@ function setH(nh) {
     collide();
   }
   S.h = nh;
+  if (nh > PROC.peak) PROC.peak = nh;
 }
 function focusBy(d, kind) {
   if (!d) return;
-  if (kind === 'macro' && S.obj >= 2) {
-    if (sayOnce('macro', 3000, 'warn', `Con l’obiettivo ${OBJ[S.obj].mag}× usa solo la vite micrometrica: la macrometrica sposta troppo il tavolino e puoi rompere il vetrino.`)) procErr('macro');
+  /* abbassare il tavolino è sempre sicuro: l’avviso vale solo quando lo si alza */
+  if (kind === 'macro' && S.obj >= 2 && d > 0) {
+    if (sayOnce('macro', 3000, 'warn', `Con l’obiettivo ${OBJ[S.obj].mag}× alza il tavolino solo con la vite micrometrica: la macrometrica lo sposta troppo e puoi rompere il vetrino.`)) procErr('macro');
   }
+  if (kind === 'micro') PROC.micro = true;
   setH(S.h + d);
   invalidate();
 }
@@ -1212,17 +1271,17 @@ function setLight(on) {
   } else say('info', 'Lampada spenta.');
   invalidate();
 }
+const emptyNote = g => g.total > 1250 ? ' Oltre circa 1000–1200× l’immagine diventa più grande ma non mostra nuovi dettagli: è un ingrandimento «vuoto».' : '';
 function setEye(e) {
   if (e === S.eye) return;
   S.eye = e;
   const g = geom();
   let m = `Oculare ${e}×: ingrandimento totale ${e} × ${OBJ[S.obj].mag} = ${g.total}×.`;
-  if (e === 5) m += ' Con il 5× il campo visivo appare più piccolo.';
-  if (g.total > 1250) m += ' Oltre circa 1000× l’immagine è più grande ma non mostra nuovi dettagli: è un ingrandimento «vuoto».';
-  say('info', m);
+  if (e === 5) m += ' Con il 5× il cerchio luminoso è più piccolo, ma contiene una zona del vetrino un po’ più larga.';
+  say('info', m + emptyNote(g));
   invalidate();
 }
-function setObj(i) {
+function setObj(i, passing) {
   const prev = S.obj;
   S.obj = i;
   const o = OBJ[i];
@@ -1235,23 +1294,31 @@ function setObj(i) {
     S.dirty40 = true;
     say('bad', 'Attenzione: l’obiettivo 40× è finito nell’olio e ora è sporco. Gli obiettivi a secco non vanno mai immersi: pulisci con la cartina per lenti.');
     procErr('oil40');
+  } else if (passing) {
+    /* obiettivo di passaggio mentre il revolver gira: nessun messaggio */
   } else if (o.oil && !S.oil && S.slideOn) {
-    say('warn', 'Obiettivo 100× in posizione. Senza olio a immersione l’immagine è scura e sfocata: metti una goccia d’olio sul vetrino.');
+    say('warn', 'Obiettivo 100× in posizione. Senza olio a immersione l’immagine è scura e sfocata: metti una goccia d’olio (pulsante qui sotto).');
   } else if (prev !== i) {
     const g = geom();
     let m = `Obiettivo ${o.mag}× (anello ${o.ring}): ingrandimento totale ${g.total}×.`;
     if (i >= 2) m += ' Ora usa solo la vite micrometrica.';
     else if (i === 1 && prev === 0) m += ' Gli obiettivi sono parfocali: correggi il fuoco con la micrometrica.';
-    say('info', m);
+    say('info', m + emptyNote(g));
   }
   return true;
 }
+let rotTok = 0;
 function rotateTo(target) {
   if (S.busy || target === S.obj) return;
-  const fw = (target - S.obj + 4) % 4, dir = fw <= 2 ? 1 : -1;
+  const fw = (target - S.obj + 4) % 4;
+  let dir = fw === 1 ? 1 : fw === 3 ? -1 : 0;
+  /* due scatti: il revolver passa dall’obiettivo più corto, che non tocca il vetrino né l’olio */
+  if (!dir) dir = (S.obj + 1) % 4 < (S.obj + 3) % 4 ? 1 : -1;
   let n = dir === 1 ? fw : 4 - fw;
+  const tok = ++rotTok;
   const step = () => {
-    const ok = setObj((S.obj + dir + 4) % 4);
+    if (tok !== rotTok) return;
+    const ok = setObj((S.obj + dir + 4) % 4, n > 1);
     n--;
     invalidate();
     if (ok && n > 0) setTimeout(step, RM ? 0 : 240);
@@ -1298,7 +1365,7 @@ function toggleOil() {
     if (!S.slideOn) { say('warn', 'Metti prima un vetrino sul tavolino.'); return; }
     if (S.broken) { say('warn', 'Il vetrino è rotto: sostituiscilo.'); return; }
     S.oil = true; S.oilAt = [S.cx, S.cy];
-    say('info', S.obj === 3 ? 'Goccia d’olio a immersione sul vetrino: ora la lente del 100× è immersa nell’olio.' : 'Goccia d’olio a immersione sul vetrino. Ora ruota il revolver sul 100×: la sua lente deve immergersi nella goccia.');
+    say('info', S.obj === 3 ? 'Goccia d’olio a immersione sul vetrino: ora la lente del 100× è immersa nell’olio.' : 'Goccia d’olio a immersione sul vetrino. Ora porta il 100× nella goccia: gli altri obiettivi non devono toccarla.');
   }
   invalidate();
 }
@@ -1334,6 +1401,8 @@ const svg = $('#scope');
 const objEls = OBJ.map((_, i) => $('#obj' + i));
 const lblEls = {};
 $$('#labels .lbl').forEach(g => {
+  g.setAttribute('tabindex', '0');
+  g.setAttribute('role', 'button');
   lblEls[g.dataset.part] = { g, line: $('.ld', g), dot: $('.la', g), box: $('.lb', g), hit: $('.lh', g), text: $('text', g), side: g.dataset.side, cy: +g.dataset.cy, edge: +g.dataset.edge };
 });
 function fitLabels() {
@@ -1361,6 +1430,7 @@ function applyObj() {
     objEls[i].setAttribute('transform', `rotate(${c.a.toFixed(2)} 300 200)`);
     objEls[i].style.opacity = c.o.toFixed(3);
     objEls[i].style.pointerEvents = c.o < 0.5 ? 'none' : '';
+    objEls[i].tabIndex = Q.on && c.o >= 0.5 ? 0 : -1;
   });
 }
 function tweenObj(t) {
@@ -1384,6 +1454,7 @@ function updateObjectives(snap) {
   } else if (!tweenRaf) tweenRaf = requestAnimationFrame(tweenObj);
 }
 
+let quizShown = null;
 function updateScope() {
   st.dy = (H_FOCUS - S.h) * PX_UM;
   st.c = (1 - S.cond) * 16;
@@ -1427,7 +1498,18 @@ function updateScope() {
     L.g.classList.toggle('sel', S.sel === id && !Q.on);
   }
   $$('.part', svg).forEach(el => el.classList.toggle('sel', !Q.on && el.dataset.part === S.sel));
-  svg.classList.toggle('quiz', Q.on);
+  if (quizShown !== Q.on) {
+    /* fuori dal quiz si naviga con i nomi; nel quiz con le parti, che non devono svelare la risposta */
+    quizShown = Q.on;
+    svg.classList.toggle('quiz', Q.on);
+    $('#scene').classList.toggle('quiz', Q.on);
+    $('.layout').classList.toggle('quiz', Q.on);
+    $$('.part', svg).forEach((el, k) => {
+      el.tabIndex = Q.on ? 0 : -1;
+      el.setAttribute('aria-label', Q.on ? `Parte del microscopio ${k + 1}` : PART[el.dataset.part].name);
+    });
+    applyObj();
+  }
 }
 
 /* =====================================================================
@@ -1437,15 +1519,25 @@ const view = $('#view'), vctx = view.getContext('2d');
 const offs = [0, 1, 2].map(() => document.createElement('canvas'));
 const octx = offs.map(c => c.getContext('2d'));
 const tmp = document.createElement('canvas'), tctx = tmp.getContext('2d');
+/* il filtro sulla tela esiste davvero? (Safari lo ha solo dalla versione 18): si prova a sfocare un punto */
 const CTX_FILTER = (() => {
-  try { vctx.filter = 'blur(2px)'; const ok = vctx.filter === 'blur(2px)'; vctx.filter = 'none'; return ok; } catch (_) { return false; }
+  try {
+    if (!('filter' in CanvasRenderingContext2D.prototype)) return false;
+    const c = document.createElement('canvas'); c.width = c.height = 9;
+    const x = c.getContext('2d');
+    x.filter = 'blur(2px)'; x.fillStyle = '#000'; x.fillRect(4, 4, 1, 1);
+    return x.getImageData(1, 4, 1, 1).data[3] > 0;
+  } catch (_) { return false; }
 })();
-let lastKey = '';
+let lastKey = '', lastCKey = '';
 function sizeCanvases() {
-  D = ocular.clientWidth || 380;
+  const w = ocular.clientWidth;
+  if (!w) return;
+  D = w;
   const px = Math.round(D * DPR());
-  [view, ...offs].forEach(c => { if (c.width !== px) { c.width = px; c.height = px; } });
-  lastKey = '';
+  let changed = false;
+  [view, ...offs].forEach(c => { if (c.width !== px) { c.width = px; c.height = px; changed = true; } });
+  if (changed) { lastKey = ''; lastCKey = ''; }
 }
 /* disegna ogni livello del preparato nella sua tela di lavoro (solo quando cambia la posizione o l'ingrandimento) */
 function drawLayers(g) {
@@ -1475,8 +1567,8 @@ function mixHex(a, b, t) {
 function drawBlurred(src, b) {
   if (b < 0.3) { vctx.drawImage(src, 0, 0); return; }
   if (CTX_FILTER) { vctx.filter = `blur(${b.toFixed(2)}px)`; vctx.drawImage(src, 0, 0); vctx.filter = 'none'; return; }
-  /* browser senza filtri sulla tela: sfocatura approssimata rimpicciolendo e ringrandendo */
-  const W = src.width, w = Math.max(2, Math.round(W * clamp(1 / (1 + b * 0.5), 0.03, 1)));
+  /* browser senza filtri sulla tela: sfocatura ottenuta rimpicciolendo e ringrandendo l’immagine */
+  const W = src.width, w = Math.max(2, Math.round(W * clamp(1 / (1 + b), 0.02, 1)));
   if (tmp.width !== w) { tmp.width = w; tmp.height = w; }
   tctx.setTransform(1, 0, 0, 1, 0, 0);
   tctx.clearRect(0, 0, w, w);
@@ -1499,17 +1591,21 @@ function drawCracks(W) {
 /* compone il campo visivo: luce della lampada, livelli del preparato (assorbono la luce: «multiply»), crepe */
 function composite(g) {
   const W = view.width, dpr = DPR(), c = W / 2;
+  const blurs = S.slideOn ? SL().layers.map(L => layerBlur(L.z, g)) : [];
+  const lamp = mixHex('#f2d49c', '#f7f5ef', clamp(S.intensity * 1.4, 0, 1));
+  const ck = [lastKey, W, g.circle.toFixed(1), lamp, S.broken, blurs.map(b => b.toFixed(2)).join(',')].join('|');
+  if (ck === lastCKey) return;
+  lastCKey = ck;
   vctx.setTransform(1, 0, 0, 1, 0, 0);
   vctx.globalAlpha = 1; vctx.globalCompositeOperation = 'source-over';
   vctx.clearRect(0, 0, W, W);
   vctx.save();
   vctx.beginPath(); vctx.arc(c, c, g.circle / 2 * dpr, 0, TAU); vctx.clip();
-  vctx.fillStyle = mixHex('#f2d49c', '#f7f5ef', clamp(S.intensity * 1.4, 0, 1));
+  vctx.fillStyle = lamp;
   vctx.fillRect(0, 0, W, W);
   if (S.slideOn) {
     vctx.globalCompositeOperation = 'multiply';
-    SL().layers.forEach((L, i) => {
-      const b = layerBlur(L.z, g);
+    blurs.forEach((b, i) => {
       vctx.globalAlpha = 1 / (1 + Math.pow(b / 14, 2));
       drawBlurred(offs[i], b * dpr);
     });
@@ -1518,16 +1614,18 @@ function composite(g) {
   }
   vctx.restore();
 }
+let lastFilter = '';
 function updateView() {
   const g = geom(), fr = g.circle / 2;
   ocular.style.setProperty('--fr', fr.toFixed(1) + 'px');
-  const key = [S.slideOn, S.slide, S.cx.toFixed(2), S.cy.toFixed(2), g.s.toFixed(6), D, DPR()].join('|');
+  const key = [S.slideOn, S.slide, S.cx.toFixed(2), S.cy.toFixed(2), g.s.toFixed(6), D, DPR(), view.width].join('|');
   if (key !== lastKey) { lastKey = key; drawLayers(g); }
   composite(g);
   const ex = exposure();
   let c = 0.8 + 0.75 * (1 - S.iris) + (1 - S.cond) * 0.15;
   if (OBJ[S.obj].oil && !S.oil) c *= 0.85;
-  view.style.filter = `contrast(${c.toFixed(3)}) brightness(${ex.E.toFixed(3)})`;
+  const flt = `contrast(${c.toFixed(3)}) brightness(${ex.E.toFixed(3)})`;
+  if (flt !== lastFilter) { view.style.filter = flt; lastFilter = flt; }
   ocular.style.setProperty('--vig', (0.26 + (1 - S.cond) * 0.3).toFixed(2));
   const sb = $('#scalebar');
   sb.hidden = !S.scale;
@@ -1539,17 +1637,21 @@ function updateView() {
     sb.style.top = (D / 2 + fr * 0.62).toFixed(0) + 'px';
   }
 }
+const setText = (el, t) => { if (el.textContent !== t) el.textContent = t; };
+const setAttr = (el, a, v) => { v = String(v); if (el.getAttribute(a) !== v) el.setAttribute(a, v); };
 function updateReadouts() {
   const g = geom(), o = OBJ[S.obj], ex = exposure();
-  $('#rTotal').textContent = g.total + '×';
-  $('#rFormula').textContent = `${S.eye}× × ${o.mag}×`;
-  $('#rFormula').title = `${S.eye}× oculare × ${o.mag}× obiettivo`;
+  setText($('#rTotal'), g.total + '×');
+  setText($('#rFormula'), `${S.eye}× × ${o.mag}×`);
+  setAttr($('#rFormula'), 'title', `${S.eye}× oculare × ${o.mag}× obiettivo`);
   const f = g.fieldUm;
-  $('#rField').textContent = f >= 1000 ? `Ø ${num(f / 1000, 1)} mm` : `Ø ${num(Math.round(f / 10) * 10, 0)} µm`;
+  setText($('#rField'), f >= 1000 ? `Ø ${num(f / 1000, 1)} mm` : `Ø ${num(Math.round(f / 10) * 10, 0)} µm`);
   const L = $('#rLight');
-  L.className = 'pill ' + ex.c;
-  L.textContent = S.light ? 'luce ' + ex.t : 'luce spenta';
-  $('#slideName').textContent = S.slideOn ? SHORT[S.slide] : 'nessun vetrino';
+  setAttr(L, 'class', 'pill ' + ex.c);
+  setText(L, S.light ? ex.t : 'spenta');
+  setText($('#slideName'), S.slideOn ? SHORT[S.slide] : 'nessun vetrino');
+  const state = !S.light ? 'buio, lampada spenta' : !S.slideOn ? 'campo luminoso senza vetrino' : (sharp() < 1 ? 'immagine a fuoco' : 'immagine sfocata') + ', luce ' + ex.t;
+  setAttr(ocular, 'aria-label', `Nell’oculare: ${S.slideOn ? SHORT[S.slide] : 'nessun vetrino'}, ${g.total}×, ${state}`);
 }
 
 /* =====================================================================
@@ -1557,34 +1659,45 @@ function updateReadouts() {
    ===================================================================== */
 const cInt = $('#cInt'), cIris = $('#cIris'), cCond = $('#cCond');
 function updateControls() {
-  $('#cLight').setAttribute('aria-checked', S.light);
-  $('#cLightTxt').textContent = S.light ? 'Accesa' : 'Spenta';
-  cInt.value = Math.round(S.intensity * 100); $('#oInt').textContent = Math.round(S.intensity * 100) + '%';
-  cIris.value = Math.round(S.iris * 100); $('#oIris').textContent = Math.round(S.iris * 100) + '% aperto';
-  cCond.value = Math.round(S.cond * 100); $('#oCond').textContent = S.cond > 0.92 ? 'in alto' : S.cond < 0.08 ? 'in basso' : Math.round(S.cond * 100) + '%';
-  $$('#cEye button').forEach(b => b.setAttribute('aria-checked', +b.dataset.eye === S.eye));
-  $$('#cObj button').forEach(b => b.setAttribute('aria-checked', +b.dataset.obj === S.obj));
+  setAttr($('#cLight'), 'aria-checked', S.light);
+  setText($('#cLightTxt'), S.light ? 'Accesa' : 'Spenta');
+  cInt.value = Math.round(S.intensity * 100); setText($('#oInt'), Math.round(S.intensity * 100) + '%');
+  cIris.value = Math.round(S.iris * 100); setText($('#oIris'), Math.round(S.iris * 100) + '% aperto');
+  cCond.value = Math.round(S.cond * 100); setText($('#oCond'), S.cond > 0.92 ? 'in alto' : S.cond < 0.08 ? 'in basso' : Math.round(S.cond * 100) + '%');
+  $$('#cEye button').forEach(b => setAttr(b, 'aria-checked', +b.dataset.eye === S.eye));
+  $$('#cObj button').forEach(b => setAttr(b, 'aria-checked', +b.dataset.obj === S.obj));
   $('#optScale').checked = S.scale;
-  $('#cSlide').textContent = S.slideOn ? (S.broken ? 'Togli il vetrino rotto' : 'Togli il vetrino') : 'Appoggia il vetrino';
-  $('#cClips').textContent = S.clips ? 'Solleva le pinzette' : 'Abbassa le pinzette';
-  $('#cOil').textContent = S.oil || S.dirty40 ? 'Pulisci l’olio' : 'Metti l’olio a immersione';
-  $('#cSlideSel').value = S.slide;
-  $('#slideDesc').textContent = SL().desc;
+  setText($('#cSlide'), S.slideOn ? (S.broken ? 'Togli il vetrino rotto' : 'Togli il vetrino') : 'Appoggia il vetrino');
+  setText($('#cClips'), S.clips ? 'Solleva le pinzette' : 'Abbassa le pinzette');
+  setText($('#cOil'), S.oil || S.dirty40 ? 'Pulisci l’olio' : 'Metti l’olio a immersione');
+  $('#magOil').hidden = !(S.obj === 3 && S.slideOn && !S.oil && !S.broken);
+  if ($('#cSlideSel').value !== S.slide) $('#cSlideSel').value = S.slide;
+  setText($('#slideDesc'), SL().desc);
 }
+/* pulsanti da tenere premuti: ripetono finché il dito resta giù; un «click» senza dito (lettori di schermo,
+   comandi vocali) fa un passo solo */
+const holds = new Set();
 function holdRepeat(el, fn) {
-  let t1 = 0, t2 = 0;
-  const stop = () => { clearTimeout(t1); clearInterval(t2); };
+  let t1 = 0, t2 = 0, pressed = 0;
+  const stop = () => { clearTimeout(t1); clearInterval(t2); t1 = t2 = 0; };
+  holds.add(stop);
   el.addEventListener('pointerdown', e => {
     if (e.button !== 0) return;
     e.preventDefault();
-    fn();
+    pressed = e.timeStamp;
+    try { el.setPointerCapture(e.pointerId); } catch (_) { /* nessuna cattura: basta lo stop su pointerup */ }
     stop();
+    fn();
     t1 = setTimeout(() => { t2 = setInterval(fn, 70); }, 380);
   });
-  ['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach(ev => el.addEventListener(ev, stop));
+  ['pointerup', 'pointercancel', 'lostpointercapture', 'blur'].forEach(ev => el.addEventListener(ev, stop));
+  el.addEventListener('click', e => { if (pressed && e.timeStamp - pressed < 15000) { pressed = 0; return; } fn(); });
   el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fn(); } });
   el.addEventListener('contextmenu', e => e.preventDefault());
 }
+const stopHolds = () => holds.forEach(f => f());
+window.addEventListener('blur', stopHolds);
+document.addEventListener('visibilitychange', stopHolds);
 $$('.hold').forEach(b => holdRepeat(b, () => focusBy(+b.dataset.d * (b.dataset.f === 'macro' ? MACRO : MICRO), b.dataset.f)));
 const MV = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 $$('#cPad button').forEach(b => holdRepeat(b, () => {
@@ -1604,38 +1717,43 @@ $('#cSlideSel').addEventListener('change', e => { if (!setSlideType(e.target.val
 $('#cSlide').addEventListener('click', () => (S.slideOn ? removeSlide() : placeSlide()));
 $('#cClips').addEventListener('click', toggleClips);
 $('#cOil').addEventListener('click', toggleOil);
+$('#cOil2').addEventListener('click', toggleOil);
 
 /* =====================================================================
    Pannello (dal basso sul telefono, a lato sugli schermi larghi)
    ===================================================================== */
 const sheet = $('#sheet'), panelHome = $('#panels'), ctlSlot = $('#ctlSlot');
-const wideMQ = window.matchMedia ? matchMedia('(min-width: 860px)') : { matches: false };
 const PANELS = { luce: $('#pn-luce'), mag: $('#pn-mag'), fuoco: $('#pn-fuoco'), vetrino: $('#pn-vetrino') };
-let curPanel = null;
+let curPanel = null, opener = null;
 function placePanel(key, rows) {
   const p = key ? PANELS[key] : null;
   if (curPanel && curPanel !== p) panelHome.append(curPanel);
   curPanel = p;
   if (p) {
     if (p.parentNode !== ctlSlot) ctlSlot.append(p);
+    /* le righe della parte scelta salgono in cima al pannello */
     $$('[data-row]', p).forEach(r => r.classList.toggle('hl', (rows || []).includes(r.dataset.row)));
   }
   ctlSlot.hidden = !p;
 }
-const isWide = () => wideMQ.matches;
-function sheetOpen() { return isWide() || sheet.classList.contains('open'); }
-function showSheet() {
+function showSheet(mode) {
   toast.hidden = true;
+  sheet.classList.toggle('mode-part', mode === 'part');
+  sheet.classList.toggle('mode-guide', mode === 'guide');
   if (!isWide()) {
     sheet.classList.add('open');
     document.body.classList.add('sheet-open');
     if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' });
+  } else {
+    /* pannello a lato: se l’oculare è uscito dallo schermo (telefono in orizzontale) si torna su per vederlo */
+    const r = ocular.getBoundingClientRect();
+    if (r.top < $('#top').offsetHeight - 4 || r.bottom > window.innerHeight) window.scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' });
   }
   sheet.scrollTop = 0;
-  $('#titleBtn').setAttribute('aria-expanded', 'true');
+  setAttr($('#titleBtn'), 'aria-expanded', 'true');
   requestAnimationFrame(updateSheetVars);
 }
-function openPart(id) {
+function openPart(id, from) {
   const P = PART[id];
   if (!P) return;
   S.sel = id;
@@ -1653,10 +1771,11 @@ function openPart(id) {
   $('#shPrev').hidden = $('#shNext').hidden = false;
   $('#shClose').hidden = false;
   $('#shClose').setAttribute('aria-label', isWide() ? 'Torna alla guida' : 'Chiudi');
-  showSheet();
+  showSheet('part');
+  if (from) { opener = from; $('#shName').focus({ preventScroll: true }); }
   invalidate();
 }
-function openGuide(show = true) {
+function openGuide(show = true, from) {
   S.sel = null;
   const cat = $('#shCat');
   cat.textContent = 'Guida'; cat.className = 'eyebrow';
@@ -1666,16 +1785,24 @@ function openGuide(show = true) {
   $('#shPrev').hidden = $('#shNext').hidden = true;
   $('#shClose').hidden = isWide();
   $('#shClose').setAttribute('aria-label', 'Chiudi');
-  if (show) showSheet();
+  if (show) {
+    showSheet('guide');
+    if (from) { opener = from; $('#shName').focus({ preventScroll: true }); }
+  }
   invalidate();
 }
 function closeSheet() {
+  stopHolds();
   if (isWide()) { openGuide(false); return; }
-  sheet.classList.remove('open');
+  sheet.classList.remove('open', 'mode-part', 'mode-guide');
+  sheet.style.transform = '';
   document.body.classList.remove('sheet-open');
   S.sel = null;
-  $('#titleBtn').setAttribute('aria-expanded', 'false');
+  setAttr($('#titleBtn'), 'aria-expanded', 'false');
+  if (!shStatus.hidden) { shStatus.hidden = true; }
   updateSheetVars();
+  if (opener && opener.isConnected) opener.focus({ preventScroll: true });
+  opener = null;
   invalidate();
 }
 function stepPart(d) {
@@ -1686,14 +1813,17 @@ function updateSheetVars() {
   const root = document.documentElement.style;
   const open = !isWide() && sheet.classList.contains('open');
   root.setProperty('--sheet-h', open ? sheet.offsetHeight + 'px' : '0px');
+  const top = $('#top').offsetHeight;
+  root.setProperty('--top-h', top + 'px');
   const oc = ocular.getBoundingClientRect();
-  const ocBottom = oc.bottom + window.scrollY;
-  root.setProperty('--sheet-max', Math.max(260, Math.min(window.innerHeight * 0.7, window.innerHeight - ocBottom - 10)) + 'px');
-  root.setProperty('--top-h', $('#top').offsetHeight + 'px');
+  if (oc.height) {
+    const ocBottom = oc.bottom + window.scrollY;
+    root.setProperty('--sheet-max', Math.max(220, Math.min(window.innerHeight * 0.72, window.innerHeight - ocBottom - 10)) + 'px');
+  }
 }
-$('#titleBtn').addEventListener('click', () => {
+$('#titleBtn').addEventListener('click', e => {
   if (!isWide() && sheet.classList.contains('open') && $('#shPart').hidden) closeSheet();
-  else openGuide();
+  else openGuide(true, e.detail === 0 ? $('#titleBtn') : null);
 });
 $('#shClose').addEventListener('click', closeSheet);
 $('#shPrev').addEventListener('click', () => stepPart(-1));
@@ -1701,10 +1831,34 @@ $('#shNext').addEventListener('click', () => stepPart(1));
 (function buildGroups() {
   const order = ['ottica', 'illuminazione', 'meccanica', 'accessorio'];
   $('#partGroups').innerHTML = order.map(c => `<div><h4>${CAT[c]}</h4><div class="chips">${PARTS.filter(p => p.cat === c).map(p => `<button data-part="${p.id}">${p.name}</button>`).join('')}</div></div>`).join('');
-  $$('#partGroups button').forEach(b => b.addEventListener('click', () => openPart(b.dataset.part)));
+  $$('#partGroups button').forEach(b => b.addEventListener('click', e => openPart(b.dataset.part, e.detail === 0 ? b : null)));
 })();
+/* trascinare in giù la maniglia chiude il pannello */
+let drag = null;
+const shHead = $('#shHead');
+shHead.addEventListener('pointerdown', e => {
+  if (isWide() || !sheet.classList.contains('open') || e.target.closest('button')) return;
+  drag = { y: e.clientY, dy: 0 };
+  try { shHead.setPointerCapture(e.pointerId); } catch (_) { /* ignorato */ }
+  sheet.classList.add('dragging');
+});
+shHead.addEventListener('pointermove', e => {
+  if (!drag) return;
+  drag.dy = Math.max(0, e.clientY - drag.y);
+  sheet.style.transform = drag.dy ? `translateY(${drag.dy}px)` : '';
+});
+const endDrag = () => {
+  if (!drag) return;
+  const dy = drag.dy;
+  drag = null;
+  sheet.classList.remove('dragging');
+  sheet.style.transform = '';
+  if (dy > 70) closeSheet();
+};
+shHead.addEventListener('pointerup', endDrag);
+shHead.addEventListener('pointercancel', endDrag);
 if (wideMQ.addEventListener) wideMQ.addEventListener('change', () => {
-  sheet.classList.remove('open');
+  sheet.classList.remove('open', 'mode-part', 'mode-guide');
   document.body.classList.remove('sheet-open');
   if (isWide()) { if (S.sel) openPart(S.sel); else openGuide(false); }
   else { S.sel = null; openGuide(false); }
@@ -1714,88 +1868,139 @@ if (wideMQ.addEventListener) wideMQ.addEventListener('change', () => {
 /* =====================================================================
    Procedura guidata
    ===================================================================== */
-const PROC = { on: false, i: 0, errors: {} };
+/* on: esercizio attivo (banner e controlli); started: c’è un esercizio da mostrare nella guida */
+const PROC = { on: false, started: false, i: 0, errors: {}, micro: false, peak: 0 };
 const STEPS = [
   { t: () => 'Accendi la lampada con l’interruttore.', ok: () => S.light },
-  { t: () => 'Porta l’intensità della luce a un livello medio, tra il 30% e l’80%.', ok: () => S.light && S.intensity >= 0.3 && S.intensity <= 0.8 },
-  { t: () => 'Ruota il revolver fino all’obiettivo 4×, il più corto, con l’anello rosso.', ok: () => S.obj === 0 },
+  { t: () => 'Porta l’intensità della luce a metà circa (tra il 30% e l’80%).', ok: () => S.light && S.intensity >= 0.3 && S.intensity <= 0.8 },
+  { t: () => 'Ruota il revolver sull’obiettivo 4×, il più corto (anello rosso).', ok: () => S.obj === 0 },
   { t: () => 'Abbassa il tavolino con la vite macrometrica, per fare spazio al vetrino.', ok: () => S.h <= H_LOW },
   { t: () => 'Appoggia il vetrino sul tavolino, con il preparato sopra il foro.', ok: () => S.slideOn },
   { t: () => 'Fissa il vetrino abbassando le pinzette.', ok: () => S.slideOn && S.clips },
-  { t: () => 'Guarda nell’oculare e alza piano il tavolino con la vite macrometrica finché compare l’immagine.', ok: () => S.slideOn && S.obj === 0 && sharp() < 3 },
-  { t: () => 'Rendi l’immagine nitida con la vite micrometrica.', ok: () => S.slideOn && S.obj === 0 && sharp() < 0.45 },
-  { t: () => 'Regola intensità e diaframma: l’immagine deve essere luminosa ma non abbagliante, con un buon contrasto (diaframma non tutto aperto).', ok: () => exposure().k === 'ok' && S.iris >= 0.2 && S.iris <= 0.85 },
+  { t: () => 'Guardando di lato, alza il tavolino con la macrometrica fin quasi a toccare l’obiettivo. Poi guarda nell’oculare e abbassalo piano finché compare l’immagine.', ok: () => S.slideOn && S.obj === 0 && PROC.peak >= H_FOCUS + 300 && S.h < PROC.peak - 40 && sharp() < 3 },
+  { t: () => 'Rendi l’immagine nitida con la vite micrometrica.', ok: () => S.slideOn && S.obj === 0 && PROC.micro && sharp() < 0.45 },
+  { t: () => 'Regola intensità e diaframma: immagine luminosa ma non abbagliante, con un buon contrasto (diaframma non tutto aperto).', ok: () => exposure().k === 'ok' && S.iris >= 0.2 && S.iris <= 0.85 },
   { t: () => `Con il traslatore porta al centro del campo visivo ${SL().targetText}.`, ok: () => S.moved && onTarget() },
-  { t: () => 'Passa all’obiettivo 10× e correggi il fuoco solo con la vite micrometrica.', ok: () => S.slideOn && S.obj === 1 && sharp() < 0.8 },
+  { t: () => 'Passa all’obiettivo 10× e correggi il fuoco solo con la vite micrometrica.', ok: () => S.slideOn && S.obj === 1 && PROC.micro && sharp() < 0.8 },
   { t: () => 'Passa all’obiettivo 40×: metti a fuoco solo con la micrometrica e aumenta un po’ la luce.', ok: () => S.slideOn && S.obj === 2 && sharp() < 0.8 && exposure().k === 'ok' },
-  { t: () => 'Per finire: torna al 4×, abbassa il tavolino, togli il vetrino e spegni la luce.', ok: () => S.obj === 0 && S.h <= H_LOW && !S.slideOn && !S.light },
+  { t: () => 'Per finire: torna al 4×, abbassa il tavolino, togli il vetrino, abbassa l’intensità e spegni la luce.', ok: () => S.obj === 0 && S.h <= H_LOW && !S.slideOn && !S.light && S.intensity <= 0.3 },
 ];
 const ERRTXT = {
-  macro: 'Hai usato la vite macrometrica con un obiettivo forte (40× o 100×).',
+  macro: 'Hai alzato il tavolino con la vite macrometrica con un obiettivo forte (40× o 100×).',
   crash: 'L’obiettivo ha urtato e rotto il vetrino.',
   oil40: 'Hai immerso nell’olio l’obiettivo 40×.',
 };
-function procErr(k) { if (PROC.on && PROC.i < STEPS.length) PROC.errors[k] = (PROC.errors[k] || 0) + 1; }
+function procErr(k) { if (PROC.on && !Q.on && PROC.i < STEPS.length) PROC.errors[k] = (PROC.errors[k] || 0) + 1; }
 function procStart() {
-  Object.assign(S, { light: false, intensity: 0.2, iris: 1, cond: 1, eye: 10, obj: 1, h: 1700, slideOn: false, clips: true, oil: false, dirty40: false, broken: false, moved: false, busy: false });
-  PROC.on = true; PROC.i = 0; PROC.errors = {};
-  say('info', 'Esercizio iniziato: il microscopio è spento, con l’obiettivo 10× in posizione. Segui i passaggi scritti in alto.');
+  rotTok++;
+  Object.assign(S, { light: false, intensity: 0.2, iris: 1, cond: 1, eye: 10, obj: 1, h: 1737, slideOn: false, clips: true, oil: false, dirty40: false, broken: false, moved: false, busy: false });
+  Object.assign(PROC, { on: true, started: true, i: 0, errors: {}, micro: false, peak: S.h });
+  say('info', 'Esercizio iniziato: il microscopio è spento, con l’obiettivo 10× in posizione. Il passo da fare è scritto in alto.');
   invalidate();
 }
-function procStop() { PROC.on = false; say('info', 'Esercizio chiuso. Puoi continuare a usare il microscopio liberamente.'); invalidate(); }
+function procStop() {
+  PROC.on = false;
+  say('info', PROC.i < STEPS.length ? 'Esercizio in pausa: puoi riprenderlo dalla guida (tocca il titolo).' : 'Esercizio chiuso. I passi fatti e gli errori restano nella guida.');
+  invalidate();
+}
+function procResume() { PROC.on = true; say('info', 'Esercizio ripreso: il passo da fare è scritto in alto.'); invalidate(); }
 function checkProc() {
-  if (!PROC.on) return;
+  if (!PROC.on || Q.on) return;
   let adv = false;
-  while (PROC.i < STEPS.length && STEPS[PROC.i].ok()) { PROC.i++; adv = true; }
+  while (PROC.i < STEPS.length && STEPS[PROC.i].ok()) { PROC.i++; adv = true; PROC.micro = false; PROC.peak = S.h; }
   if (adv) {
-    if (PROC.i < STEPS.length) say('ok', `Fatto! Passo ${PROC.i + 1}: ${STEPS[PROC.i].t()}`);
-    else if (Object.keys(PROC.errors).length) say('warn', 'Esercizio completato, ma con qualche errore: li trovi nella guida (tocca il titolo).');
+    if (PROC.i < STEPS.length) say('ok', `Fatto! Ora il passo ${PROC.i + 1} di ${STEPS.length}, scritto in alto.`);
+    else if (Object.keys(PROC.errors).length) say('warn', 'Esercizio completato, ma con qualche errore: li trovi nel riquadro in alto.');
     else say('ok', 'Esercizio completato senza errori: hai usato il microscopio nell’ordine giusto.');
   }
 }
 function renderGuideProc() {
   const n = STEPS.length, i = PROC.i;
-  const html = STEPS.map((s, k) => `<li class="${PROC.on ? (k < i ? 'done' : k === i ? 'cur' : '') : ''}">${s.t()}</li>`).join('');
+  const html = STEPS.map((s, k) => `<li class="${PROC.started ? (k < i ? 'done' : k === i && PROC.on ? 'cur' : '') : ''}">${s.t()}</li>`).join('');
   const list = $('#procList');
   if (list.innerHTML !== html) list.innerHTML = html;
   const errs = Object.entries(PROC.errors);
   const nErr = errs.reduce((a, [, c]) => a + c, 0);
-  $('#procErr').innerHTML = PROC.on && nErr ? `<b>Errori: ${nErr}</b><ul>${errs.map(([k, c]) => `<li>${ERRTXT[k]}${c > 1 ? ` (${c} volte)` : ''}</li>`).join('')}</ul>` : '';
-  $('#procStart').textContent = PROC.on ? 'Ricomincia da zero' : 'Esercitati da zero';
-  if (n && i > n) PROC.i = n;
+  const eh = PROC.started && nErr ? `<b>Errori nell’esercizio: ${nErr}</b><ul>${errs.map(([k, c]) => `<li>${ERRTXT[k]}${c > 1 ? ` (${c} volte)` : ''}</li>`).join('')}</ul>` : '';
+  const pe = $('#procErr');
+  if (pe.innerHTML !== eh) pe.innerHTML = eh;
+  setText($('#procStart'), PROC.started ? 'Ricomincia da zero' : 'Esercitati da zero');
+  $('#procStart').classList.toggle('primary', !(PROC.started && !PROC.on && i < n));
+  $('#procResume').hidden = !(PROC.started && !PROC.on && i < n);
 }
 $('#procStart').addEventListener('click', () => {
-  if (Q.on) quizExit();
-  procStart();
+  if (Q.on) quizExit(true);
   if (!isWide()) closeSheet();
+  procStart();
+});
+$('#procResume').addEventListener('click', () => {
+  if (Q.on) quizExit(true);
+  if (!isWide()) closeSheet();
+  procResume();
 });
 
 /* =====================================================================
    Quiz
    ===================================================================== */
-const Q = { on: false, list: [], i: 0, score: 0, answered: false, results: [], done: false };
+const Q = { on: false, list: [], i: 0, score: 0, answered: false, results: [], done: false, fb: null };
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function clearQuizMarks() { $$('.q-ok, .q-bad', svg).forEach(el => el.classList.remove('q-ok', 'q-bad')); }
 function markPart(id, cls) { $$(`.part[data-part="${id}"]`, svg).forEach(el => el.classList.add(cls)); }
+/* punti centrali delle parti (coordinate del disegno): un tocco vale per la parte più vicina,
+   così anche le parti piccole (pinzette, diaframma...) si toccano facilmente */
+const QC = {
+  oculare: () => [[194, 37]], tubo: () => [[243, 91], [315, 150]], revolver: () => [[300, 189]],
+  obiettivi: () => [[300, PIVOT_Y + OBJ[S.obj].len * 0.6]],
+  pinzette: () => [[226, 294 + st.dy], [374, 294 + st.dy]],
+  tavolino: () => [[250, 306 + st.dy], [352, 306 + st.dy]],
+  traslatore: () => [[374, 334 + st.dy]],
+  condensatore: () => [[300, 327 + st.dy + st.c]],
+  diaframma: () => [[st.lever, 342 + st.dy + st.c], [300, 343 + st.dy + st.c]],
+  viteCond: () => [[336, 366 + st.dy]],
+  lampada: () => [[300, 565]], interruttore: () => [[203, 608]], intensita: () => [[441, 607]],
+  macro: () => [[424, 382]], micro: () => [[424, 458]],
+  braccio: () => [[418, 240], [424, 300], [424, 532]],
+  base: () => [[245, 622], [370, 624]],
+};
+function quizPick(e) {
+  const m = $('#drawing').getScreenCTM();
+  if (m) {
+    const pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    const q = pt.matrixTransform(m.inverse());
+    let best = null, bd = 46;
+    for (const id in QC) for (const [x, y] of QC[id]()) {
+      const d = Math.hypot(q.x - x, q.y - y);
+      if (d < bd) { bd = d; best = id; }
+    }
+    if (best) return best;
+  }
+  const p = e.target.closest ? e.target.closest('.part') : null;
+  return p && p.dataset.part !== 'vetrino' ? p.dataset.part : null;
+}
 function quizStart() {
-  if (PROC.on) PROC.on = false;
   const ids = shuffle(PARTS.filter(p => p.id !== 'vetrino').map(p => p.id)).slice(0, 10);
   Q.list = ids.map((id, k) => ({ id, kind: k % 2 ? 'f' : 'n' }));
-  Q.on = true; Q.i = 0; Q.score = 0; Q.answered = false; Q.results = []; Q.done = false;
+  Object.assign(Q, { on: true, i: 0, score: 0, answered: false, results: [], done: false, fb: null });
   S.sel = null;
   if (!isWide()) closeSheet(); else openGuide(false);
   clearQuizMarks();
   if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: RM ? 'auto' : 'smooth' });
+  if (PROC.on) say('info', 'L’esercizio resta in pausa durante il quiz: riprende quando chiudi il quiz.');
   invalidate();
 }
-function quizExit() { Q.on = false; clearQuizMarks(); invalidate(); }
+function quizExit(quiet) {
+  Q.on = false;
+  clearQuizMarks();
+  if (!quiet && PROC.on && PROC.i < STEPS.length) say('info', 'Quiz chiuso: l’esercizio riprende dal passo scritto in alto.');
+  invalidate();
+}
 function quizAnswer(id) {
-  if (!Q.on || Q.answered || Q.done) return;
+  if (!Q.on || Q.answered || Q.done || !id) return;
   const q = Q.list[Q.i], ok = id === q.id;
   Q.answered = true;
   Q.results.push({ id: q.id, ok });
-  if (ok) { Q.score++; markPart(id, 'q-ok'); Q.fb = { ok: true, t: q.kind === 'n' ? 'Giusto!' : `Giusto! È «${PART[q.id].name}».` }; }
-  else { markPart(id, 'q-bad'); markPart(q.id, 'q-ok'); Q.fb = { ok: false, t: `No, hai toccato «${PART[id].name}». In verde la risposta giusta: «${PART[q.id].name}».` }; }
+  if (ok) { Q.score++; markPart(id, 'q-ok'); Q.fb = { ok: true, t: q.kind === 'n' ? 'Giusto!' : `Giusto! Si chiama «${PART[q.id].name}».` }; }
+  else { markPart(id, 'q-bad'); markPart(q.id, 'q-ok'); Q.fb = { ok: false, t: `No, hai toccato «${PART[id].name}». La risposta giusta, evidenziata in verde, è «${PART[q.id].name}».` }; }
   invalidate();
 }
 function quizSkip() {
@@ -1803,7 +2008,7 @@ function quizSkip() {
   const q = Q.list[Q.i];
   Q.answered = true; Q.results.push({ id: q.id, ok: false });
   markPart(q.id, 'q-ok');
-  Q.fb = { ok: false, t: `È «${PART[q.id].name}»: la vedi evidenziata in verde.` };
+  Q.fb = { ok: false, t: `La risposta giusta è «${PART[q.id].name}»: è evidenziata in verde.` };
   invalidate();
 }
 function quizNext() {
@@ -1814,82 +2019,92 @@ function quizNext() {
   invalidate();
 }
 $('#quizStartBtn').addEventListener('click', quizStart);
-$('#bnNext').addEventListener('click', quizNext);
+$('#bnNext').addEventListener('click', () => (Q.on ? quizNext() : undefined));
 $('#bnSkip').addEventListener('click', quizSkip);
 $('#bnClose').addEventListener('click', () => {
   if (Q.on) quizExit();
   else if (PROC.on) procStop();
 });
+$('#bnText').addEventListener('click', () => $('#bnText').classList.toggle('full'));
 
+let bnKey = '';
 function renderBanner() {
   const bn = $('#banner'), fb = $('#bnFb'), acts = $('#bnActions');
+  let key, text, small, bar, fbText = null, fbCls = '', next = null, skip = false, close = '';
   if (Q.on) {
-    bn.hidden = false;
     const n = Q.list.length;
+    close = 'Esci dal quiz';
     if (Q.done) {
-      const msg = Q.score === n ? 'Perfetto: conosci tutte le parti.' : Q.score >= n * 0.7 ? 'Bene! Ripassa le parti sbagliate.' : 'Ripassa le parti nella guida e riprova.';
-      $('#bnText').innerHTML = `<small>Quiz completato</small>Hai risposto bene a ${Q.score} domande su ${n}. ${msg}`;
-      $('#bnBar').style.width = '100%';
+      const msg = Q.score === n ? 'Perfetto! Rifai il quiz per ripassare anche le altre parti: ogni volta le domande cambiano.' : Q.score >= n * 0.7 ? 'Bene! Ripassa le parti sbagliate.' : 'Ripassa le parti nella guida e riprova.';
+      small = 'Quiz completato';
+      text = `Hai risposto bene a ${Q.score} ${Q.score === 1 ? 'domanda' : 'domande'} su ${n}. ${msg}`;
+      bar = 100;
       const wrong = Q.results.filter(r => !r.ok).map(r => PART[r.id].name);
-      fb.hidden = !wrong.length; fb.className = 'bn-fb bad';
-      fb.textContent = wrong.length ? 'Da ripassare: ' + wrong.join(', ') + '.' : '';
-      acts.hidden = false; $('#bnNext').textContent = 'Rifai il quiz'; $('#bnSkip').hidden = true;
+      if (wrong.length) { fbText = 'Da ripassare: ' + wrong.join(', ') + '.'; fbCls = 'bad'; }
+      next = 'Rifai il quiz';
     } else {
       const q = Q.list[Q.i], P = PART[q.id];
-      $('#bnText').innerHTML = '';
-      const sm = document.createElement('small');
-      sm.textContent = `Quiz · domanda ${Q.i + 1} di ${n} · punti ${Q.score}`;
-      $('#bnText').append(sm, document.createTextNode(q.kind === 'n' ? `Tocca sul disegno: ${P.name}` : `Tocca la parte che: ${P.q.charAt(0).toLowerCase() + P.q.slice(1)}`));
-      $('#bnBar').style.width = (Q.i / n * 100) + '%';
-      fb.hidden = !Q.answered;
-      if (Q.answered && Q.fb) { fb.textContent = Q.fb.t; fb.className = 'bn-fb ' + (Q.fb.ok ? 'ok' : 'bad'); }
-      acts.hidden = false;
-      $('#bnNext').hidden = !Q.answered; $('#bnSkip').hidden = Q.answered;
-      $('#bnNext').textContent = Q.i + 1 < n ? 'Avanti' : 'Vedi il risultato';
+      small = `Quiz · domanda ${Q.i + 1} di ${n} · punti ${Q.score}`;
+      text = q.kind === 'n' ? `Tocca sul disegno: ${P.name}` : `Tocca sul disegno ${P.q}`;
+      bar = Q.i / n * 100;
+      if (Q.answered && Q.fb) { fbText = Q.fb.t; fbCls = Q.fb.ok ? 'ok' : 'bad'; next = Q.i + 1 < n ? 'Avanti' : 'Vedi il risultato'; }
+      else skip = true;
     }
-    $('#bnClose').setAttribute('aria-label', 'Esci dal quiz');
   } else if (PROC.on) {
-    bn.hidden = false;
     const n = STEPS.length, i = PROC.i;
-    const nErr = Object.values(PROC.errors).reduce((a, c) => a + c, 0);
-    $('#bnText').innerHTML = '';
-    const sm = document.createElement('small');
-    sm.textContent = i < n ? `Esercizio · passo ${i + 1} di ${n}${nErr ? ` · errori ${nErr}` : ''}` : 'Esercizio completato';
-    $('#bnText').append(sm, document.createTextNode(i < n ? STEPS[i].t() : (nErr ? `Hai finito con ${nErr} ${nErr === 1 ? 'errore' : 'errori'}: li trovi nella guida (tocca il titolo).` : 'Hai finito senza errori. Ottimo lavoro!')));
-    $('#bnBar').style.width = (i / n * 100).toFixed(1) + '%';
-    fb.hidden = true; acts.hidden = true;
-    $('#bnClose').setAttribute('aria-label', 'Esci dall’esercizio');
-  } else bn.hidden = true;
-  $('#bnProg').hidden = bn.hidden;
+    const errs = Object.entries(PROC.errors), nErr = errs.reduce((a, [, c]) => a + c, 0);
+    close = i < n ? 'Metti in pausa l’esercizio' : 'Chiudi';
+    small = i < n ? `Esercizio · passo ${i + 1} di ${n}${nErr ? ` · errori ${nErr}` : ''}` : 'Esercizio completato';
+    text = i < n ? STEPS[i].t() : (nErr ? `Hai finito con ${nErr} ${nErr === 1 ? 'errore' : 'errori'}.` : 'Hai finito senza errori. Ottimo lavoro!');
+    bar = i / n * 100;
+    if (i >= n && nErr) { fbText = errs.map(([k, c]) => ERRTXT[k] + (c > 1 ? ` (${c} volte)` : '')).join(' '); fbCls = 'bad'; }
+  } else {
+    if (!bn.hidden) { bn.hidden = true; bnKey = ''; requestAnimationFrame(updateSheetVars); }
+    return;
+  }
+  key = [small, text, bar, fbText, next, skip, close].join('|');
+  if (key === bnKey) return;
+  const wasHidden = bn.hidden;
+  bnKey = key;
+  bn.hidden = false;
+  const bt = $('#bnText');
+  bt.innerHTML = '';
+  const sm = document.createElement('small');
+  sm.textContent = small;
+  bt.append(sm, document.createTextNode(text));
+  $('#bnBar').style.width = bar.toFixed(1) + '%';
+  fb.hidden = !fbText;
+  if (fbText) { fb.textContent = fbText; fb.className = 'bn-fb ' + fbCls; }
+  acts.hidden = !(next || skip);
+  $('#bnNext').hidden = !next;
+  if (next) $('#bnNext').textContent = next;
+  $('#bnSkip').hidden = !skip;
+  $('#bnClose').setAttribute('aria-label', close);
+  if (wasHidden) requestAnimationFrame(updateSheetVars);
 }
 
 /* =====================================================================
    Tocchi sul disegno e tastiera
    ===================================================================== */
 svg.addEventListener('click', e => {
+  if (Q.on) { quizAnswer(quizPick(e)); return; }
   const p = e.target.closest ? e.target.closest('[data-part]') : null;
   if (!p) return;
-  const id = p.dataset.part;
-  if (Q.on) { if (p.classList.contains('part')) quizAnswer(id); return; }
-  openPart(id);
-});
-$$('.part', svg).forEach(el => {
-  el.setAttribute('tabindex', '0');
-  el.setAttribute('role', 'button');
-  el.setAttribute('aria-label', PART[el.dataset.part].name);
+  openPart(p.dataset.part, e.detail === 0 ? p : null);
 });
 svg.addEventListener('keydown', e => {
   const t = e.target;
   if ((e.key === 'Enter' || e.key === ' ') && t.classList && (t.classList.contains('part') || t.classList.contains('lbl'))) {
     e.preventDefault();
-    t.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    if (Q.on) { if (t.classList.contains('part')) quizAnswer(t.dataset.part); return; }
+    openPart(t.dataset.part, t);
   }
 });
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && !isWide() && sheet.classList.contains('open')) { closeSheet(); return; }
   if (Q.on || e.ctrlKey || e.metaKey || e.altKey) return;
   const t = e.target;
-  if (t && t.matches && t.matches('input, select, textarea, button')) return;
+  if (t && t.matches && t.matches('input, select, textarea')) return;
   const step = geom().fieldUm * 0.08;
   const act = {
     ArrowUp: () => moveSlide(0, -step), ArrowDown: () => moveSlide(0, step),
@@ -1917,16 +2132,22 @@ function renderAll() {
   renderBanner();
   renderGuideProc();
 }
-const ro = new ResizeObserver(() => { sizeCanvases(); updateSheetVars(); invalidate(); });
-ro.observe(ocular);
-ro.observe(sheet);
-ro.observe($('#top'));
+if (window.ResizeObserver) {
+  new ResizeObserver(() => { sizeCanvases(); invalidate(); }).observe(ocular);
+  const roUI = new ResizeObserver(() => updateSheetVars());
+  roUI.observe(sheet);
+  roUI.observe($('#top'));
+} else {
+  window.addEventListener('resize', () => { sizeCanvases(); updateSheetVars(); invalidate(); });
+}
 window.addEventListener('resize', updateSheetVars);
-sizeCanvases();
 updateObjectives(true);
 openGuide(false);
 fitLabels();
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitLabels);
+/* tutto pronto: si mostrano i pezzi interattivi e si nasconde la versione senza JavaScript */
+document.documentElement.classList.add('js-ready');
+sizeCanvases();
 renderAll();
 updateSheetVars();
 if (!isWide()) setTimeout(() => say('info', 'Tocca un nome sul disegno per sapere a cosa serve quella parte e per usarla. Il titolo in alto apre la guida.'), 400);
